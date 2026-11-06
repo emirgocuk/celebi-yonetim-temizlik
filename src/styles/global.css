@@ -1,0 +1,118 @@
+@import "tailwindcss";
+
+:root {
+  /* Surface Layers */
+  --color-surface-base: #FFFFFF;
+  --color-surface-muted: #F8FAFC;
+  --color-surface-subtle: #F0F9FF;
+  
+  /* Text Layers */
+  --color-text-primary: #0B132B;
+  --color-text-secondary: #334155;
+  --color-text-muted: #64748B;
+  
+  /* Borders */
+  --color-border: #E2E8F0;
+  --color-border-subtle: rgba(226, 232, 240, 0.8);
+
+  /* Vivid Colors */
+  --brand-primary: #0F172A;
+  --brand-blue: #0284C7;
+  --brand-cyan: #06B6D4;
+  --brand-emerald: #059669;
+  --brand-amber: #D97706;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  background-color: #FFFFFF;
+  color: #0F172A;
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  caret-color: #0284C7;
+}
+
+::selection {
+  background-color: #0284C7;
+  color: #FFFFFF;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Water Droplet Liquid Glass Header (Crystal liquid translucency - no whole-box outer halo) */
+.water-droplet-glass {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.48) 100%);
+  backdrop-filter: blur(28px) saturate(210%);
+  -webkit-backdrop-filter: blur(28px) saturate(210%);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.95),
+    0 8px 24px -6px rgba(15, 23, 42, 0.06);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.water-droplet-glass-scrolled {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.65) 100%);
+  backdrop-filter: blur(32px) saturate(230%);
+  -webkit-backdrop-filter: blur(32px) saturate(230%);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 
+    inset 0 1px 1px 0 #FFFFFF,
+    0 12px 28px -6px rgba(15, 23, 42, 0.08);
+}
+
+/* Header İçindeki Yazıların Doğal ve Göz Yormayan Şık Parlaması */
+.nav-anchor {
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav-anchor:hover span {
+  color: #0F172A;
+  transition: color 0.15s ease;
+}
+
+/* Seçilen / Aktif Bölümün Yazısı (Sadece Geçtiği Siyah Kapsül Üzerinde Beyaz) */
+.active-nav-glow,
+.active-nav-glow span {
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 0 6px rgba(255, 255, 255, 0.4);
+}
+
+/* Subtle Floating Animation */
+@keyframes softFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.animate-float {
+  animation: softFloat 4s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: softFloat 5s ease-in-out 1.5s infinite;
+}
+
+/* Micro-Interaction Polish */
+.subtle-tap {
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s ease;
+}
+
+.subtle-tap:active {
+  transform: scale(0.98);
+}

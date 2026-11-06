@@ -1,0 +1,97 @@
+---
+import { SERVICES_DATA } from '@/lib/fallback-data';
+
+const yonetimService = SERVICES_DATA.find(s => s.id === 'site-yonetimi')!;
+
+const managementPillars = [
+  {
+    title: 'Mali ve Finansal Şeffaflık',
+    desc: 'Banka entegrasyonlu online tahsilat sistemi. Her daire sakini borcunu ve binanın kasasını mobil panelden 7/24 görür. Her ay onaylı gelir-gider tablosu bina panosuna asılır.',
+    items: ['Gecikme faizli adil aidat takibi', 'Yıllık tahmini işletme projesi hazırlığı', 'Tüm harcamaların faturalı dijital arşivi'],
+    accent: 'border-sky-200 bg-sky-50/50',
+    iconColor: 'bg-sky-600',
+  },
+  {
+    title: 'Kat Mülkiyeti Kanunu (KMK) & Hukuki Takip',
+    desc: 'Komşular arasında husumet doğmadan, yasal mevzuata tam uygun yönetim. Aidatını ödemeyen veya bina huzurunu bozan durumlarda noter ihtarları ve icra takipleri hukuk departmanımızca yürütülür.',
+    items: ['Genel kurul ve olağanüstü toplantı divan yönetimi', 'Karar defteri noter tasdik ve tescili', 'Avukat onaylı ilamsız icra takipleri'],
+    accent: 'border-slate-300 bg-slate-50/50',
+    iconColor: 'bg-slate-900',
+  },
+  {
+    title: 'Teknik ve Periyodik Tesisat Bakımı',
+    desc: 'Asansör yeşil etiket muayeneleri, hidrofor ve yangın tesisatı kontrolleri, jeneratör yakıt ve servis takibi yetkili anlaşmalı kurumlarla kayıt altına alınır.',
+    items: ['Asansör aylık bakım ve MMO periyodik denetimi', 'Su deposu dezenfeksiyonu ve analizi', '7/24 acil tesisat ve elektrik müdahalesi'],
+    accent: 'border-cyan-200 bg-cyan-50/50',
+    iconColor: 'bg-cyan-600',
+  },
+  {
+    title: 'Personel ve İdari İşler Yönetimi',
+    desc: 'Bina görevlisinin SGK işe girişleri, aylık bordroları, kıdem ve izin hakları İş Kanunu’na uygun şekilde Çelebi güvencesiyle takip edilir. Yöneticinin cezai ve idari sorumluluğu sıfırlanır.',
+    items: ['SGK bildirgeleri ve bordrolama', 'Görev tanımları ve günlük çalışma çizelgesi', 'İş sağlığı ve güvenliği (İSG) risk analizleri'],
+    accent: 'border-emerald-200 bg-emerald-50/50',
+    iconColor: 'bg-emerald-600',
+  },
+];
+---
+
+<section id="site-yonetimi-detay" class="py-16 sm:py-24 bg-white border-t border-slate-200 relative">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    
+    <!-- Section Header -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end mb-16">
+      <div class="lg:col-span-8">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-sky-50 text-sky-800 border border-sky-200 mb-3">
+          <span>Yasal Mevzuat ve Finansal Düzen</span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight mb-4">
+          Profesyonel Site ve Apartman Yönetimi
+        </h2>
+        <p class="text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
+          Aidat toplamaktan yorulan, komşularıyla tartışmak istemeyen ve binasının değerini korumak isteyen kat malikleri için bağımsız, kurumsal ve şeffaf yönetim sistemi.
+        </p>
+      </div>
+
+      <div class="lg:col-span-4 flex lg:justify-end">
+        <a
+          href="#iletisim"
+          class="inline-flex items-center gap-2 px-6 py-3 text-xs font-bold text-white bg-slate-900 hover:bg-sky-700 rounded-2xl transition-all duration-150 subtle-tap shadow-md"
+        >
+          <span>Siteniz İçin Teklif Alın</span>
+          <span>→</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 4 Key Pillars Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {managementPillars.map((pillar) => (
+        <div class={`p-8 rounded-3xl border ${pillar.accent} hover:shadow-xl transition-all duration-300 flex flex-col justify-between group`}>
+          <div>
+            <div class="flex items-center gap-3 mb-4">
+              <span class={`w-3.5 h-3.5 rounded-full ${pillar.iconColor}`}></span>
+              <h3 class="text-xl font-bold text-slate-900 group-hover:text-sky-800 transition-colors">{pillar.title}</h3>
+            </div>
+            <p class="text-sm text-slate-600 leading-relaxed mb-6">{pillar.desc}</p>
+            
+            <ul class="space-y-3">
+              {pillar.items.map((item) => (
+                <li class="flex items-center gap-2.5 text-xs sm:text-sm text-slate-700 font-semibold">
+                  <span class="text-emerald-600 font-bold">✓</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div class="pt-6 mt-6 border-t border-slate-200/60 flex items-center justify-between text-xs text-slate-500">
+            <span>KMK 634 Sayılı Kanuna Tam Uyum</span>
+            <span class="text-sky-700 font-bold">Çelebi Güvencesi</span>
+          </div>
+        </div>
+      ))}
+    </div>
+
+  </div>
+</section>
+

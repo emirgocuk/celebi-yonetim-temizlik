@@ -1,0 +1,55 @@
+---
+import { REVIEWS_DATA } from '@/lib/fallback-data';
+---
+
+<section id="yorumlar" class="scroll-mt-24 py-20 sm:py-28 bg-gradient-to-b from-slate-50 via-white to-slate-50 border-t border-slate-200">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    
+    <!-- Section Heading -->
+    <div class="max-w-3xl mb-16">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200 mb-3">
+        <span>Doğrulanmış Müşteri Deneyimleri</span>
+      </div>
+      <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight mb-4">
+        Yöneticiler ve işletmelerin referans değerlendirmeleri.
+      </h2>
+      <p class="text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
+        Şeffaf yönetim ve temizlik anlayışımızın arkasındayız. İşte çalıştığımız denetim kurulu üyeleri ve şirket yöneticilerinin geri bildirimleri.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {REVIEWS_DATA.map((rev) => (
+        <div class="bg-white p-8 rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
+          <div>
+            <!-- Star Rating SVG (Luminous Amber Gold) -->
+            <div class="flex items-center gap-1.5 text-amber-400 mb-4" aria-label="5 yıldız">
+              {Array.from({ length: rev.rating }).map(() => (
+                <svg class="w-4 h-4 fill-current drop-shadow-sm" viewBox="0 0 20 20" aria-hidden="true">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+              ))}
+            </div>
+
+            <!-- Review Text -->
+            <p class="text-sm text-slate-700 leading-relaxed mb-6 font-normal">
+              "{rev.comment}"
+            </p>
+          </div>
+
+          <!-- Author Info -->
+          <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+            <div>
+              <div class="font-bold text-sm text-slate-900 group-hover:text-sky-700 transition-colors">{rev.author}</div>
+              <div class="text-xs text-slate-500">{rev.role} • <span class="text-slate-700 font-medium">{rev.buildingName}</span></div>
+            </div>
+            <span class="inline-flex px-2.5 py-1 rounded-full text-[10px] font-bold bg-sky-50 text-sky-700 border border-sky-200">
+              {rev.serviceType}
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
+
+  </div>
+</section>

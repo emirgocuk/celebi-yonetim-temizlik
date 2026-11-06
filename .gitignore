@@ -1,0 +1,24 @@
+# Build & Dependencies
+node_modules/
+dist/
+.astro/
+
+# Environment Variables
+.env
+.env.*
+!.env.example
+
+# PocketBase local database & uploads
+pb_data/
+pb_public/
+
+# Temporary / Scratch files
+scratch/
+
+# OS / Editor Files
+.DS_Store
+Thumbs.db
+*.log
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json

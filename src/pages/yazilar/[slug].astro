@@ -1,0 +1,272 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { ARTICLES_DATA, type ArticleItem } from '@/lib/articles-data';
+import { COMPANY_INFO } from '@/lib/fallback-data';
+
+export function getStaticPaths() {
+  return ARTICLES_DATA.map((article) => ({
+    params: { slug: article.slug },
+    props: { article },
+  }));
+}
+
+interface Props {
+  article: ArticleItem;
+}
+
+const { article } = Astro.props;
+
+// 2 Related articles (excluding current)
+const relatedArticles = ARTICLES_DATA.filter((a) => a.slug !== article.slug).slice(0, 3);
+
+const pageTitle = `${article.title} | Çelebi Yönetim & Temizlik`;
+const pageDescription = article.summary;
+
+// Schema.org Article Structured Data
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  'headline': article.title,
+  'description': article.summary,
+  'image': article.image,
+  'datePublished': article.isoDate,
+  'dateModified': article.isoDate,
+  'author': {
+    '@type': 'Person',
+    'name': article.author.name,
+    'jobTitle': article.author.role,
+  },
+  'publisher': {
+    '@type': 'Organization',
+    'name': COMPANY_INFO.name,
+    'logo': {
+      '@type': 'ImageObject',
+      'url': 'https://www.celebiyonetim.com/assets/images/hero-building.jpg',
+    },
+  },
+  'mainEntityOfPage': {
+    '@type': 'WebPage',
+    '@id': `https://www.celebiyonetim.com/yazilar/${article.slug}`,
+  },
+};
+---
+
+<BaseLayout title={pageTitle} description={pageDescription}>
+  <!-- Article Header & Hero -->
+  <article class="pt-8 pb-16 sm:pt-14 sm:pb-24 bg-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
+      
+      <!-- Breadcrumbs -->
+      <nav class="flex items-center gap-2 text-xs text-slate-500 mb-6" aria-label="Ekmek Kırıntısı">
+        <a href="/" class="hover:text-sky-700 transition-colors">Ana Sayfa</a>
+        <span>/</span>
+        <a href="/yazilar" class="hover:text-sky-700 transition-colors">Sektörel Yazılar</a>
+        <span>/</span>
+        <span class="text-slate-900 font-bold truncate max-w-[200px] sm:max-w-xs">{article.category}</span>
+      </nav>
+
+      <!-- Category Pill & Read Meta -->
+      <div class="flex flex-wrap items-center gap-3 mb-4">
+        <span class={`px-3 py-1 rounded-full text-xs font-bold border ${article.tagColor}`}>
+          {article.tag}
+        </span>
+        <span class="text-xs text-slate-400 font-medium">• {article.readTime}</span>
+        <span class="text-xs text-slate-400 font-medium">• {article.publishDate}</span>
+      </div>
+
+      <!-- Main Title -->
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-[1.15] mb-6">
+        {article.title}
+      </h1>
+
+      <!-- Author Byline -->
+      <div class="flex items-center gap-3.5 pb-8 border-b border-slate-200">
+        <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-slate-900 via-slate-800 to-sky-900 text-white flex items-center justify-center font-bold text-sm shadow-sm border border-slate-200">
+          Ç
+        </div>
+        <div>
+          <div class="text-sm font-bold text-slate-900">{article.author.name}</div>
+          <div class="text-xs text-slate-500">{article.author.role} • Çelebi Yönetim ve Temizlik</div>
+        </div>
+      </div>
+
+      <!-- Featured Image -->
+      <div class="my-8 rounded-3xl overflow-hidden shadow-xl border border-slate-200 max-h-[460px] bg-slate-100">
+        <img
+          src={article.image}
+          alt={article.title}
+          width="900"
+          height="500"
+          class="w-full h-full object-cover"
+          loading="eager"
+          fetchpriority="high"
+        />
+      </div>
+
+      <!-- Key Takeaways / Yönetici Özeti Box -->
+      <div class="my-10 p-6 sm:p-8 rounded-3xl bg-slate-50 border border-slate-200/90 shadow-sm">
+        <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-sky-800 mb-3">
+          <svg class="w-4 h-4 fill-current text-sky-600" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+          </svg>
+          <span>Önemli Başlıklar & Yönetici Özeti</span>
+        </div>
+        <ul class="space-y-2.5 text-xs sm:text-sm text-slate-700">
+          {article.keyTakeaways.map((item) => (
+            <li class="flex items-start gap-2.5 font-medium">
+              <span class="text-emerald-600 font-bold mt-0.5">✓</span>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Article Rich Content Body -->
+      <div class="prose prose-slate max-w-none text-slate-700 leading-relaxed space-y-8">
+        
+        <!-- Lead text -->
+        <p class="text-base sm:text-lg text-slate-700 font-normal leading-relaxed border-l-4 border-sky-600 pl-4 py-1 italic bg-sky-50/30 rounded-r-xl">
+          {article.content.lead}
+        </p>
+
+        <!-- Sections -->
+        {article.content.sections.map((section) => (
+          <section class="space-y-4">
+            <h2 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight pt-4">
+              {section.heading}
+            </h2>
+            {section.paragraphs.map((p) => (
+              <p class="text-sm sm:text-base text-slate-600 leading-relaxed font-normal">
+                {p}
+              </p>
+            ))}
+            {section.listItems && section.listItems.length > 0 && (
+              <ul class="space-y-2 my-4 pl-2">
+                {section.listItems.map((li) => (
+                  <li class="flex items-start gap-2 text-xs sm:text-sm text-slate-700 font-medium">
+                    <span class="w-1.5 h-1.5 rounded-full bg-sky-600 mt-2 shrink-0"></span>
+                    <span>{li}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        ))}
+
+      </div>
+
+      <!-- In-Article Lead Generation Callout -->
+      <div class="my-12 p-8 rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-sky-950 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+        <div>
+          <div class="text-xs font-bold text-sky-400 uppercase tracking-wider mb-2">Çelebi Danışmanlık Hattı</div>
+          <h3 class="text-xl font-bold mb-2">Bu Konuda Profesyonel Destek Almak İster misiniz?</h3>
+          <p class="text-xs text-slate-300 max-w-md">
+            Apartmanınız, siteniz veya ticari işletmeniz için mevzuata tam uyumlu yönetim ve temizlik teklifimizi 15 dakika içinde hazırlıyoruz.
+          </p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3 shrink-0">
+          <a
+            href="/#iletisim"
+            class="px-6 py-3 text-xs font-bold text-slate-900 bg-white hover:bg-sky-100 rounded-xl transition-all duration-150 subtle-tap shadow-md text-center"
+          >
+            Fiyat Teklifi İsteyin
+          </a>
+          <a
+            href={`https://wa.me/${COMPANY_INFO.whatsapp}?text=${encodeURIComponent(`Merhaba, "${article.title}" makalenizi okudum ve danışmak istiyorum.`)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="px-6 py-3 text-xs font-bold text-emerald-300 bg-emerald-950/60 border border-emerald-500/40 rounded-xl transition-all duration-150 subtle-tap text-center"
+          >
+            WhatsApp'tan Danışın
+          </a>
+        </div>
+      </div>
+
+      <!-- Author Bio Footer Box -->
+      <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 flex items-center gap-4">
+        <div class="w-12 h-12 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-base shrink-0">
+          Ç
+        </div>
+        <div>
+          <div class="text-sm font-bold text-slate-900">{article.author.name}</div>
+          <p class="text-xs text-slate-500 mt-0.5">
+            Çelebi Yönetim ve Temizlik bünyesinde kat mülkiyeti mevzuatı, finansal aidat denetimi ve kurumsal temizlik operasyonlarını yürütmektedir.
+          </p>
+        </div>
+      </div>
+
+      <!-- Navigation to all articles -->
+      <div class="mt-8 pt-6 border-t border-slate-200 flex items-center justify-between text-xs">
+        <a href="/yazilar" class="inline-flex items-center gap-1.5 font-bold text-sky-700 hover:text-sky-900 transition-colors">
+          <span>← Tüm Yazılara Geri Dön</span>
+        </a>
+        <a href="/#iletisim" class="font-bold text-slate-700 hover:text-slate-950 transition-colors">
+          Ücretsiz Fiyat Teklifi Al →
+        </a>
+      </div>
+
+    </div>
+  </article>
+
+  <!-- Related Articles Grid -->
+  <section class="py-16 bg-slate-50 border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="max-w-3xl mb-10">
+        <h3 class="text-2xl font-extrabold text-slate-900 tracking-tight">
+          İlginizi Çekebilecek Diğer Rehber Makaleleri
+        </h3>
+        <p class="text-xs sm:text-sm text-slate-600 mt-1">
+          Kat mülkiyeti, icra takibi ve endüstriyel hijyen hakkında diğer yazılarımız.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {relatedArticles.map((rel) => (
+          <article class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200 flex flex-col justify-between group">
+            <div>
+              <div class="relative h-44 overflow-hidden bg-slate-100">
+                <img
+                  src={rel.image}
+                  alt={rel.title}
+                  width="400"
+                  height="240"
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                />
+                <span class={`absolute top-3 left-3 px-2 py-0.5 rounded-full text-[10px] font-bold border backdrop-blur-md bg-white/95 ${rel.tagColor}`}>
+                  {rel.tag}
+                </span>
+              </div>
+              <div class="p-5">
+                <div class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+                  {rel.publishDate} • {rel.readTime}
+                </div>
+                <h4 class="text-sm font-bold text-slate-900 group-hover:text-sky-700 transition-colors line-clamp-2 leading-snug mb-2">
+                  <a href={`/yazilar/${rel.slug}`}>
+                    {rel.title}
+                  </a>
+                </h4>
+                <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed">
+                  {rel.summary}
+                </p>
+              </div>
+            </div>
+            <div class="p-5 pt-0">
+              <a
+                href={`/yazilar/${rel.slug}`}
+                class="inline-flex items-center gap-1 text-xs font-bold text-sky-700 hover:text-sky-900 transition-colors"
+              >
+                <span>Yazıyı İncele</span>
+                <span>→</span>
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<!-- Inject Article Schema -->
+<script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+

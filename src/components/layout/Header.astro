@@ -1,0 +1,440 @@
+---
+import { COMPANY_INFO } from '@/lib/fallback-data';
+
+const pathname = Astro.url.pathname;
+const isHome = pathname === '/' || pathname === '';
+
+const navLinks = [
+  { href: isHome ? '#site-yonetimi' : '/#site-yonetimi', label: 'Site Yönetimi', id: 'site-yonetimi' },
+  { href: isHome ? '#temizlik' : '/#temizlik', label: 'Temizlik', id: 'temizlik' },
+  { href: isHome ? '#neden-biz' : '/#neden-biz', label: 'Neden Çelebi', id: 'neden-biz' },
+  { href: isHome ? '#yorumlar' : '/#yorumlar', label: 'Referanslar', id: 'yorumlar' },
+  { href: isHome ? '#yazilar' : '/yazilar', label: 'Son Yazılar', id: 'yazilar' },
+  { href: isHome ? '#iletisim' : '/#iletisim', label: 'İletişim', id: 'iletisim' },
+];
+---
+
+<!-- Fixed Floating Water-Droplet Header (Always on page, crystal clear transparency) -->
+<header id="main-header" class="fixed top-0 inset-x-0 z-50 px-2 sm:px-6 pt-2.5 sm:pt-4 transition-all duration-300">
+  <div class="max-w-7xl mx-auto">
+    <nav
+      id="header-nav-card"
+      class="relative flex items-center justify-between px-3 sm:px-6 py-2 sm:py-2.5 rounded-full transition-all duration-300 ease-out water-droplet-glass"
+      aria-label="Ana Gezinti"
+    >
+      <!-- Water Droplet Specular Sheen on top rim -->
+      <div class="pointer-events-none absolute -top-[1px] inset-x-8 sm:inset-x-12 h-[1px] bg-gradient-to-r from-transparent via-white to-transparent opacity-95" aria-hidden="true"></div>
+
+      <!-- Brand Monogram Badge (Clicking scrolls to top: #site-yonetimi) -->
+      <a href={isHome ? '#site-yonetimi' : '/'} class="flex items-center gap-2.5 sm:gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 rounded-full shrink-0">
+        <div class="relative flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-slate-950 via-slate-900 to-sky-900 text-white font-bold shadow-md transition-all duration-300 group-hover:scale-105 border border-white/50">
+          <span class="text-lg sm:text-xl tracking-tight">Ç</span>
+          <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-emerald-400 rounded-full border-2 border-white shadow-sm animate-pulse" title="7/24 Aktif"></span>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-sm sm:text-base font-bold tracking-tight text-slate-900 leading-tight">
+            Çelebi
+          </span>
+          <span class="text-[9px] sm:text-[11px] font-semibold tracking-wider text-sky-700 uppercase">
+            Yönetim & Temizlik
+          </span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav Links: Şeffaf Açık Kapsül İçinde Sadece Geçtiği Yeri Siyah Yapan Akıcı Pil -->
+      <div
+        id="nav-pill-track"
+        class="hidden md:flex items-center relative p-1 rounded-full bg-slate-100/80 border border-slate-200/90 shadow-inner backdrop-blur-md"
+      >
+        <!-- The Floating Sliding Pill that glides left and right as you scroll: ONLY the active pill is black! -->
+        <div
+          id="sliding-indicator"
+          class="absolute top-1 bottom-1 rounded-full bg-slate-900 shadow-md transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-none"
+          style="opacity: 0; left: 0; width: 0;"
+          aria-hidden="true"
+        ></div>
+
+        {navLinks.map((link) => (
+          <a
+            href={link.href}
+            data-nav-section={link.id}
+            class="nav-anchor relative z-10 px-3 lg:px-4 py-1.5 text-xs font-semibold rounded-full text-slate-700 hover:text-slate-950 transition-all duration-150 cursor-pointer select-none"
+          >
+            <span class="relative z-10">{link.label}</span>
+          </a>
+        ))}
+      </div>
+
+      <!-- Action Area -->
+      <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+        <!-- Direct WhatsApp Pill -->
+        <a
+          href={`https://wa.me/${COMPANY_INFO.whatsapp}?text=${encodeURIComponent('Merhaba, site yönetimi ve temizlik hizmetleriniz hakkında bilgi ve teklif almak istiyorum.')}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hidden xl:inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold text-emerald-800 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-400/40 rounded-full transition-all duration-150 subtle-tap shadow-sm"
+          aria-label="WhatsApp üzerinden yazın"
+        >
+          <svg class="w-3.5 h-3.5 fill-current text-emerald-600" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.18-2.587-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.106.005.249-.04.39.299.144.347.491 1.2.534 1.288.043.087.072.188.014.303-.058.116-.087.188-.173.289l-.26.302c-.087.087-.179.182-.077.357.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.174.086.275.072.376-.043.101-.116.433-.506.549-.679.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.043.073.043.419-.101.824z"/>
+          </svg>
+          <span>WhatsApp</span>
+        </a>
+
+        <!-- Hızlı Teklif Al CTA Button -->
+        <a
+          href={isHome ? '#iletisim' : '/#iletisim'}
+          class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-sky-600 to-cyan-600 hover:from-sky-500 hover:to-cyan-500 rounded-full shadow-md shadow-sky-600/20 transition-all duration-150 subtle-tap"
+        >
+          <span>Hızlı Teklif</span>
+          <svg class="w-3.5 h-3.5 stroke-current stroke-2 fill-none" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+
+        <!-- Mobile Drawer Toggle -->
+        <button
+          id="mobile-menu-toggle"
+          type="button"
+          class="md:hidden p-2 text-slate-700 hover:text-slate-950 hover:bg-white/60 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600"
+          aria-expanded="false"
+          aria-controls="mobile-nav-panel"
+          aria-label="Menüyü Aç"
+        >
+          <svg id="hamburger-icon" class="w-5 h-5 stroke-current stroke-2" viewBox="0 0 24 24" fill="none">
+            <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/>
+          </svg>
+          <svg id="close-icon" class="w-5 h-5 stroke-current stroke-2 hidden" viewBox="0 0 24 24" fill="none">
+            <path d="M6 18L18 6M6 6l12 12" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Mobile Drawer -->
+    <div
+      id="mobile-nav-panel"
+      class="md:hidden hidden mt-2 p-5 rounded-3xl bg-white/95 border border-slate-200/90 shadow-2xl backdrop-blur-2xl transition-all duration-300 text-slate-900"
+    >
+      <div class="flex flex-col gap-1.5">
+        {navLinks.map((link) => (
+          <a
+            href={link.href}
+            data-nav-section={link.id}
+            class="mobile-nav-link px-4 py-3 text-sm font-semibold text-slate-700 hover:text-slate-950 hover:bg-slate-100 rounded-2xl transition-all cursor-pointer flex items-center justify-between"
+          >
+            <span>{link.label}</span>
+            <span class="text-xs text-sky-600">→</span>
+          </a>
+        ))}
+        <div class="pt-3 mt-2 border-t border-slate-200/80 flex flex-col gap-2">
+          <a
+            href={`tel:${COMPANY_INFO.phone}`}
+            class="flex items-center justify-center gap-2 px-4 py-3 text-xs font-bold text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-2xl shadow-sm transition-all"
+          >
+            <svg class="w-4 h-4 stroke-current stroke-2 fill-none text-sky-600" viewBox="0 0 24 24">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+            <span>{COMPANY_INFO.phoneFormatted} (Hemen Ara)</span>
+          </a>
+          <a
+            href={`https://wa.me/${COMPANY_INFO.whatsapp}?text=${encodeURIComponent('Merhaba, site yönetimi ve temizlik hizmetleriniz hakkında bilgi ve teklif almak istiyorum.')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex items-center justify-center gap-2 px-4 py-3 text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-300 rounded-2xl shadow-sm hover:bg-emerald-100 transition-all"
+          >
+            <span>WhatsApp ile Danışın</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Spacer to preserve CLS = 0 -->
+<div class="h-20 sm:h-24" aria-hidden="true"></div>
+
+<!-- Highly Accurate Scrollspy & Programmatic Smooth Scroll Coordinator -->
+<script is:inline>
+  (() => {
+    function initScrollCoordinator() {
+      const navCard = document.getElementById('header-nav-card');
+      const track = document.getElementById('nav-pill-track');
+      const indicator = document.getElementById('sliding-indicator');
+      const navAnchors = document.querySelectorAll('#nav-pill-track .nav-anchor');
+      const toggleBtn = document.getElementById('mobile-menu-toggle');
+      const mobilePanel = document.getElementById('mobile-nav-panel');
+      const hamburger = document.getElementById('hamburger-icon');
+      const closeIcon = document.getElementById('close-icon');
+      const mobileLinks = document.querySelectorAll('.mobile-nav-link');
+
+      if (!navCard) return;
+
+      const isHomePage = window.location.pathname === '/' || window.location.pathname === '';
+      const sectionIds = ['site-yonetimi', 'temizlik', 'neden-biz', 'yorumlar', 'yazilar', 'iletisim'];
+
+      let activeAnchor = null;
+      let isUserClicking = false;
+      let clickTimeout = null;
+
+      // Get true absolute document offset top of an element
+      function getElementOffsetTop(el) {
+        let top = 0;
+        let curr = el;
+        while (curr) {
+          top += curr.offsetTop || 0;
+          curr = curr.offsetParent;
+        }
+        return top;
+      }
+
+      // Move sliding pill with Apple spring easing and activate soft, eyes-friendly white text
+      function moveIndicator(targetEl) {
+        if (!track || !indicator) return;
+        if (!targetEl) {
+          indicator.style.opacity = '0';
+          return;
+        }
+        const trackRect = track.getBoundingClientRect();
+        const targetRect = targetEl.getBoundingClientRect();
+
+        if (trackRect.width === 0 || targetRect.width === 0) return;
+
+        const leftOffset = targetRect.left - trackRect.left;
+        indicator.style.left = `${leftOffset}px`;
+        indicator.style.width = `${targetRect.width}px`;
+        indicator.style.opacity = '1';
+
+        navAnchors.forEach((a) => {
+          if (a === targetEl) {
+            a.classList.add('active-nav-glow');
+            a.classList.remove('text-slate-700');
+          } else {
+            a.classList.remove('active-nav-glow');
+            a.classList.add('text-slate-700');
+          }
+        });
+        activeAnchor = targetEl;
+      }
+
+      // Programmatic Smooth Scroll Handler
+      function scrollToSection(targetId) {
+        const targetEl = document.getElementById(targetId);
+        if (!targetEl) return false;
+
+        isUserClicking = true;
+        clearTimeout(clickTimeout);
+
+        const headerHeight = document.getElementById('main-header')?.offsetHeight || 80;
+        
+        // If target is site-yonetimi (top of page), scroll to top 0
+        const targetTop = targetId === 'site-yonetimi' 
+          ? 0 
+          : Math.max(0, getElementOffsetTop(targetEl) - headerHeight + 8);
+
+        window.scrollTo({
+          top: targetTop,
+          behavior: 'smooth'
+        });
+
+        // Highlight target link immediately in the header
+        const matchingAnchor = document.querySelector(`.nav-anchor[data-nav-section="${targetId}"]`);
+        if (matchingAnchor) {
+          moveIndicator(matchingAnchor);
+        }
+
+        // Update mobile drawer highlights
+        mobileLinks.forEach((m) => {
+          if (m.getAttribute('data-nav-section') === targetId) {
+            m.classList.add('bg-slate-900', 'text-white', 'font-bold');
+            m.classList.remove('text-slate-700');
+          } else {
+            m.classList.remove('bg-slate-900', 'text-white', 'font-bold');
+            m.classList.add('text-slate-700');
+          }
+        });
+
+        // Resume scrollspy after smooth scroll animation completes
+        clickTimeout = setTimeout(() => {
+          isUserClicking = false;
+        }, 850);
+
+        return true;
+      }
+
+      // If user starts manual wheel or touch during click transition, cancel click lock immediately
+      window.addEventListener('wheel', () => { isUserClicking = false; }, { passive: true });
+      window.addEventListener('touchmove', () => { isUserClicking = false; }, { passive: true });
+
+      // Click handler on track anchors (on home page)
+      if (isHomePage) {
+        navAnchors.forEach((a) => {
+          a.addEventListener('click', (e) => {
+            const href = a.getAttribute('href');
+            if (href && href.startsWith('#')) {
+              e.preventDefault();
+              const targetId = href.substring(1);
+              if (scrollToSection(targetId)) {
+                history.pushState(null, null, href);
+              }
+            }
+          });
+        });
+
+        // Universal click handler for any other in-page hash links on home page
+        document.querySelectorAll('a[href^="#"]').forEach((a) => {
+          if (a.closest('#nav-pill-track')) return; // already handled
+          a.addEventListener('click', (e) => {
+            const href = a.getAttribute('href');
+            if (href && href.startsWith('#') && href.length > 1) {
+              const targetId = href.substring(1);
+              const targetEl = document.getElementById(targetId);
+              if (targetEl) {
+                e.preventDefault();
+                scrollToSection(targetId);
+                history.pushState(null, null, href);
+              }
+            }
+          });
+        });
+
+        // Click handler on mobile links
+        mobileLinks.forEach((m) => {
+          m.addEventListener('click', (e) => {
+            const href = m.getAttribute('href');
+            if (href && href.startsWith('#')) {
+              const targetId = href.substring(1);
+              if (scrollToSection(targetId)) {
+                e.preventDefault();
+                if (mobilePanel) mobilePanel.classList.add('hidden');
+                if (hamburger) hamburger.classList.remove('hidden');
+                if (closeIcon) closeIcon.classList.add('hidden');
+                if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
+                history.pushState(null, null, href);
+              }
+            }
+          });
+        });
+      }
+
+      let ticking = false;
+
+      // Robust Scrollspy calculating deepest visible section
+      function updateScrollspy() {
+        const scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+
+        // Header glass visual density
+        if (scrollY > 20) {
+          navCard.classList.remove('water-droplet-glass');
+          navCard.classList.add('water-droplet-glass-scrolled');
+        } else {
+          navCard.classList.remove('water-droplet-glass-scrolled');
+          navCard.classList.add('water-droplet-glass');
+        }
+
+        if (!isHomePage) {
+          // On non-homepage, highlight active page or first
+          if (window.location.pathname.startsWith('/yazilar')) {
+            const yazilarAnchor = document.querySelector(`.nav-anchor[data-nav-section="yazilar"]`);
+            if (yazilarAnchor && yazilarAnchor !== activeAnchor) {
+              moveIndicator(yazilarAnchor);
+            }
+          }
+          return;
+        }
+
+        if (isUserClicking) return;
+
+        const headerHeight = document.getElementById('main-header')?.offsetHeight || 80;
+        const triggerPoint = scrollY + headerHeight + 120;
+
+        let currentId = 'site-yonetimi';
+
+        // Check if user is near the bottom of the page
+        const isBottom = (window.innerHeight + scrollY) >= (document.documentElement.scrollHeight - 120);
+
+        if (isBottom) {
+          currentId = 'iletisim';
+        } else if (scrollY < 180) {
+          currentId = 'site-yonetimi';
+        } else {
+          // Check from the bottom-most section back to the top
+          for (let i = sectionIds.length - 1; i >= 0; i--) {
+            const id = sectionIds[i];
+            const el = document.getElementById(id);
+            if (el) {
+              const top = getElementOffsetTop(el);
+              if (triggerPoint >= top) {
+                currentId = id;
+                break;
+              }
+            }
+          }
+        }
+
+        // Update desktop sliding indicator
+        const matchingAnchor = document.querySelector(`.nav-anchor[data-nav-section="${currentId}"]`);
+        if (matchingAnchor && matchingAnchor !== activeAnchor) {
+          moveIndicator(matchingAnchor);
+        }
+
+        // Update mobile links active state
+        mobileLinks.forEach((m) => {
+          if (m.getAttribute('data-nav-section') === currentId) {
+            m.classList.add('bg-slate-900', 'text-white', 'font-bold');
+            m.classList.remove('text-slate-700');
+          } else {
+            m.classList.remove('bg-slate-900', 'text-white', 'font-bold');
+            m.classList.add('text-slate-700');
+          }
+        });
+      }
+
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            updateScrollspy();
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }, { passive: true });
+
+      // Handle window resize so sliding pill keeps exact position
+      window.addEventListener('resize', () => {
+        if (activeAnchor) {
+          moveIndicator(activeAnchor);
+        }
+      }, { passive: true });
+
+      // Run on initial load
+      setTimeout(updateScrollspy, 50);
+      setTimeout(updateScrollspy, 250);
+
+      // Mobile menu toggle
+      if (toggleBtn && mobilePanel) {
+        toggleBtn.addEventListener('click', () => {
+          const isOpen = !mobilePanel.classList.contains('hidden');
+          if (isOpen) {
+            mobilePanel.classList.add('hidden');
+            hamburger.classList.remove('hidden');
+            closeIcon.classList.add('hidden');
+            toggleBtn.setAttribute('aria-expanded', 'false');
+          } else {
+            mobilePanel.classList.remove('hidden');
+            hamburger.classList.add('hidden');
+            closeIcon.classList.remove('hidden');
+            toggleBtn.setAttribute('aria-expanded', 'true');
+          }
+        });
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initScrollCoordinator);
+    } else {
+      initScrollCoordinator();
+    }
+    window.addEventListener('load', initScrollCoordinator);
+  })();
+</script>

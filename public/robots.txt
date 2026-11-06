@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://www.celebiyonetim.com/sitemap.xml
+

@@ -1,0 +1,82 @@
+---
+import { COMPANY_INFO } from '@/lib/fallback-data';
+
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="bg-slate-950 text-slate-300 pt-16 pb-12 border-t border-slate-800">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-slate-800">
+      
+      <!-- Brand & Mission Column -->
+      <div class="lg:col-span-2 flex flex-col gap-4">
+        <div class="flex items-center gap-3">
+          <div class="flex items-center justify-center w-10 h-10 rounded-full bg-white text-slate-950 font-bold shadow-sm">
+            <span class="text-xl">Ç</span>
+          </div>
+          <span class="text-xl font-bold tracking-tight text-white">Çelebi Yönetim & Temizlik</span>
+        </div>
+        <p class="text-sm text-slate-400 max-w-sm leading-relaxed">
+          Toplu yaşam alanlarında Kat Mülkiyeti Kanunu'na tam uyumlu, şeffaf site yönetimi ve SGK güvenceli kadromuzla kurumsal hijyen çözümleri sunuyoruz.
+        </p>
+        <div class="flex items-center gap-3 pt-2">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-950/60 text-emerald-300 border border-emerald-800/60">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            7/24 Acil Destek Hattı Aktif
+          </span>
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-slate-900 text-slate-300 border border-slate-800">
+            SGK'lı Kadro
+          </span>
+        </div>
+      </div>
+
+      <!-- Quick Nav: Site Yönetimi -->
+      <div class="flex flex-col gap-3">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-sky-400">Site Yönetimi</h3>
+        <ul class="flex flex-col gap-2.5 text-xs text-slate-400">
+          <li><a href="/#site-yonetimi" class="hover:text-white transition-colors">Mali & Finansal Şeffaflık</a></li>
+          <li><a href="/#site-yonetimi" class="hover:text-white transition-colors">KMK Hukuki Danışmanlık</a></li>
+          <li><a href="/#site-yonetimi" class="hover:text-white transition-colors">Asansör & Tesisat Bakımı</a></li>
+          <li><a href="/#site-yonetimi" class="hover:text-white transition-colors">Bina Görevlisi SGK Bordrolama</a></li>
+          <li><a href="/#site-yonetimi" class="hover:text-white transition-colors">Yıllık İşletme Projesi</a></li>
+        </ul>
+      </div>
+
+      <!-- Quick Nav: Temizlik -->
+      <div class="flex flex-col gap-3">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-400">Temizlik Hizmetleri</h3>
+        <ul class="flex flex-col gap-2.5 text-xs text-slate-400">
+          <li><a href="/#temizlik" class="hover:text-white transition-colors">Ofis ve Ticari Alan Temizliği</a></li>
+          <li><a href="/#temizlik" class="hover:text-white transition-colors">Dış Cephe & Cam Yıkama (Vinçli)</a></li>
+          <li><a href="/#temizlik" class="hover:text-white transition-colors">İnşaat ve Tadilat Sonrası</a></li>
+          <li><a href="/#temizlik" class="hover:text-white transition-colors">Apartman Merdiven Hijyeni</a></li>
+          <li><a href="/#temizlik" class="hover:text-white transition-colors">Endüstriyel Zemin Bakımı</a></li>
+        </ul>
+      </div>
+
+      <!-- Sektörel Rehber & İletişim -->
+      <div class="flex flex-col gap-3">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-white">Rehber & İletişim</h3>
+        <ul class="flex flex-col gap-2.5 text-xs text-slate-400">
+          <li><a href="/yazilar" class="hover:text-white transition-colors">Sektörel Yazılar & Rehber</a></li>
+          <li><a href="/#neden-biz" class="hover:text-white transition-colors">Neden Çelebi?</a></li>
+          <li><a href="/#yorumlar" class="hover:text-white transition-colors">Müşteri Yorumları</a></li>
+          <li><a href="/#iletisim" class="hover:text-white transition-colors font-bold text-sky-400">Hemen Fiyat Teklifi Al</a></li>
+          <li class="pt-2 text-slate-500">
+            {COMPANY_INFO.phoneFormatted}
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      <p>© {currentYear} {COMPANY_INFO.name}. Tüm hakları saklıdır.</p>
+      <div class="flex items-center gap-6">
+        <a href="/yazilar" class="hover:text-white transition-colors">Sektörel Makaleler</a>
+        <a href="/sitemap.xml" class="hover:text-white transition-colors">Site Haritası (XML)</a>
+      </div>
+    </div>
+  </div>
+</footer>

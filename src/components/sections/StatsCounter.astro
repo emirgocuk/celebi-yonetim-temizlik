@@ -1,0 +1,114 @@
+---
+const stats = [
+  {
+    target: 185,
+    suffix: '+',
+    label: 'Yönetilen Apartman & Site',
+    detail: 'Düzenli mali ve idari takip altında',
+    iconColor: 'bg-sky-500/10 text-sky-600 border-sky-200',
+  },
+  {
+    target: 3450,
+    suffix: '+',
+    label: 'Aktif Bağımsız Bölüm (Daire)',
+    detail: 'Huzurla ikamet eden sakinler',
+    iconColor: 'bg-emerald-500/10 text-emerald-600 border-emerald-200',
+  },
+  {
+    target: 98,
+    decimals: 4,
+    prefix: '%',
+    label: 'Zamanında Aidat Tahsilatı',
+    detail: 'Online banka & otomatik bildirimle',
+    iconColor: 'bg-cyan-500/10 text-cyan-600 border-cyan-200',
+  },
+  {
+    target: 28,
+    suffix: '+',
+    label: 'SGK Kadrolu Temizlik Uzmanı',
+    detail: 'Eğitimli, adli sicil kayıtlı personel',
+    iconColor: 'bg-amber-500/10 text-amber-600 border-amber-200',
+  },
+];
+---
+
+<section class="py-12 sm:py-16 bg-white relative">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="p-6 sm:p-10 rounded-3xl bg-gradient-to-br from-slate-50 via-sky-50/30 to-slate-50 border border-slate-200/90 shadow-sm">
+      
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+        {stats.map((stat) => (
+          <div class="flex flex-col items-center sm:items-start text-center sm:text-left">
+            <div class="flex items-center gap-1 text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight tabular-nums mb-2">
+              {stat.prefix && <span class="text-sky-600">{stat.prefix}</span>}
+              <span
+                class="counter-value font-black"
+                data-target={stat.target}
+                data-decimals={stat.decimals || 0}
+              >
+                0
+              </span>
+              {stat.decimals ? <span class="text-sky-600 font-bold">.{stat.decimals}</span> : null}
+              {stat.suffix && <span class="text-sky-600 font-bold">{stat.suffix}</span>}
+            </div>
+            
+            <div class="text-sm font-bold text-slate-900 leading-snug mb-1">
+              {stat.label}
+            </div>
+            <div class="text-xs text-slate-500">
+              {stat.detail}
+            </div>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Lightweight Incrementing Counter Micro-script (Zero libraries, 60fps) -->
+<script is:inline>
+  (() => {
+    const counters = document.querySelectorAll('.counter-value');
+    if (!counters.length) return;
+
+    let hasRun = false;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !hasRun) {
+          hasRun = true;
+          counters.forEach((counter) => {
+            const target = parseInt(counter.getAttribute('data-target') || '0', 10);
+            const duration = 1800; // 1.8s smooth animation
+            const startTimestamp = performance.now();
+
+            const step = (now) => {
+              const elapsed = now - startTimestamp;
+              const progress = Math.min(elapsed / duration, 1);
+              // Ease-out cubic: 1 - Math.pow(1 - progress, 3)
+              const easeProgress = 1 - Math.pow(1 - progress, 3);
+              const current = Math.floor(easeProgress * target);
+
+              counter.innerText = current.toLocaleString('tr-TR');
+
+              if (progress < 1) {
+                window.requestAnimationFrame(step);
+              } else {
+                counter.innerText = target.toLocaleString('tr-TR');
+              }
+            };
+
+            window.requestAnimationFrame(step);
+          });
+        }
+      });
+    }, { threshold: 0.3 });
+
+    const firstCounter = counters[0];
+    if (firstCounter) {
+      observer.observe(firstCounter);
+    }
+  })();
+</script>
+

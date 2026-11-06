@@ -1,0 +1,46 @@
+---
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import SEO from '@/components/seo/SEO.astro';
+import '@/styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+}
+
+const { title, description, canonical, ogImage, ogType } = Astro.props;
+---
+
+<!doctype html>
+<html lang="tr">
+  <head>
+    <SEO
+      title={title}
+      description={description}
+      canonical={canonical}
+      ogImage={ogImage}
+      ogType={ogType}
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    
+    <!-- DNS prefetch for performance -->
+    <link rel="dns-prefetch" href="https://wa.me" />
+  </head>
+  <body class="bg-white text-slate-900 selection:bg-sky-500 selection:text-white flex flex-col min-h-screen">
+    <!-- Apple Floating Header -->
+    <Header />
+
+    <!-- Main Content Container -->
+    <main id="main-content" class="flex-grow">
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <Footer />
+  </body>
+</html>
+

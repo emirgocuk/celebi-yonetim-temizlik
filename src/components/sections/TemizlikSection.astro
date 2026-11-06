@@ -1,0 +1,122 @@
+---
+const temizlikCards = [
+  {
+    id: 'ofis',
+    title: 'Ofis ve Ticari Alan Temizliği',
+    image: '/assets/images/office-cleaning.jpg',
+    badge: 'Sözleşmeli Kurumsal',
+    badgeColor: 'bg-sky-100 text-sky-800 border-sky-200',
+    desc: 'Mesai öncesi veya mesai sonrası; çalışma masaları, teknolojik ekipman silimi, toplantı odaları ve ıslak hacimler.',
+    highlight: 'Renk kodlu mikrofiber çapraz bulaşma önleyici sistem.',
+  },
+  {
+    id: 'dis-cephe',
+    title: 'Dış Cephe ve Yüksek Cam Yıkama',
+    image: '/assets/images/window-cleaning.jpg',
+    badge: 'İSG & Sepetli Vinçli',
+    badgeColor: 'bg-cyan-100 text-cyan-800 border-cyan-200',
+    desc: 'Plazalar ve rezidanslar için saf su (osmos) teknolojisiyle lekesiz cam, kompozit ve alüminyum yüzey temizliği.',
+    highlight: 'Yüksekte çalışma belgeli, IRATA eğitimli ve sigortalı kadro.',
+  },
+  {
+    id: 'insaat-sonrasi',
+    title: 'İnşaat ve Tadilat Sonrası Temizlik',
+    image: '/assets/images/construction-clean.jpg',
+    badge: 'Anahtar Teslim',
+    badgeColor: 'bg-amber-100 text-amber-800 border-amber-200',
+    desc: 'Derz dolgu, boya artıkları ve harç kalıntılarının yüzeyleri çizmeden endüstriyel makinelerle arındırılması.',
+    highlight: 'PVC bant sökümü ve zemin cilalama dahil anahtar teslim.',
+  },
+  {
+    id: 'merdiven',
+    title: 'Apartman Merdiven & Ortak Alan Hijyeni',
+    image: '/assets/images/residential-hall.jpg',
+    badge: 'Haftalık Düzenli',
+    badgeColor: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+    desc: 'Asansör kabini, aynalar, tırabzanlar, posta kutuları ve bina giriş kapısının düzenli parfümlü dezenfeksiyonu.',
+    highlight: 'Sabit gün ve saatte yönetici onaylı imza formuyla takip.',
+  },
+];
+---
+
+<section id="temizlik" class="scroll-mt-24 py-20 sm:py-28 bg-gradient-to-b from-white via-slate-50/70 to-white border-t border-slate-200 relative">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    
+    <!-- Section Header -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end mb-16">
+      <div class="lg:col-span-8">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 mb-3">
+          <span>A+ Hijyen & Endüstriyel Donanım</span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight mb-4">
+          Kurumsal & Endüstriyel Temizlik Hizmetleri
+        </h2>
+        <p class="text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
+          Çalışma alanlarınızın kurumsal prestiji ve ortak yaşam alanlarınızın sağlığı için SGK belgeli kadro ve endüstriyel hijyen standartları.
+        </p>
+      </div>
+
+      <div class="lg:col-span-4 flex lg:justify-end">
+        <a
+          href="#iletisim"
+          class="inline-flex items-center gap-2 px-6 py-3 text-xs font-bold text-white bg-emerald-700 hover:bg-emerald-800 rounded-2xl transition-all duration-150 subtle-tap shadow-md"
+        >
+          <span>Temizlik Teklifi Alın</span>
+          <span>→</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 4 Visual Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {temizlikCards.map((card) => (
+        <div class="bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col justify-between group">
+          
+          <div>
+            <!-- Service Photo -->
+            <div class="relative h-48 overflow-hidden">
+              <img
+                src={card.image}
+                alt={card.title}
+                width="400"
+                height="260"
+                class="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-108"
+                loading="lazy"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent"></div>
+              
+              <span class={`absolute top-3 left-3 px-2.5 py-1 rounded-full text-[11px] font-bold border backdrop-blur-md bg-white/90 ${card.badgeColor}`}>
+                {card.badge}
+              </span>
+            </div>
+
+            <!-- Content Area -->
+            <div class="p-5">
+              <h3 class="text-base font-bold text-slate-900 mb-2 group-hover:text-emerald-700 transition-colors leading-snug">
+                {card.title}
+              </h3>
+              <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                {card.desc}
+              </p>
+              <div class="p-2.5 rounded-xl bg-slate-50 text-[11px] text-slate-700 font-semibold border border-slate-100">
+                {card.highlight}
+              </div>
+            </div>
+          </div>
+
+          <div class="p-5 pt-0">
+            <a
+              href="#iletisim"
+              class="w-full inline-flex items-center justify-center py-2.5 text-xs font-bold text-slate-900 bg-slate-100 hover:bg-slate-900 hover:text-white rounded-xl transition-all duration-150 subtle-tap"
+            >
+              Fiyat Teklifi İste
+            </a>
+          </div>
+
+        </div>
+      ))}
+    </div>
+
+  </div>
+</section>
+

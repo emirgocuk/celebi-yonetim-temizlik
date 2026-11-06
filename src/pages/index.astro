@@ -1,0 +1,43 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Hero from '@/components/sections/Hero.astro';
+import StatsCounter from '@/components/sections/StatsCounter.astro';
+import SiteYonetimiSection from '@/components/sections/SiteYonetimiSection.astro';
+import TemizlikSection from '@/components/sections/TemizlikSection.astro';
+import WhyUs from '@/components/sections/WhyUs.astro';
+import Reviews from '@/components/sections/Reviews.astro';
+import SeoContentHub from '@/components/sections/SeoContentHub.astro';
+import QuoteForm from '@/components/sections/QuoteForm.astro';
+import Faq from '@/components/sections/Faq.astro';
+import { COMPANY_INFO } from '@/lib/fallback-data';
+
+const title = `${COMPANY_INFO.name} | Profesyonel Site Yönetimi ve Kurumsal Temizlik`;
+const description = 'Kat Mülkiyeti Kanunu uzmanı şeffaf site yönetimi, banka onaylı online aidat tahsilatı ve SGK güvenceli personelle A+ kurumsal temizlik hizmetleri.';
+---
+
+<BaseLayout title={title} description={description}>
+  <!-- 1. #site-yonetimi: Profesyonel Site ve Apartman Yönetimi (Hero + Apartman Sayacı + 4 Güvence) -->
+  <div id="site-yonetimi" class="scroll-mt-24">
+    <Hero />
+    <StatsCounter />
+    <SiteYonetimiSection />
+  </div>
+
+  <!-- 2. #temizlik: Kurumsal & Endüstriyel Temizlik Hizmetleri -->
+  <TemizlikSection />
+
+  <!-- 5. #neden-biz: Geleneksel vs. Çelebi Kurumsal Standardı Karşılaştırması -->
+  <WhyUs />
+
+  <!-- 6. #yorumlar: Doğrulanmış Müşteri ve Site Yöneticisi Değerlendirmeleri -->
+  <Reviews />
+
+  <!-- 7. #yazilar: Son Yazılar & Google SEO Otorite Rehberi -->
+  <SeoContentHub />
+
+  <!-- 8. #iletisim: Hızlı Fiyat Teklifi ve İletişim Formu -->
+  <QuoteForm />
+
+  <!-- 9. #sss: İletişim Formunun Altında Yer Alan Sıkça Sorulan Sorular -->
+  <Faq />
+</BaseLayout>

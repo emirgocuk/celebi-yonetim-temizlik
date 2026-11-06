@@ -1,0 +1,107 @@
+---
+import { COMPANY_INFO } from '@/lib/fallback-data';
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  noindex?: boolean;
+}
+
+const {
+  title = `${COMPANY_INFO.name} | Profesyonel Site Yönetimi ve Kurumsal Temizlik`,
+  description = COMPANY_INFO.description,
+  canonical = Astro.url.href,
+  ogImage = '/assets/og-cover.png',
+  ogType = 'website',
+  noindex = false,
+} = Astro.props;
+
+const siteUrl = Astro.site ? Astro.site.origin : 'https://www.celebiyonetim.com';
+const fullCanonical = new URL(canonical, siteUrl).href;
+const fullOgImage = new URL(ogImage, siteUrl).href;
+
+// Google LocalBusiness & Service JSON-LD Schema
+const schemaData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': ['LocalBusiness', 'ProfessionalService'],
+      '@id': `${siteUrl}/#organization`,
+      name: COMPANY_INFO.name,
+      url: siteUrl,
+      description: COMPANY_INFO.description,
+      telephone: COMPANY_INFO.phone,
+      email: COMPANY_INFO.email,
+      priceRange: '$$',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: COMPANY_INFO.address,
+        addressCountry: 'TR',
+      },
+      openingHoursSpecification: [
+        {
+          '@type': 'OpeningHoursSpecification',
+          dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+          opens: '08:30',
+          closes: '19:00',
+        },
+      ],
+      areaServed: {
+        '@type': 'AdministrativeArea',
+        name: 'Türkiye',
+      },
+      sameAs: [],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${siteUrl}/#website`,
+      url: siteUrl,
+      name: COMPANY_INFO.name,
+      publisher: { '@id': `${siteUrl}/#organization` },
+      inLanguage: 'tr-TR',
+    },
+  ],
+};
+---
+
+<!-- Core Meta Tags -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={fullCanonical} />
+
+<!-- Robots & Indexing -->
+{noindex ? (
+  <meta name="robots" content="noindex, nofollow" />
+) : (
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+)}
+
+<!-- Mobile Theme & Color -->
+<meta name="theme-color" content="#FFFFFF" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+<!-- OpenGraph / Facebook -->
+<meta property="og:type" content={ogType} />
+<meta property="og:url" content={fullCanonical} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={fullOgImage} />
+<meta property="og:site_name" content={COMPANY_INFO.name} />
+<meta property="og:locale" content="tr_TR" />
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content={fullCanonical} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={fullOgImage} />
+
+<!-- Structured Data (Schema.org JSON-LD) -->
+<script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
+

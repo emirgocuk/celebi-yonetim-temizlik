@@ -1,0 +1,192 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { ARTICLES_DATA } from '@/lib/articles-data';
+import { COMPANY_INFO } from '@/lib/fallback-data';
+
+const title = 'Sektörel Yazılar & Rehber | Çelebi Yönetim ve Temizlik';
+const description = 'Kat Mülkiyeti Kanunu (KMK) mevzuatı, aidat tahsilatı, apartman yönetimi ve profesyonel temizlik standartları üzerine uzman rehber makaleleri.';
+
+const categories = ['Tümü', 'Site Yönetimi', 'Hukuk & İcra', 'Kurumsal Temizlik', 'İnşaat Temizliği', 'Dış Cephe & Vinç', 'Apartman Hijyeni'];
+---
+
+<BaseLayout title={title} description={description}>
+  <!-- Page Header -->
+  <section class="pt-10 pb-14 sm:pt-16 sm:pb-20 bg-gradient-to-b from-sky-50/60 via-white to-slate-50 border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-xs text-slate-500 mb-6" aria-label="Ekmek Kırıntısı">
+        <a href="/" class="hover:text-sky-700 transition-colors">Ana Sayfa</a>
+        <span>/</span>
+        <span class="text-slate-900 font-bold">Sektörel Yazılar & Rehber</span>
+      </nav>
+
+      <div class="max-w-3xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-sky-100 text-sky-800 border border-sky-200 mb-4">
+          <span>Yasal Mevzuat & Teknik Hijyen Bilgi Bankası</span>
+        </div>
+        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight mb-4">
+          Sektörel Yazılar & Uzman Rehberi
+        </h1>
+        <p class="text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
+          Kat Mülkiyeti Kanunu, aidat tahsilat protokolleri, iş sağlığı ve güvenliği ile kurumsal hijyen uygulamaları hakkında rehber makalelerimizi inceleyin.
+        </p>
+      </div>
+
+      <!-- Category Filter Pills (Pure CSS / Client Filter) -->
+      <div class="flex items-center gap-2 overflow-x-auto pt-8 pb-2 no-scrollbar">
+        {categories.map((cat, idx) => (
+          <button
+            type="button"
+            data-category={cat}
+            class={`category-filter-btn shrink-0 px-4 py-2 text-xs font-bold rounded-full border transition-all cursor-pointer ${
+              idx === 0
+                ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
+                : 'bg-white text-slate-700 border-slate-200 hover:border-slate-400 hover:bg-slate-50'
+            }`}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Articles Grid -->
+  <section class="py-16 sm:py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div id="articles-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {ARTICLES_DATA.map((article) => (
+          <article
+            data-article-category={article.category}
+            class="article-card rounded-3xl bg-white border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group"
+          >
+            <div>
+              <!-- Article Cover Photo -->
+              <div class="relative h-52 overflow-hidden bg-slate-100">
+                <img
+                  src={article.image}
+                  alt={article.title}
+                  width="500"
+                  height="300"
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent"></div>
+                <span class={`absolute top-3 left-3 px-2.5 py-1 rounded-full text-[11px] font-bold border backdrop-blur-md bg-white/95 ${article.tagColor}`}>
+                  {article.tag}
+                </span>
+                <span class="absolute bottom-3 right-3 px-2 py-0.5 rounded-md text-[10px] font-semibold text-white/90 bg-slate-900/60 backdrop-blur-md">
+                  {article.readTime}
+                </span>
+              </div>
+
+              <!-- Article Content Summary -->
+              <div class="p-6">
+                <div class="text-[11px] font-semibold text-sky-700 uppercase tracking-wider mb-2">
+                  {article.category} • {article.publishDate}
+                </div>
+                
+                <h2 class="text-lg font-bold text-slate-900 mb-3 leading-snug group-hover:text-sky-700 transition-colors">
+                  <a href={`/yazilar/${article.slug}`}>
+                    {article.title}
+                  </a>
+                </h2>
+
+                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-4 line-clamp-3">
+                  {article.summary}
+                </p>
+
+                <!-- Key Takeaways Preview -->
+                <div class="space-y-1.5 pt-3 border-t border-slate-100">
+                  {article.keyTakeaways.slice(0, 2).map((takeaway) => (
+                    <div class="flex items-center gap-2 text-[11px] text-slate-600">
+                      <span class="text-emerald-600 font-bold">✓</span>
+                      <span class="truncate">{takeaway}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <!-- Card Bottom Bar -->
+            <div class="p-6 pt-0 border-t border-slate-100 mt-4 flex items-center justify-between">
+              <span class="text-[11px] text-slate-500">{article.author.name}</span>
+              <a
+                href={`/yazilar/${article.slug}`}
+                class="inline-flex items-center gap-1 text-xs font-bold text-sky-700 hover:text-sky-900 transition-colors"
+              >
+                <span>Yazıyı Oku</span>
+                <span>→</span>
+              </a>
+            </div>
+
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Banner for Lead Generation -->
+  <section class="pb-20">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6">
+      <div class="p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-sky-950 text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl">
+        <div class="max-w-xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-sky-900/80 text-sky-300 border border-sky-700 mb-3">
+            <span>Yasal Mevzuat ve Ücretsiz Keşif</span>
+          </div>
+          <h3 class="text-2xl font-bold mb-2">Binanız İçin Özel Hukuki & Mali Danışmanlık Alın</h3>
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            Apartmanınızdaki aidat toplama zorlukları, işletme projesi hazırlığı ve temizlik operasyonları için uzmanlarımızla doğrudan görüşün.
+          </p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3 shrink-0">
+          <a
+            href="/#iletisim"
+            class="px-6 py-3.5 text-xs font-bold text-slate-900 bg-white hover:bg-sky-100 rounded-2xl transition-all duration-150 subtle-tap shadow-lg text-center"
+          >
+            Hızlı Teklif Formu
+          </a>
+          <a
+            href={`https://wa.me/${COMPANY_INFO.whatsapp}?text=${encodeURIComponent('Merhaba, web sitenizdeki yazıları inceledim. Hizmetleriniz hakkında bilgi ve teklif almak istiyorum.')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="px-6 py-3.5 text-xs font-bold text-emerald-300 bg-emerald-950/60 border border-emerald-500/40 hover:bg-emerald-900/60 rounded-2xl transition-all duration-150 subtle-tap text-center"
+          >
+            WhatsApp ile Danışın
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<!-- Client-side Category Filter Script (< 300 bytes) -->
+<script is:inline>
+  (() => {
+    const filterBtns = document.querySelectorAll('.category-filter-btn');
+    const cards = document.querySelectorAll('.article-card');
+
+    filterBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const cat = btn.getAttribute('data-category');
+        
+        filterBtns.forEach((b) => {
+          b.className = 'category-filter-btn shrink-0 px-4 py-2 text-xs font-bold rounded-full border transition-all cursor-pointer bg-white text-slate-700 border-slate-200 hover:border-slate-400 hover:bg-slate-50';
+        });
+        btn.className = 'category-filter-btn shrink-0 px-4 py-2 text-xs font-bold rounded-full border transition-all cursor-pointer bg-slate-900 text-white border-slate-900 shadow-sm';
+
+        cards.forEach((card) => {
+          const cardCat = card.getAttribute('data-article-category');
+          if (cat === 'Tümü' || cardCat === cat) {
+            card.classList.remove('hidden');
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+      });
+    });
+  })();
+</script>
+

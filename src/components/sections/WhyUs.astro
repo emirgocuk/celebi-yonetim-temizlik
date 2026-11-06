@@ -1,0 +1,116 @@
+---
+const comparisons = [
+  {
+    feature: 'Mali Şeffaflık & Aidat Takibi',
+    traditional: 'Elden toplanan aidatlar, kaybolan makbuzlar ve belirsiz kasa harcamaları.',
+    celebi: 'Banka entegrasyonlu online tahsilat sistemi ve her ay panoya asılan onaylı hesap dökümü.',
+  },
+  {
+    feature: 'Temizlik Personeli Güvencesi',
+    traditional: 'Sigortasız, sabit olmayan, iş güvenliği eğitimi almamış geçici işçiler.',
+    celebi: 'Tümü Çelebi bünyesinde SGK’lı, adli sicil kayıtlı ve İSG belgeli kadrolu personel.',
+  },
+  {
+    feature: 'Hukuki Süreçler & İcra Takibi',
+    traditional: 'Komşularla yüz göz olunan tartışmalar ve aylarca ödenmeyen aidat birikimleri.',
+    celebi: 'Kat Mülkiyeti Kanunu uyarınca noter ihtarları ve avukat destekli yasal icra süreci.',
+  },
+  {
+    feature: 'Teknik Arıza ve Bakım',
+    traditional: 'Bozulan asansör için günlerce ulaşılamayan ustalar ve denetimsiz faturalar.',
+    celebi: 'Sözleşmeli yetkili servislerle 7/24 arıza müdahalesi ve kayıt altına alınan bakım karnesi.',
+  },
+];
+---
+
+<section id="neden-biz" class="scroll-mt-24 py-20 sm:py-28 bg-white relative overflow-hidden">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    
+    <!-- Heading -->
+    <div class="max-w-3xl mb-16">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 mb-3">
+        <span>Kurumsal Güvence Standartları</span>
+      </div>
+      <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight mb-4">
+        Amatör yönetim ve kayıt dışı temizliğin risklerini ortadan kaldırıyoruz.
+      </h2>
+      <p class="text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
+        Apartman ve sitelerde yaşanan en büyük huzursuzluk şeffaflık eksikliğidir. Çelebi ile her kuruş ve her operasyon kayıt altındadır.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+      
+      <!-- Comparison Cards List -->
+      <div class="lg:col-span-8 space-y-5">
+        {comparisons.map((item, index) => (
+          <div class="rounded-3xl border border-slate-200 p-6 sm:p-7 bg-slate-50/60 hover:bg-slate-50 hover:border-slate-300 transition-all duration-200 shadow-sm">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="flex items-center justify-center w-7 h-7 rounded-xl bg-gradient-to-tr from-slate-900 to-sky-900 text-white text-xs font-bold tabular-nums shadow-sm">
+                {index + 1}
+              </span>
+              <h3 class="text-base sm:text-lg font-bold text-slate-900">{item.feature}</h3>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
+              <div class="p-4 rounded-2xl bg-white border border-red-100 text-slate-700 shadow-sm">
+                <div class="flex items-center gap-1.5 text-xs font-bold text-red-600 uppercase tracking-wider mb-1.5">
+                  <span class="w-2 h-2 rounded-full bg-red-500"></span>
+                  Geleneksel / Amatör Uygulama
+                </div>
+                <p class="text-slate-600 leading-relaxed">{item.traditional}</p>
+              </div>
+
+              <div class="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200/90 text-slate-800 shadow-sm">
+                <div class="flex items-center gap-1.5 text-xs font-bold text-emerald-800 uppercase tracking-wider mb-1.5">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  Çelebi Kurumsal Standardı
+                </div>
+                <p class="text-slate-800 font-semibold leading-relaxed">{item.celebi}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Right Column: Visual Photo Card with Trust Guarantee -->
+      <div class="lg:col-span-4 space-y-6">
+        <div class="rounded-3xl overflow-hidden border border-slate-200 shadow-xl relative group">
+          <img
+            src="/assets/images/residential-hall.jpg"
+            alt="Düzenli ve Hijyenik Bina Giriş ve Ortak Alanları"
+            width="500"
+            height="350"
+            class="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-105"
+            loading="lazy"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent"></div>
+          
+          <div class="absolute bottom-5 inset-x-5 text-white">
+            <span class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-emerald-500 text-white uppercase tracking-wider mb-2 inline-block">
+              Sıfır Risk Garantisi
+            </span>
+            <div class="text-base font-bold leading-snug">Denetimli ve Sigortalı Personel Protokolü</div>
+            <p class="text-xs text-slate-300 mt-1">İş sağlığı ve güvenliği sertifikalı kadrolu çalışanlar.</p>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-3xl bg-gradient-to-br from-sky-900 via-slate-900 to-slate-950 text-white shadow-xl">
+          <div class="text-xs font-bold text-sky-400 uppercase tracking-wider mb-2">Ücretsiz Danışmanlık</div>
+          <h4 class="text-base font-bold mb-2">Mevcut Yönetim Planınızı Ücretsiz İnceleyelim</h4>
+          <p class="text-xs text-slate-300 leading-relaxed mb-5">
+            Binanızın mevcut aidat ve gider tablosunu inceleyip tasarruf ve verim raporu hazırlıyoruz.
+          </p>
+          <a
+            href="#iletisim"
+            class="w-full inline-flex items-center justify-center py-2.5 px-4 text-xs font-bold text-slate-900 bg-white hover:bg-sky-100 rounded-xl transition-all duration-150 subtle-tap shadow-md"
+          >
+            Ücretsiz Keşif Talep Edin
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>

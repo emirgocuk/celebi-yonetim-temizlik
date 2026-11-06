@@ -1,0 +1,54 @@
+---
+import { FAQS_DATA } from '@/lib/fallback-data';
+
+// FAQPage schema for rich snippet dominance on Google Search
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  'mainEntity': FAQS_DATA.map((faq) => ({
+    '@type': 'Question',
+    'name': faq.question,
+    'acceptedAnswer': {
+      '@type': 'Answer',
+      'text': faq.answer,
+    },
+  })),
+};
+---
+
+<section id="sss" class="scroll-mt-24 py-20 sm:py-28 bg-slate-50 border-t border-slate-200">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6">
+    
+    <div class="mb-14">
+      <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight mb-3">
+        Sıkça Sorulan Sorular
+      </h2>
+      <p class="text-base text-slate-600 leading-relaxed font-normal">
+        Site yönetimi yetki devri ve temizlik operasyonlarıyla ilgili merak edilen temel konular.
+      </p>
+    </div>
+
+    <!-- FAQ Accordion -->
+    <div class="space-y-4">
+      {FAQS_DATA.map((faq) => (
+        <details class="group rounded-2xl border border-slate-200 p-6 [&_summary::-webkit-details-marker]:hidden bg-slate-50 open:bg-slate-50 transition-colors">
+          <summary class="flex cursor-pointer items-center justify-between gap-4 text-left font-bold text-slate-900 text-base sm:text-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 rounded-lg">
+            <span>{faq.question}</span>
+            <span class="shrink-0 transition-transform duration-200 group-open:-rotate-180 text-slate-500">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </span>
+          </summary>
+          <p class="mt-4 text-sm text-slate-600 leading-relaxed pt-2 border-t border-slate-200 font-normal">
+            {faq.answer}
+          </p>
+        </details>
+      ))}
+    </div>
+
+  </div>
+</section>
+
+<!-- Inject FAQPage Schema -->
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />

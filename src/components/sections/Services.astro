@@ -1,0 +1,174 @@
+---
+import { SERVICES_DATA } from '@/lib/fallback-data';
+
+const yonetimServices = SERVICES_DATA.filter(s => s.category === 'yonetim');
+const temizlikCards = [
+  {
+    id: 'ofis',
+    title: 'Ofis ve Ticari Alan Temizliği',
+    image: '/assets/images/office-cleaning.jpg',
+    badge: 'Sözleşmeli Kurumsal',
+    badgeColor: 'bg-sky-100 text-sky-800 border-sky-200',
+    desc: 'Mesai öncesi veya sonrası; masa dezenfeksiyonu, teknolojik ekipman silimi ve zemin bakımı.',
+    highlight: 'Renk kodlu mikrofiber çapraz bulaşma önleyici sistem.',
+  },
+  {
+    id: 'dis-cephe',
+    title: 'Dış Cephe ve Yüksek Cam Yıkama',
+    image: '/assets/images/window-cleaning.jpg',
+    badge: 'İSG & Sepetli Vinçli',
+    badgeColor: 'bg-cyan-100 text-cyan-800 border-cyan-200',
+    desc: 'Plaza ve rezidanslar için saf su (osmos) teknolojisiyle lekesiz cam ve kompozit temizliği.',
+    highlight: 'Yüksekte çalışma belgeli ve sigortalı uzman kadro.',
+  },
+  {
+    id: 'insaat-sonrasi',
+    title: 'İnşaat ve Tadilat Sonrası Temizlik',
+    image: '/assets/images/construction-clean.jpg',
+    badge: 'Anahtar Teslim',
+    badgeColor: 'bg-amber-100 text-amber-800 border-amber-200',
+    desc: 'Derz, boya ve harç kalıntılarının yüzeyi çizmeden endüstriyel vakumla arındırılması.',
+    highlight: 'Bant sökümü ve zemin cilalama dahil teslimat.',
+  },
+  {
+    id: 'merdiven',
+    title: 'Apartman Merdiven & Ortak Alan',
+    image: '/assets/images/residential-hall.jpg',
+    badge: 'Haftalık Düzenli',
+    badgeColor: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+    desc: 'Asansör kabini, tırabzanlar, posta kutuları ve giriş kapısının parfümlü dezenfeksiyonu.',
+    highlight: 'Sabit gün ve saatte yönetici onaylı kontrol.',
+  },
+];
+---
+
+<section id="hizmetler" class="py-20 sm:py-28 bg-gradient-to-b from-white via-slate-50/70 to-white border-y border-slate-200">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    
+    <!-- Section Heading -->
+    <div class="max-w-3xl mb-16">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-sky-50 text-sky-700 border border-sky-200 mb-3">
+        <span>Bütünleşik Hizmet Portföyü</span>
+      </div>
+      <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight mb-4">
+        Yönetim ve temizlik süreçlerinde net sorumluluk, tek muhatap.
+      </h2>
+      <p class="text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
+        Apartman ve sitenizin hem yasal-mali idaresini hem de günlük hijyen operasyonunu tek çatı altında yürütüyoruz.
+      </p>
+    </div>
+
+    <!-- Site Yönetimi Pillar: Institutional & Legal Deep Dive -->
+    <div class="mb-24">
+      <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 pb-4 border-b-2 border-slate-900 mb-8">
+        <div>
+          <span class="text-xs font-bold text-sky-700 uppercase tracking-widest">Hizmet Alanı</span>
+          <h3 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Profesyonel Site ve Apartman Yönetimi</h3>
+        </div>
+        <a href="/site-yonetimi" class="text-sm font-bold text-sky-700 hover:text-sky-900 transition-colors flex items-center gap-1">
+          <span>Yönetim Detayları ve Süreçler</span>
+          <span>→</span>
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {yonetimServices.map((service) => (
+          <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-sky-300 transition-all duration-300 flex flex-col justify-between group">
+            <div>
+              <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-slate-900 text-white mb-4">
+                {service.badge}
+              </div>
+              <h4 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-sky-700 transition-colors">{service.title}</h4>
+              <p class="text-sm text-slate-600 leading-relaxed mb-6">{service.description}</p>
+              
+              <ul class="space-y-3 mb-8">
+                {service.highlights.map((h) => (
+                  <li class="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700">
+                    <span class="flex items-center justify-center w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 shrink-0 mt-0.5 font-bold text-xs">
+                      ✓
+                    </span>
+                    <span class="font-medium">{h}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div class="pt-6 border-t border-slate-100 flex items-center justify-between">
+              <span class="text-xs text-slate-500 font-medium">Banka ve online tahsilat sistemi dahil</span>
+              <a
+                href="/iletisim#teklif-al"
+                class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-slate-900 hover:bg-sky-600 rounded-xl transition-all duration-150 subtle-tap shadow-sm"
+              >
+                Yönetim Teklifi Al
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Temizlik Pillar: Visual Photo Cards with Hover Reveal -->
+    <div>
+      <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 pb-4 border-b-2 border-emerald-600 mb-8">
+        <div>
+          <span class="text-xs font-bold text-emerald-700 uppercase tracking-widest">Hizmet Alanı</span>
+          <h3 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Kurumsal & Endüstriyel Temizlik Hizmetleri</h3>
+        </div>
+        <a href="/temizlik" class="text-sm font-bold text-emerald-700 hover:text-emerald-900 transition-colors flex items-center gap-1">
+          <span>Tüm Temizlik Alanlarını Gör</span>
+          <span>→</span>
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {temizlikCards.map((card) => (
+          <div class="bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col justify-between group">
+            
+            <div>
+              <!-- Service Photo with subtle zoom on hover -->
+              <div class="relative h-44 overflow-hidden">
+                <img
+                  src={card.image}
+                  alt={card.title}
+                  width="400"
+                  height="250"
+                  class="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-108"
+                  loading="lazy"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent"></div>
+                
+                <span class={`absolute top-3 left-3 px-2.5 py-1 rounded-full text-[11px] font-bold border backdrop-blur-md bg-white/90 ${card.badgeColor}`}>
+                  {card.badge}
+                </span>
+              </div>
+
+              <!-- Content Area -->
+              <div class="p-5">
+                <h4 class="text-base font-bold text-slate-900 mb-2 group-hover:text-sky-700 transition-colors leading-snug">
+                  {card.title}
+                </h4>
+                <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                  {card.desc}
+                </p>
+                <div class="p-2.5 rounded-xl bg-slate-50 text-[11px] text-slate-700 font-medium border border-slate-100">
+                  {card.highlight}
+                </div>
+              </div>
+            </div>
+
+            <div class="p-5 pt-0">
+              <a
+                href="/iletisim#teklif-al"
+                class="w-full inline-flex items-center justify-center py-2 text-xs font-bold text-slate-900 bg-slate-100 hover:bg-slate-900 hover:text-white rounded-xl transition-all duration-150 subtle-tap"
+              >
+                Fiyat Teklifi İste
+              </a>
+            </div>
+
+          </div>
+        ))}
+      </div>
+    </div>
+
+  </div>
+</section>

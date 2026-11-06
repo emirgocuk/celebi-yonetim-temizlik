@@ -1,13 +1,21 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
 import { COMPANY_INFO } from '@/lib/fallback-data';
+import '@/styles/global.css';
 
 const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
-const description = 'Çelebi Yönetim ve Temizlik iç yönetim paneli, müşteri teklif talepleri, iletişim bilgileri düzenleme ve SEO haber motoru.';
 ---
 
-<BaseLayout title={title} description={description}>
-  <div id="merkez-app" class="min-h-[85vh] bg-slate-900/5 py-8 sm:py-12">
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body class="bg-slate-100/80 text-slate-900 min-h-screen flex flex-col antialiased selection:bg-slate-900 selection:text-white">
+    <div id="merkez-app" class="min-h-screen py-6 sm:py-10">
     
     <!-- AUTH VIEW: Login Screen -->
     <div id="auth-screen" class="max-w-md mx-auto px-4 sm:px-6 pt-8 pb-16">
@@ -61,15 +69,20 @@ const description = 'Çelebi Yönetim ve Temizlik iç yönetim paneli, müşteri
           </button>
 
           <!-- Quick Fill Demo Button -->
-          <div class="pt-3 border-t border-slate-100 text-center">
+          <div class="pt-3 border-t border-slate-100 text-center space-y-2">
             <button
               type="button"
               id="quick-demo-fill"
-              class="text-xs font-bold text-sky-700 hover:text-sky-900 underline cursor-pointer"
+              class="text-xs font-bold text-sky-700 hover:text-sky-900 underline cursor-pointer block w-full"
             >
               (Tek Tıkla Demo Giriş Bilgilerini Doldur)
             </button>
-            <div class="text-[11px] text-slate-400 mt-1">Kullanıcı: admin@celebi.com | Şifre: celebi.12</div>
+            <div class="text-[11px] text-slate-400">Kullanıcı: admin@celebi.com | Şifre: celebi.12</div>
+            <div class="pt-2">
+              <a href="/" class="text-xs text-slate-500 hover:text-slate-800 transition-colors">
+                ← Web Sitesine Geri Dön
+              </a>
+            </div>
           </div>
         </form>
 
@@ -439,7 +452,6 @@ const description = 'Çelebi Yönetim ve Temizlik iç yönetim paneli, müşteri
     </div>
 
   </div>
-</BaseLayout>
 
 <!-- Client Script for Authentication & State Management -->
 <script is:inline>
@@ -807,4 +819,6 @@ const description = 'Çelebi Yönetim ve Temizlik iç yönetim paneli, müşteri
     checkAuth();
   })();
 </script>
+  </body>
+</html>
 

@@ -1,24 +1,23 @@
 # Active Context: Çelebi Yönetim ve Temizlik
 
 ## 1. Current Work Focus
-- **Phase**: GitHub Repository Created & Codebase Published.
+- **Phase**: `/merkez` Admin Portal, Lead Inbox, Settings Synchronization & Google Maps Page Completed and Pushed.
 - **Recent Actions**:
-  1. **GitHub Repository**:
-     - `celebi-yonetim-temizlik` adlı yeni genel (public) GitHub deposu oluşturuldu:
-       **`https://github.com/emirgocuk/celebi-yonetim-temizlik`**
-     - `.gitignore` dosyası oluşturuldu (`node_modules`, `dist`, `.astro`, `pb_data`, `scratch`).
-     - Yerel git deposu `main` dalı olarak ilklendirildi ve 52 dosyalık ilk commit (`feat: Çelebi Yönetim ve Temizlik - Apple stili landing page, su damlası header ve blog mimarisi`) GitHub'a başarıyla gönderildi (`git push -u origin main`).
-     - Uzak URL temizlendi ve Windows Kimlik Bilgisi Yöneticisi ile güvenli hale getirildi.
-  2. **Landing Page & Blog Mimarisi**:
-     - Apple benzeri su damlası şeffaf header (hafif buzlu açık kanal zemin, yalnızca aktif seçilen öğenin arkasını siyah yapan kayan kapsül pil, göz yormayan net beyaz yazı stili).
-     - Sayfada kaydırdıkça anlık ve kesintisiz bölüm eşlemesi (Scrollspy koordinatörü).
-     - 7 bölümlük eksiksiz ana sayfa akışı (Site Yönetimi + Sayaç, Temizlik, Neden Çelebi, Referanslar, Son Yazılar, İletişim, SSS).
-     - Kategori filtreli `/yazilar` Blog / Rehber listeleme sayfası.
-     - 6 adet zengin içerikli `/yazilar/[slug]` blog detay sayfası (Schema.org `Article` yapısal verisiyle).
-  3. **Build Doğrulaması**:
-     - `npm run build` ile 12 statik sayfanın tamamı 0 hata ile derlendi.
+  1. **`/merkez` Yönetim Paneli**:
+     - Giriş Kimlik Bilgileri: `admin@celebi.com` / `celebi.12` doğrulandı, tek tıkla demo doldur butonu eklendi.
+     - **İletişim Formları & Gelen Talepler Modülü**: Gerçek zamanlı gelen teklif kayıtları listeleniyor. Her kayıt için doğrudan WhatsApp yanıtla, telefonla ara, durum değiştir (Yeni / İncelendi / Teklif Verildi) ve silme işlevleri eklendi.
+     - **CEO & Otomatik Haber Oluşturucu (SEO) Modülü**: İleride gelecek olan yapay zeka haber motoru ve hazır tasarım entegrasyonu için mimari soketler, Trends takibi ve taslak simülasyon alanı hazırlandı.
+     - **İletişim Bilgileri & Konum Ayarları Modülü**: WhatsApp numarası, telefon, e-posta, açık adres ve Google Maps harita embed URL düzenleme alanları eklendi. Yapılan değişiklikler `BaseLayout` üzerinden tüm sitede anında senkronize ediliyor.
+  2. **İletişim & Konum Sayfası (`/iletisim`)**:
+     - İnteraktif Google Haritalar iframe yerleşimi, açık adres, otopark/ulaşım rehberi, iletişim butonları ve teklif formu tek sayfada toplandı.
+     - `QuoteForm.astro` üzerinde haritayı açan ve doğrudan forma bağlayan çift yönlü köprüler eklendi.
+  3. **Güvenlik & SEO**:
+     - `public/robots.txt` içine `Disallow: /merkez` eklenerek arama motorlarının paneli taraması engellendi.
+     - `sitemap.xml.ts` güncellendi (`/iletisim` dahil edildi).
+  4. **GitHub Senkronizasyonu**:
+     - 11 dosya commit edilerek `https://github.com/emirgocuk/celebi-yonetim-temizlik` reposuna gönderildi.
 
 ---
 
 ## 2. Next Steps
-- Kullanıcıya GitHub depo bağlantısının ve tamamlanan adımların sunulması.
+- Kullanıcıya giriş bilgileri ve panel özelliklerinin detaylı tanıtılması.

@@ -21,6 +21,10 @@
   - Tıklanınca kullanıcı WhatsApp mesajını atmasa dahi bilgiler anında `/merkez` panelinde depolanır.
   - Doldurulan verilerle hazır WhatsApp görüşme linki oluşturulur ve açılır.
 - [x] GitHub Deposu Güncellendi: `https://github.com/emirgocuk/celebi-yonetim-temizlik`.
+- [x] **Vercel Canlı Yayına Alındı**:
+  - Üretim URL: **`https://celebi-yonetim-temizlik.vercel.app`**
+  - Tüm sayfalar (`/`, `/yazilar`, `/yazilar/[slug]`, `/iletisim`, `/merkez`) 200 OK ile küresel CDN üzerinden aktif.
+  - GitHub repo bağlantısı kuruldu, sürekli dağıtım (CI/CD) devrede.
 
 ## Current Status
-- Yönetim merkezi, teklif gelen kutusu, canlı harita sayfası ve firma ayarları senkronizasyonuyla proje tam fonksiyonel hazır.
+- Proje Vercel üzerinde canlı, su damlası header, WhatsApp teklif formu, blog rehberi ve yönetim merkeziyle 100% yayında.

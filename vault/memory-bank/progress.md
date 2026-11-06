@@ -16,6 +16,10 @@
   - İletişim Bilgileri Düzenleme (WhatsApp numarası, telefon, adres, Google Maps embed bağlantısı ve anında site geneli senkronizasyon).
 - [x] **İletişim & Konum Sayfası (`/iletisim`)**:
   - İnteraktif Google Haritalar iframe haritası, yol tarifi butonu ve teklif formu.
+- [x] **WhatsApp Üzerinden Gönder & Çift Yönlü Sıfır Kayıp Bildirim Köprüsü**:
+  - "WhatsApp Üzerinden Gönder" butonu eklendi.
+  - Tıklanınca kullanıcı WhatsApp mesajını atmasa dahi bilgiler anında `/merkez` panelinde depolanır.
+  - Doldurulan verilerle hazır WhatsApp görüşme linki oluşturulur ve açılır.
 - [x] GitHub Deposu Güncellendi: `https://github.com/emirgocuk/celebi-yonetim-temizlik`.
 
 ## Current Status

@@ -706,7 +706,7 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
 
           const cleanPhone = (item.phone || '').replace(/[^0-9]/g, '');
           const waPhone = cleanPhone.startsWith('90') ? cleanPhone : '90' + cleanPhone.replace(/^0/, '');
-          const waText = encodeURIComponent(`Merhaba ${item.fullName}, Çelebi Yönetim ve Temizlik olarak teklif talebiniz için yazıyoruz.`);
+          const waText = encodeURIComponent(`Merhaba ${item.fullName}, Çelebi Yönetim ve Temizlik olarak web sitemiz üzerinden ilettiğiniz ${item.serviceType || 'hizmet'} teklif talebiniz için yazıyoruz.`);
 
           return `
             <div class="p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-4 hover:bg-slate-50/80 transition-colors">
@@ -716,6 +716,7 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
                   <span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${badgeClass}">
                     ${item.status || 'Yeni'}
                   </span>
+                  ${item.channel ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">💬 ${item.channel}</span>` : ''}
                   <span class="text-xs text-slate-400">• ${item.created || 'Yeni'}</span>
                 </div>
 

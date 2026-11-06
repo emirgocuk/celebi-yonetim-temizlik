@@ -41,6 +41,31 @@ const { title, description, canonical, ogImage, ogType } = Astro.props;
 
     <!-- Footer -->
     <Footer />
+
+    <!-- Real-Time Synchronization with /merkez Admin Settings (< 300 bytes) -->
+    <script is:inline>
+      (() => {
+        try {
+          const saved = localStorage.getItem('celebi_company_settings');
+          if (!saved) return;
+          const config = JSON.parse(saved);
+          
+          if (config.whatsapp) {
+            document.querySelectorAll('a[href*="wa.me"]').forEach((a) => {
+              const oldHref = a.getAttribute('href') || '';
+              const textMatch = oldHref.match(/text=([^&]+)/);
+              const textParam = textMatch ? `?text=${textMatch[1]}` : '';
+              a.setAttribute('href', `https://wa.me/${config.whatsapp}${textParam}`);
+            });
+          }
+          if (config.phone) {
+            document.querySelectorAll('a[href^="tel:"]').forEach((a) => {
+              a.setAttribute('href', `tel:${config.phone.replace(/[^0-9+]/g, '')}`);
+            });
+          }
+        } catch (e) {}
+      })();
+    </script>
   </body>
 </html>
 

@@ -3,6 +3,7 @@ import { ARTICLES_DATA } from '@/lib/articles-data';
 
 const staticPages = [
   '',
+  'iletisim',
   'yazilar',
 ];
 

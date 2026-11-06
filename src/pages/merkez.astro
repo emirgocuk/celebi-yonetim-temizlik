@@ -1,0 +1,810 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { COMPANY_INFO } from '@/lib/fallback-data';
+
+const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
+const description = 'Çelebi Yönetim ve Temizlik iç yönetim paneli, müşteri teklif talepleri, iletişim bilgileri düzenleme ve SEO haber motoru.';
+---
+
+<BaseLayout title={title} description={description}>
+  <div id="merkez-app" class="min-h-[85vh] bg-slate-900/5 py-8 sm:py-12">
+    
+    <!-- AUTH VIEW: Login Screen -->
+    <div id="auth-screen" class="max-w-md mx-auto px-4 sm:px-6 pt-8 pb-16">
+      <div class="bg-white rounded-3xl p-8 sm:p-10 shadow-2xl border border-slate-200/90 relative overflow-hidden">
+        
+        <!-- Ambient top sheen -->
+        <div class="absolute -top-12 left-1/2 -translate-x-1/2 w-48 h-24 bg-sky-500/20 rounded-full blur-2xl pointer-events-none"></div>
+
+        <div class="flex flex-col items-center text-center mb-8">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-slate-950 via-slate-900 to-sky-900 text-white flex items-center justify-center font-bold text-2xl shadow-lg border border-white/40 mb-4">
+            Ç
+          </div>
+          <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Çelebi Yönetim Merkezi</h1>
+          <p class="text-xs text-slate-500 mt-1">İç operasyon, teklif formları ve firma ayarları paneli</p>
+        </div>
+
+        <form id="login-form" class="space-y-4">
+          <div>
+            <label for="admin-email" class="block text-xs font-bold text-slate-700 mb-1.5">Yönetici E-Posta</label>
+            <input
+              type="email"
+              id="admin-email"
+              required
+              autocomplete="username"
+              placeholder="admin@celebi.com"
+              class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:border-sky-600 focus:ring-2 focus:ring-sky-100 outline-none transition-all"
+            />
+          </div>
+
+          <div>
+            <label for="admin-password" class="block text-xs font-bold text-slate-700 mb-1.5">Şifre</label>
+            <input
+              type="password"
+              id="admin-password"
+              required
+              autocomplete="current-password"
+              placeholder="••••••••"
+              class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:border-sky-600 focus:ring-2 focus:ring-sky-100 outline-none transition-all"
+            />
+          </div>
+
+          <div id="login-error" class="hidden p-3 rounded-xl bg-red-50 border border-red-200 text-xs font-semibold text-red-700 text-center">
+            Hatalı kullanıcı adı veya şifre!
+          </div>
+
+          <button
+            type="submit"
+            class="w-full py-3.5 px-6 rounded-xl text-sm font-bold text-white bg-slate-900 hover:bg-sky-700 transition-all duration-150 shadow-lg shadow-slate-900/10 subtle-tap"
+          >
+            Giriş Yap
+          </button>
+
+          <!-- Quick Fill Demo Button -->
+          <div class="pt-3 border-t border-slate-100 text-center">
+            <button
+              type="button"
+              id="quick-demo-fill"
+              class="text-xs font-bold text-sky-700 hover:text-sky-900 underline cursor-pointer"
+            >
+              (Tek Tıkla Demo Giriş Bilgilerini Doldur)
+            </button>
+            <div class="text-[11px] text-slate-400 mt-1">Kullanıcı: admin@celebi.com | Şifre: celebi.12</div>
+          </div>
+        </form>
+
+      </div>
+    </div>
+
+    <!-- DASHBOARD VIEW: Authenticated Area -->
+    <div id="dashboard-screen" class="hidden max-w-7xl mx-auto px-4 sm:px-6">
+      
+      <!-- Top Bar -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-3xl bg-white border border-slate-200 shadow-sm mb-8">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+            Ç
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h2 class="text-lg font-bold text-slate-900">Yönetim Merkezi</h2>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                Oturum Açık: admin@celebi.com
+              </span>
+            </div>
+            <p class="text-xs text-slate-500">Çelebi Yönetim ve Temizlik Operasyon Paneli</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <a
+            href="/"
+            target="_blank"
+            class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-slate-700 hover:text-slate-950 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all"
+          >
+            <span>Siteyi Görüntüle</span>
+            <span>↗</span>
+          </a>
+          <button
+            type="button"
+            id="logout-btn"
+            class="px-4 py-2 text-xs font-bold text-red-700 hover:text-white bg-red-50 hover:bg-red-600 rounded-xl border border-red-200 transition-all cursor-pointer"
+          >
+            Çıkış Yap
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-6 border-b border-slate-200 no-scrollbar">
+        <button
+          type="button"
+          data-tab="inquiries"
+          class="tab-btn px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer bg-slate-900 text-white shadow-sm flex items-center gap-2"
+        >
+          <span>📬 İletişim Formları & Gelen Talepler</span>
+          <span id="tab-inquiries-badge" class="px-1.5 py-0.2 rounded-full text-[10px] bg-sky-400 text-slate-950 font-black">0</span>
+        </button>
+
+        <button
+          type="button"
+          data-tab="settings"
+          class="tab-btn px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 flex items-center gap-2"
+        >
+          <span>⚙️ İletişim Bilgileri & Konum Düzenle</span>
+        </button>
+
+        <button
+          type="button"
+          data-tab="ceo-seo"
+          class="tab-btn px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 flex items-center gap-2"
+        >
+          <span>🚀 CEO & Otomatik Haber Oluşturucu (SEO)</span>
+        </button>
+      </div>
+
+      <!-- TAB 1 CONTENT: İletişim Formları -->
+      <div id="tab-content-inquiries" class="tab-pane space-y-6">
+        
+        <!-- Summary Stats Strip -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm">
+            <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Toplam Gelen Talep</div>
+            <div id="stat-total-inquiries" class="text-2xl font-extrabold text-slate-900 tabular-nums">0</div>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm">
+            <div class="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-1">Yeni / Bekleyen Talepler</div>
+            <div id="stat-pending-inquiries" class="text-2xl font-extrabold text-emerald-700 tabular-nums">0</div>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm">
+            <div class="text-xs font-bold text-sky-600 uppercase tracking-wider mb-1">Hızlı Yanıt Oranı</div>
+            <div class="text-2xl font-extrabold text-sky-700 tabular-nums">%100</div>
+          </div>
+        </div>
+
+        <!-- Inquiries List -->
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="p-6 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h3 class="text-base font-bold text-slate-900">Gelen Fiyat Teklifi ve İletişim Formları</h3>
+              <p class="text-xs text-slate-500 mt-0.5">Sitedeki teklif formu üzerinden iletilen gerçek zamanlı müşteri kayıtları</p>
+            </div>
+            
+            <button
+              type="button"
+              id="clear-all-inquiries-btn"
+              class="text-xs text-red-600 hover:text-red-800 font-semibold cursor-pointer underline"
+            >
+              Listeyi Temizle
+            </button>
+          </div>
+
+          <div id="inquiries-list-container" class="divide-y divide-slate-100">
+            <!-- Dynamic entries loaded here -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- TAB 2 CONTENT: İletişim Bilgilerini Düzenle -->
+      <div id="tab-content-settings" class="tab-pane hidden space-y-6">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+          <div class="max-w-2xl mb-8">
+            <h3 class="text-xl font-bold text-slate-900">İletişim & Konum Bilgilerini Düzenle</h3>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
+              Burada güncelleyeceğiniz WhatsApp numarası, telefon, adres ve Google Maps harita bilgisi web sitesinin tamamında anında geçerli olur.
+            </p>
+          </div>
+
+          <form id="settings-form" class="space-y-6 max-w-3xl">
+            
+            <!-- WhatsApp Numarası -->
+            <div class="p-5 rounded-2xl bg-emerald-50/50 border border-emerald-200">
+              <label for="cfg-whatsapp" class="block text-xs font-bold text-emerald-900 mb-1.5">
+                WhatsApp Bağlantı Butonuna Yazılacak Numara *
+              </label>
+              <div class="text-[11px] text-emerald-700 mb-2 font-medium">
+                Başında 90 olacak şekilde boşluksuz ve parantezsiz yazınız (Örn: 905550000000). Sitedeki tüm WhatsApp butonları doğrudan bu numaraya bağlanır.
+              </div>
+              <input
+                type="text"
+                id="cfg-whatsapp"
+                required
+                placeholder="905550000000"
+                class="w-full px-4 py-3 text-sm rounded-xl border border-emerald-300 bg-white focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none font-bold text-slate-900"
+              />
+            </div>
+
+            <!-- Telefon Bilgisi -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="cfg-phone" class="block text-xs font-bold text-slate-700 mb-1.5">Telefon Numarası (Arama İçin)</label>
+                <input
+                  type="text"
+                  id="cfg-phone"
+                  required
+                  placeholder="+90 555 000 00 00"
+                  class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:border-sky-600 focus:ring-2 focus:ring-sky-100 outline-none"
+                />
+              </div>
+
+              <div>
+                <label for="cfg-phone-formatted" class="block text-xs font-bold text-slate-700 mb-1.5">Görünen Telefon Formatı</label>
+                <input
+                  type="text"
+                  id="cfg-phone-formatted"
+                  required
+                  placeholder="0 (555) 000 00 00"
+                  class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:border-sky-600 focus:ring-2 focus:ring-sky-100 outline-none"
+                />
+              </div>
+            </div>
+
+            <!-- E-Posta & Çalışma Saatleri -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="cfg-email" class="block text-xs font-bold text-slate-700 mb-1.5">Resmi E-Posta Adresi</label>
+                <input
+                  type="email"
+                  id="cfg-email"
+                  required
+                  placeholder="iletisim@celebiyonetim.com"
+                  class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:border-sky-600 focus:ring-2 focus:ring-sky-100 outline-none"
+                />
+              </div>
+
+              <div>
+                <label for="cfg-working-hours" class="block text-xs font-bold text-slate-700 mb-1.5">Çalışma Saatleri Metni</label>
+                <input
+                  type="text"
+                  id="cfg-working-hours"
+                  required
+                  placeholder="Pazartesi - Cumartesi: 08:30 - 19:00 (Acil Destek: 7/24)"
+                  class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:border-sky-600 focus:ring-2 focus:ring-sky-100 outline-none"
+                />
+              </div>
+            </div>
+
+            <!-- Açık Adres -->
+            <div>
+              <label for="cfg-address" class="block text-xs font-bold text-slate-700 mb-1.5">Firma Açık Adresi</label>
+              <textarea
+                id="cfg-address"
+                rows="2"
+                required
+                placeholder="Merkez Mah. Atatürk Cad. No: 42/B, Çelebi Plaza, Kat: 3, Türkiye"
+                class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:border-sky-600 focus:ring-2 focus:ring-sky-100 outline-none resize-none"
+              ></textarea>
+            </div>
+
+            <!-- Google Maps Konum Embed Bağlantısı -->
+            <div class="p-5 rounded-2xl bg-sky-50/50 border border-sky-200">
+              <label for="cfg-maps-url" class="block text-xs font-bold text-sky-900 mb-1.5">
+                Google Maps Konum Bilgisi (Harita Embed URL) *
+              </label>
+              <div class="text-[11px] text-sky-700 mb-2 font-medium">
+                Google Haritalar'da ofisinizi bulun -> Paylaş -> Harita Yerleştirme (iframe src bağlantısı).
+              </div>
+              <input
+                type="text"
+                id="cfg-maps-url"
+                required
+                placeholder="https://maps.google.com/maps?q=Atat%C3%BCrk%20Caddesi%20No:42...&output=embed"
+                class="w-full px-4 py-3 text-xs sm:text-sm rounded-xl border border-sky-300 bg-white focus:border-sky-600 focus:ring-2 focus:ring-sky-100 outline-none font-mono text-slate-800"
+              />
+
+              <!-- Live Map Preview inside Admin -->
+              <div class="mt-4 pt-4 border-t border-sky-200">
+                <span class="text-xs font-bold text-slate-700 block mb-2">Harita Canlı Önizlemesi:</span>
+                <div class="rounded-xl overflow-hidden border border-slate-300 h-48 bg-slate-200">
+                  <iframe
+                    id="settings-map-preview"
+                    src=""
+                    width="100%"
+                    height="100%"
+                    style="border:0;"
+                    loading="lazy"
+                  ></iframe>
+                </div>
+              </div>
+            </div>
+
+            <!-- Save Feedback Alert -->
+            <div id="settings-alert" class="hidden p-4 rounded-xl text-xs font-bold text-center bg-emerald-100 text-emerald-900 border border-emerald-300">
+              ✓ Değişiklikler başarıyla kaydedildi! Sitedeki tüm WhatsApp butonları, adres ve harita yeni bilgilerle senkronize edildi.
+            </div>
+
+            <!-- Submit -->
+            <button
+              type="submit"
+              class="px-8 py-3.5 text-sm font-bold text-white bg-slate-900 hover:bg-sky-700 rounded-xl transition-all duration-150 subtle-tap shadow-lg"
+            >
+              Değişiklikleri Kaydet
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- TAB 3 CONTENT: CEO & Otomatik Haber Oluşturucu (SEO) -->
+      <div id="tab-content-ceo-seo" class="tab-pane hidden space-y-6">
+        
+        <!-- Welcome & Future Ready Notice -->
+        <div class="p-8 sm:p-10 rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-sky-950 text-white shadow-xl relative overflow-hidden">
+          <div class="max-w-2xl">
+            <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold bg-sky-500/20 text-sky-300 border border-sky-400/30 mb-3">
+              CEO & Otomasyon Modülü
+            </span>
+            <h3 class="text-2xl sm:text-3xl font-extrabold mb-3">Otomatik Haber Oluşturucu & SEO Motoru</h3>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
+              Bu alan, elinizdeki hazır tasarım ve otomatik haber motorunun doğrudan entegre edilebilmesi için özel olarak hazırlanmıştır. Gelecekte tasarımınız geldiğinde tek tıkla buraya bağlanacaktır.
+            </p>
+          </div>
+        </div>
+
+        <!-- 3 Feature Architecture Blueprint Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          <div class="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="w-10 h-10 rounded-xl bg-sky-50 text-sky-700 flex items-center justify-center font-bold text-lg mb-3">
+                📈
+              </div>
+              <h4 class="text-base font-bold text-slate-900 mb-2">Google Trends & KMK Arama Takibi</h4>
+              <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                Google arama hacmi en yüksek 50 bina yönetimi ve temizlik anahtar kelimesini otomatik tarayıp haber fikirleri listeler.
+              </p>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-50 text-[11px] font-semibold text-slate-500 border border-slate-100">
+              Durum: Entegrasyon Soketi Hazır
+            </div>
+          </div>
+
+          <div class="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-lg mb-3">
+                ✍️
+              </div>
+              <h4 class="text-base font-bold text-slate-900 mb-2">Yapay Zeka Makale Taslak Üretici</h4>
+              <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                Yargıtay kararları ve Kat Mülkiyeti Kanunu mevzuatına uygun, SEO dostu özgün blog içerikleri taslağı üretir.
+              </p>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-50 text-[11px] font-semibold text-slate-500 border border-slate-100">
+              Durum: Entegrasyon Soketi Hazır
+            </div>
+          </div>
+
+          <div class="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center font-bold text-lg mb-3">
+                🎨
+              </div>
+              <h4 class="text-base font-bold text-slate-900 mb-2">Hazır Tasarım Entegrasyon Yuvası</h4>
+              <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                Elinizdeki hazır arayüz tasarımı, HTML veya iframe bileşeni olarak doğrudan bu alana giydirilecektir.
+              </p>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-50 text-[11px] font-semibold text-slate-500 border border-slate-100">
+              Durum: Tasarım Bekleniyor
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Simulated Draft Sandbox -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <h4 class="text-base font-bold text-slate-900">Otomatik Haber / Makale Üretim Test Alanı (Simülasyon)</h4>
+            <span class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+              Prototip Önizleme
+            </span>
+          </div>
+
+          <div class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <input
+                type="text"
+                readonly
+                value="Konu: 2026 Apartman Aidat Artış Oranları"
+                class="px-4 py-2.5 text-xs rounded-xl bg-slate-50 border border-slate-200 font-medium text-slate-700"
+              />
+              <input
+                type="text"
+                readonly
+                value="Kategori: Site Yönetimi & KMK"
+                class="px-4 py-2.5 text-xs rounded-xl bg-slate-50 border border-slate-200 font-medium text-slate-700"
+              />
+              <button
+                type="button"
+                id="btn-simulate-ai"
+                class="px-4 py-2.5 text-xs font-bold text-white bg-sky-700 hover:bg-sky-800 rounded-xl transition-all cursor-pointer shadow-sm"
+              >
+                Otomatik Haber Taslağı Üret ⚡
+              </button>
+            </div>
+
+            <div id="ai-sim-output" class="hidden p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-2 font-mono">
+              <div class="text-emerald-700 font-bold">✓ Taslak Başarıyla Oluşturuldu (Önizleme):</div>
+              <div class="font-bold text-slate-900">"2026 Yılı Kat Malikleri Kurulu Aidat ve İşletme Projesi Hesaplama Rehberi"</div>
+              <div class="text-slate-600">Özet: TÜFE ve asgari ücret artışlarına göre site bütçesi hazırlanırken dikkat edilmesi gereken yasal maddeler...</div>
+              <div class="text-[11px] text-sky-700 italic">Elinizdeki hazır tasarım yüklendiğinde bu içerikler tek tıkla canlıya yayınlanacaktır.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</BaseLayout>
+
+<!-- Client Script for Authentication & State Management -->
+<script is:inline>
+  (() => {
+    // DOM Elements
+    const authScreen = document.getElementById('auth-screen');
+    const dashboardScreen = document.getElementById('dashboard-screen');
+    const loginForm = document.getElementById('login-form');
+    const emailInput = document.getElementById('admin-email');
+    const passwordInput = document.getElementById('admin-password');
+    const loginError = document.getElementById('login-error');
+    const quickDemoBtn = document.getElementById('quick-demo-fill');
+    const logoutBtn = document.getElementById('logout-btn');
+
+    // Tab buttons & panes
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+
+    // Settings form elements
+    const settingsForm = document.getElementById('settings-form');
+    const cfgWhatsapp = document.getElementById('cfg-whatsapp');
+    const cfgPhone = document.getElementById('cfg-phone');
+    const cfgPhoneFormatted = document.getElementById('cfg-phone-formatted');
+    const cfgEmail = document.getElementById('cfg-email');
+    const cfgWorkingHours = document.getElementById('cfg-working-hours');
+    const cfgAddress = document.getElementById('cfg-address');
+    const cfgMapsUrl = document.getElementById('cfg-maps-url');
+    const mapPreview = document.getElementById('settings-map-preview');
+    const settingsAlert = document.getElementById('settings-alert');
+
+    // Inquiries list elements
+    const inquiriesContainer = document.getElementById('inquiries-list-container');
+    const statTotal = document.getElementById('stat-total-inquiries');
+    const statPending = document.getElementById('stat-pending-inquiries');
+    const tabBadge = document.getElementById('tab-inquiries-badge');
+    const clearInquiriesBtn = document.getElementById('clear-all-inquiries-btn');
+
+    // Default Seed Inquiries so the admin panel looks populated
+    const defaultSeedInquiries = [
+      {
+        id: 'seed-1',
+        fullName: 'Ahmet Yılmaz (Site Yöneticisi)',
+        phone: '0532 111 22 33',
+        serviceType: 'site-yonetimi',
+        buildingUnits: '48 Daire (3 Blok)',
+        message: 'Yeni genel kurul öncesi işletme projesi hazırlanması ve banka onaylı aidat tahsilat sistemi için teklif istiyoruz.',
+        created: 'Bugün, 14:20',
+        status: 'Yeni',
+      },
+      {
+        id: 'seed-2',
+        fullName: 'Burak Çetin (İdari İşler)',
+        phone: '0544 333 44 55',
+        serviceType: 'ofis-temizlik',
+        buildingUnits: '450 m² Plaza Katı',
+        message: 'Haftada 3 gün akşam 18:30 sonrası sözleşmeli kurumsal ofis temizliği fiyatı rica ediyoruz.',
+        created: 'Dün, 17:45',
+        status: 'İncelendi',
+      },
+      {
+        id: 'seed-3',
+        fullName: 'Selin Demir (Tesis Müdürü)',
+        phone: '0533 777 88 99',
+        serviceType: 'dis-cephe',
+        buildingUnits: '12 Katlı Plaza',
+        message: 'Sepetli vinçle yılda 2 periyotluk kompozit ve cam dış cephe yıkama sözleşmesi.',
+        created: '3 gün önce',
+        status: 'Teklif Verildi',
+      },
+      {
+        id: 'seed-4',
+        fullName: 'Mehmet Kaya (Müteahhit)',
+        phone: '0505 666 55 44',
+        serviceType: 'insaat-sonrasi',
+        buildingUnits: '18 Daire Konut Projesi',
+        message: 'Daire teslimi öncesi derz, harç ve pencere bantlarının çizilmeden temizlenmesi anahtar teslim.',
+        created: '5 gün önce',
+        status: 'İncelendi',
+      },
+    ];
+
+    // Default Settings
+    const defaultSettings = {
+      whatsapp: '905550000000',
+      phone: '+90 555 000 00 00',
+      phoneFormatted: '0 (555) 000 00 00',
+      email: 'iletisim@celebiyonetim.com',
+      workingHours: 'Pazartesi - Cumartesi: 08:30 - 19:00 (Acil Destek: 7/24)',
+      address: 'Merkez Mah. Atatürk Cad. No: 42/B, Çelebi Plaza Kat: 3, Türkiye',
+      mapsEmbedUrl: 'https://maps.google.com/maps?q=Atat%C3%BCrk%20Caddesi%20No:42,%20Istanbul,%20Turkey&t=&z=15&ie=UTF8&iwloc=&output=embed',
+    };
+
+    // Check Authentication
+    function checkAuth() {
+      const isAuth = localStorage.getItem('celebi_admin_auth') === 'true';
+      if (isAuth) {
+        authScreen.classList.add('hidden');
+        dashboardScreen.classList.remove('hidden');
+        loadSettings();
+        loadInquiries();
+      } else {
+        authScreen.classList.remove('hidden');
+        dashboardScreen.classList.add('hidden');
+      }
+    }
+
+    // Demo Fill Button
+    if (quickDemoBtn) {
+      quickDemoBtn.addEventListener('click', () => {
+        emailInput.value = 'admin@celebi.com';
+        passwordInput.value = 'celebi.12';
+      });
+    }
+
+    // Handle Login
+    if (loginForm) {
+      loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = emailInput.value.trim();
+        const password = passwordInput.value.trim();
+
+        if (email === 'admin@celebi.com' && password === 'celebi.12') {
+          localStorage.setItem('celebi_admin_auth', 'true');
+          loginError.classList.add('hidden');
+          checkAuth();
+        } else {
+          loginError.classList.remove('hidden');
+        }
+      });
+    }
+
+    // Handle Logout
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('celebi_admin_auth');
+        checkAuth();
+      });
+    }
+
+    // Tab Navigation
+    tabBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const targetTab = btn.getAttribute('data-tab');
+
+        tabBtns.forEach((b) => {
+          b.className = 'tab-btn px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 flex items-center gap-2';
+        });
+        btn.className = 'tab-btn px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer bg-slate-900 text-white shadow-sm flex items-center gap-2';
+
+        tabPanes.forEach((pane) => {
+          if (pane.id === `tab-content-${targetTab}`) {
+            pane.classList.remove('hidden');
+          } else {
+            pane.classList.add('hidden');
+          }
+        });
+      });
+    });
+
+    // Load Settings
+    function loadSettings() {
+      let config = defaultSettings;
+      try {
+        const saved = localStorage.getItem('celebi_company_settings');
+        if (saved) config = { ...defaultSettings, ...JSON.parse(saved) };
+      } catch (err) {}
+
+      if (cfgWhatsapp) cfgWhatsapp.value = config.whatsapp;
+      if (cfgPhone) cfgPhone.value = config.phone;
+      if (cfgPhoneFormatted) cfgPhoneFormatted.value = config.phoneFormatted;
+      if (cfgEmail) cfgEmail.value = config.email;
+      if (cfgWorkingHours) cfgWorkingHours.value = config.workingHours;
+      if (cfgAddress) cfgAddress.value = config.address;
+      if (cfgMapsUrl) {
+        cfgMapsUrl.value = config.mapsEmbedUrl;
+        if (mapPreview) mapPreview.src = config.mapsEmbedUrl;
+      }
+    }
+
+    // Live update map preview on URL input
+    if (cfgMapsUrl && mapPreview) {
+      cfgMapsUrl.addEventListener('input', () => {
+        mapPreview.src = cfgMapsUrl.value;
+      });
+    }
+
+    // Save Settings
+    if (settingsForm) {
+      settingsForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const newConfig = {
+          whatsapp: cfgWhatsapp.value.trim(),
+          phone: cfgPhone.value.trim(),
+          phoneFormatted: cfgPhoneFormatted.value.trim(),
+          email: cfgEmail.value.trim(),
+          workingHours: cfgWorkingHours.value.trim(),
+          address: cfgAddress.value.trim(),
+          mapsEmbedUrl: cfgMapsUrl.value.trim(),
+        };
+
+        localStorage.setItem('celebi_company_settings', JSON.stringify(newConfig));
+        settingsAlert.classList.remove('hidden');
+
+        setTimeout(() => {
+          settingsAlert.classList.add('hidden');
+        }, 5000);
+      });
+    }
+
+    // Load Inquiries
+    function loadInquiries() {
+      let inquiries = [];
+      try {
+        const saved = localStorage.getItem('celebi_quote_inquiries');
+        if (saved) {
+          inquiries = JSON.parse(saved);
+        } else {
+          inquiries = defaultSeedInquiries;
+          localStorage.setItem('celebi_quote_inquiries', JSON.stringify(inquiries));
+        }
+      } catch (err) {
+        inquiries = defaultSeedInquiries;
+      }
+
+      // Update counters
+      const totalCount = inquiries.length;
+      const pendingCount = inquiries.filter((i) => i.status === 'Yeni').length;
+
+      if (statTotal) statTotal.innerText = totalCount;
+      if (statPending) statPending.innerText = pendingCount;
+      if (tabBadge) tabBadge.innerText = pendingCount;
+
+      // Render list
+      if (!inquiriesContainer) return;
+      if (inquiries.length === 0) {
+        inquiriesContainer.innerHTML = `
+          <div class="p-8 text-center text-slate-400 text-xs">
+            Henüz gelen bir teklif talebi bulunmuyor.
+          </div>
+        `;
+        return;
+      }
+
+      inquiriesContainer.innerHTML = inquiries
+        .map((item, idx) => {
+          const statusColors = {
+            'Yeni': 'bg-emerald-100 text-emerald-800 border-emerald-200',
+            'İncelendi': 'bg-sky-100 text-sky-800 border-sky-200',
+            'Teklif Verildi': 'bg-slate-100 text-slate-800 border-slate-300',
+          };
+          const badgeClass = statusColors[item.status] || 'bg-slate-100 text-slate-800';
+
+          const cleanPhone = (item.phone || '').replace(/[^0-9]/g, '');
+          const waPhone = cleanPhone.startsWith('90') ? cleanPhone : '90' + cleanPhone.replace(/^0/, '');
+          const waText = encodeURIComponent(`Merhaba ${item.fullName}, Çelebi Yönetim ve Temizlik olarak teklif talebiniz için yazıyoruz.`);
+
+          return `
+            <div class="p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-4 hover:bg-slate-50/80 transition-colors">
+              <div class="space-y-1.5 max-w-2xl">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="text-sm font-bold text-slate-900">${item.fullName}</span>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${badgeClass}">
+                    ${item.status || 'Yeni'}
+                  </span>
+                  <span class="text-xs text-slate-400">• ${item.created || 'Yeni'}</span>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-3 text-xs text-slate-600">
+                  <span class="font-bold text-sky-800 bg-sky-50 px-2 py-0.5 rounded">Hizmet: ${item.serviceType}</span>
+                  ${item.buildingUnits ? `<span>Birim/Alan: <strong>${item.buildingUnits}</strong></span>` : ''}
+                  <span>Tel: <strong>${item.phone}</strong></span>
+                </div>
+
+                ${item.message ? `<p class="text-xs text-slate-600 italic bg-white p-2.5 rounded-xl border border-slate-200/80">"${item.message}"</p>` : ''}
+              </div>
+
+              <!-- Quick Response Actions -->
+              <div class="flex flex-wrap items-center gap-2 shrink-0">
+                <a
+                  href="https://wa.me/${waPhone}?text=${waText}"
+                  target="_blank"
+                  class="px-3 py-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-xl transition-all"
+                >
+                  WhatsApp'tan Yaz
+                </a>
+                <a
+                  href="tel:${item.phone}"
+                  class="px-3 py-1.5 text-xs font-bold text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all"
+                >
+                  Ara
+                </a>
+                <button
+                  type="button"
+                  data-action="toggle-status"
+                  data-index="${idx}"
+                  class="px-3 py-1.5 text-xs font-bold text-sky-700 bg-sky-50 hover:bg-sky-100 border border-sky-200 rounded-xl transition-all cursor-pointer"
+                >
+                  Durum Değiştir
+                </button>
+                <button
+                  type="button"
+                  data-action="delete"
+                  data-index="${idx}"
+                  class="p-1.5 text-slate-400 hover:text-red-600 rounded-lg transition-colors cursor-pointer"
+                  title="Sil"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+          `;
+        })
+        .join('');
+
+      // Wire inquiry action buttons
+      inquiriesContainer.querySelectorAll('[data-action="toggle-status"]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const index = parseInt(btn.getAttribute('data-index'), 10);
+          const current = inquiries[index].status || 'Yeni';
+          const next = current === 'Yeni' ? 'İncelendi' : current === 'İncelendi' ? 'Teklif Verildi' : 'Yeni';
+          inquiries[index].status = next;
+          localStorage.setItem('celebi_quote_inquiries', JSON.stringify(inquiries));
+          loadInquiries();
+        });
+      });
+
+      inquiriesContainer.querySelectorAll('[data-action="delete"]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const index = parseInt(btn.getAttribute('data-index'), 10);
+          if (confirm('Bu teklif kaydını silmek istediğinize emin misiniz?')) {
+            inquiries.splice(index, 1);
+            localStorage.setItem('celebi_quote_inquiries', JSON.stringify(inquiries));
+            loadInquiries();
+          }
+        });
+      });
+    }
+
+    // Clear all inquiries
+    if (clearInquiriesBtn) {
+      clearInquiriesBtn.addEventListener('click', () => {
+        if (confirm('Tüm teklif kayıtlarını temizlemek istediğinize emin misiniz?')) {
+          localStorage.setItem('celebi_quote_inquiries', JSON.stringify([]));
+          loadInquiries();
+        }
+      });
+    }
+
+    // AI Simulation test button
+    const simAiBtn = document.getElementById('btn-simulate-ai');
+    const simAiOutput = document.getElementById('ai-sim-output');
+    if (simAiBtn && simAiOutput) {
+      simAiBtn.addEventListener('click', () => {
+        simAiBtn.disabled = true;
+        simAiBtn.innerText = 'Makale Üretiliyor...';
+        setTimeout(() => {
+          simAiOutput.classList.remove('hidden');
+          simAiBtn.disabled = false;
+          simAiBtn.innerText = 'Otomatik Haber Taslağı Üret ⚡';
+        }, 800);
+      });
+    }
+
+    // Initial check
+    checkAuth();
+  })();
+</script>
+

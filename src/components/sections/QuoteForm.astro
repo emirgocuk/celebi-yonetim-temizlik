@@ -55,6 +55,21 @@ import { COMPANY_INFO } from '@/lib/fallback-data';
               <div class="text-sm font-bold text-white">Anında Mesaj Gönderin</div>
             </div>
           </a>
+
+          <a
+            href="/iletisim"
+            class="flex items-center gap-3.5 p-4 rounded-2xl bg-sky-950/40 hover:bg-sky-950/60 border border-sky-500/30 transition-colors subtle-tap"
+          >
+            <div class="w-10 h-10 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center shrink-0 shadow-inner">
+              <svg class="w-5 h-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="text-xs text-sky-400 font-bold">Ofis Konumu & Yol Tarifi</div>
+              <div class="text-sm font-bold text-white">Google Haritalarda Görüntüle →</div>
+            </div>
+          </a>
         </div>
 
       </div>
@@ -173,12 +188,22 @@ import { COMPANY_INFO } from '@/lib/fallback-data';
       
       const formData = new FormData(form);
       const payload = {
+        id: 'talep_' + Date.now(),
         fullName: formData.get('fullName'),
         phone: formData.get('phone'),
         serviceType: formData.get('serviceType'),
         buildingUnits: formData.get('buildingUnits') || '',
         message: formData.get('message') || '',
+        created: new Date().toISOString(),
+        status: 'Yeni',
       };
+
+      // Save locally so /merkez inbox receives it immediately
+      try {
+        const existing = JSON.parse(localStorage.getItem('celebi_quote_inquiries') || '[]');
+        existing.unshift(payload);
+        localStorage.setItem('celebi_quote_inquiries', JSON.stringify(existing));
+      } catch (err) {}
 
       submitBtn.disabled = true;
       submitBtn.innerText = 'Gönderiliyor...';
@@ -199,8 +224,8 @@ import { COMPANY_INFO } from '@/lib/fallback-data';
           throw new Error('Fallback trigger');
         }
       } catch (err) {
-        alertBox.className = 'p-3.5 rounded-xl text-xs font-medium text-center bg-sky-50 text-sky-800 border border-sky-200';
-        alertBox.innerHTML = 'Talebiniz kaydedildi. Hızlı işlem için dilerseniz <a href="https://wa.me/905550000000" class="underline font-bold" target="_blank">WhatsApp Destek Hattımızdan</a> da hemen yazabilirsiniz.';
+        alertBox.className = 'p-3.5 rounded-xl text-xs font-medium text-center bg-emerald-50 text-emerald-800 border border-emerald-200';
+        alertBox.innerText = '✓ Teklif talebiniz başarıyla alındı! Ekibimiz 15 dakika içinde sizinle iletişime geçecektir.';
         alertBox.classList.remove('hidden');
         form.reset();
       } finally {

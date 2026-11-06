@@ -15,16 +15,18 @@
   5. **Son Yazılar** (`#yazilar`)
   6. **İletişim & Teklif Formu** (`#iletisim`)
   7. **Sıkça Sorulan Sorular** (`#sss`)
-- [x] **Header Tasarımı İyileştirildi**:
-  - Arka plandaki siyah kaldırıldı, hafif buzlu şeffaf cam track yapıldı.
-  - Sadece üzerinden geçtiği yer siyah yapıldı (`#sliding-indicator`).
-  - Göz yoran neon parlama yerine soft, net ve okunabilir beyaz yazı stili uygulandı.
-- [x] **Blog ve Makale Mimarisi Tamamlandı**:
-  - "Tüm Yazıları Oku" butonları eklendi.
-  - `/yazilar` Blog / Rehber listeleme sayfası tasarlandı (kategori filtreli).
-  - `/yazilar/[slug]` detay blog makalesi şablonu oluşturuldu (Breadcrumbs, özet, zengin metin, teklif CTA, yazar biyografisi, ilgili yazılar).
-  - Schema.org Article / BlogPosting yapısal verisi eklendi.
-- [x] Üretim derlemesi (`npm run build`) 12 sayfa ile 0 hata vererek tamamlandı.
+- [x] Header tasarımı ve kayan pil mükemmelleştirildi:
+  - Arka plandaki siyah kaldırıldı, açık buzlu şeffaf kanal yapıldı.
+  - Sadece üzerinden geçtiği yer siyah kayan pil oldu (`#sliding-indicator`).
+  - Göz yormayan, net ve okunabilir beyaz yazı stili uygulandı.
+- [x] Blog & Rehber sistemi tamamlandı:
+  - Ana sayfada "Tüm Yazıları Oku" butonları.
+  - `/yazilar` Blog / Rehber listeleme sayfası (kategori filtreli).
+  - `/yazilar/[slug]` detay blog makalesi şablonu (Breadcrumbs, özet, zengin metin, teklif CTA, yazar biyografisi, ilgili yazılar, Schema.org Article JSON-LD).
+  - `/blog` -> `/yazilar` yönlendirmesi.
+- [x] **GitHub Deposu Oluşturuldu ve Yayınlandı**:
+  - Depo: **`https://github.com/emirgocuk/celebi-yonetim-temizlik`**
+  - Tüm kaynak kodlar ve `vault/` dokümantasyonu `main` dalına push edildi.
 
 ## Current Status
-- Tek sayfa landing page, göz yormayan akıcı header ve dinamik blog sistemiyle proje eksiksiz hazır.
+- Proje GitHub üzerinde canlı, tüm landing page, header animasyonları ve blog mimarisiyle yayına hazır.

@@ -47,5 +47,7 @@ export interface CompanyMeta {
   email: string;
   address: string;
   workingHours: string;
+  mapsEmbedUrl?: string;
+  mapsQuery?: string;
 }
 

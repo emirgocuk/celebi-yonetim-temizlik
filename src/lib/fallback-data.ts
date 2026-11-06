@@ -9,8 +9,10 @@ export const COMPANY_INFO: CompanyMeta = {
   whatsapp: '905550000000',
   whatsappFormatted: '+90 555 000 00 00',
   email: 'iletisim@celebiyonetim.com',
-  address: 'Merkez Mah. Atatürk Cad. No: 42/B, Türkiye',
+  address: 'Merkez Mah. Atatürk Cad. No: 42/B, Çelebi Plaza Kat: 3, Türkiye',
   workingHours: 'Pazartesi - Cumartesi: 08:30 - 19:00 (Acil Destek: 7/24)',
+  mapsEmbedUrl: 'https://maps.google.com/maps?q=Atat%C3%BCrk%20Caddesi%20No:42,%20Istanbul,%20Turkey&t=&z=15&ie=UTF8&iwloc=&output=embed',
+  mapsQuery: 'Atatürk Caddesi No:42, Istanbul, Turkey',
 };
 
 export const SERVICES_DATA: ServiceItem[] = [

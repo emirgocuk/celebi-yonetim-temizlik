@@ -1,16 +1,17 @@
 # Active Context: Çelebi Yönetim ve Temizlik
 
 ## 1. Current Work Focus
-- **Phase**: Production Deployment to Vercel Completed & Live.
+- **Phase**: Mobile Hamburger Menu Fix Deployed & Nuper Ortho Architecture Evaluated.
 - **Recent Actions**:
-  1. **Vercel Canlı Yayını**:
-     - Proje resmi Vercel CLI üzerinden hesaba (`emirgocuk`) bağlandı ve üretim dağıtımı (production deploy) başarıyla tamamlandı.
-     - Canlı Üretim URL'si: **`https://celebi-yonetim-temizlik.vercel.app`**
-     - Tüm statik rotalar, landing page, 6 SEO makalesi (`/yazilar`), iletişim & Google Maps sayfası (`/iletisim`) ve izole yönetim merkezi (`/merkez`) 200 OK ile sorunsuz canlıda çalışıyor.
-     - GitHub Entegrasyonu: Proje doğrudan `emirgocuk/celebi-yonetim-temizlik` reposuna bağlandı; gelecekteki her `git push` Vercel tarafından otomatik derlenecek.
-  2. **WhatsApp & Form Akışı**:
-     - Canlı ortamda "WhatsApp Üzerinden Gönder" butonu test edildi; form verileri anında yerel hafızaya kaydedilip doğrudan WhatsApp'a aktarılıyor.
-     - İleride VPS kiralandığında PocketBase tek bir ortam değişkeni veya endpoint değişikliğiyle anında devreye alınacak.
+  1. **Mobil Hamburger Menü Onarımı (`Header.astro`)**:
+     - Kök Neden: `initScrollCoordinator()` fonksiyonunun hem `DOMContentLoaded` hem `window.load` üzerinde birden fazla kez tetiklenmesi sonucu `mobile-menu-toggle` butonuna çift tıklama dinleyicisi (listener) ekleniyordu. İlk dinleyici menüyü açarken, aynı tıklama kuyruğundaki ikinci dinleyici anında kapatıyordu.
+     - Çözüm: `setupMobileMenu()` ve `initScrollCoordinator()` modülleri idempotency (tekil çalıştırma) korumasına alındı.
+     - Dışarı tıklayınca kapatma (click-outside), Escape tuşuyla kapatma ve mobilde menü içi linke basınca otomatik kapanma eklendi.
+     - Mobilde taşmaları önlemek için `max-h-[calc(100vh-5.5rem)] overflow-y-auto` ve dokunmatik alanı rahatlatan 44px dairesel buton stili uygulandı.
+  2. **Dağıtım & Canlı Doğrulama**:
+     - `npm run build` başarıyla tamamlandı.
+     - Git commit: `55c1341` push edildi.
+     - Vercel production deploy: `https://celebi-yonetim-temizlik.vercel.app` anında güncellendi.
 
 ---
 

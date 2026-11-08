@@ -1,8 +1,8 @@
 ---
 import { ARTICLES_DATA } from '@/lib/articles-data';
 
-// Top articles displayed on the homepage
-const featuredArticles = ARTICLES_DATA;
+// Top articles displayed on the homepage (max 3 articles)
+const featuredArticles = ARTICLES_DATA.slice(0, 3);
 ---
 
 <section id="yazilar" class="scroll-mt-24 py-20 sm:py-28 bg-gradient-to-b from-white via-slate-50 to-white border-t border-slate-200">
@@ -122,14 +122,48 @@ const featuredArticles = ARTICLES_DATA;
     const container = document.getElementById('home-articles-container');
     if (!container) return;
 
+    // Checks if article was published today (disappears tomorrow)
+    function isArticleNew(dateStr) {
+      if (!dateStr) return false;
+      const str = String(dateStr).trim();
+      if (str.toLowerCase() === 'bugün' || str.toLowerCase() === 'yeni') return true;
+
+      const now = new Date();
+      const trMonths = {
+        'ocak': 0, 'şubat': 1, 'mart': 2, 'nisan': 3, 'mayıs': 4, 'haziran': 5,
+        'temmuz': 6, 'ağustos': 7, 'eylül': 8, 'ekim': 9, 'kasım': 10, 'aralık': 11
+      };
+
+      const m = str.match(/^(\d{1,2})\s+([a-zA-ZçÇğĞıİöÖşŞüÜ]+)\s+(\d{4})/i);
+      if (m) {
+        const day = parseInt(m[1], 10);
+        const monthKey = m[2].toLowerCase();
+        const year = parseInt(m[3], 10);
+
+        if (monthKey in trMonths) {
+          const artDate = new Date(year, trMonths[monthKey], day);
+          const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+          return artDate.getTime() === todayDate.getTime();
+        }
+      }
+
+      const parsed = Date.parse(str);
+      if (!isNaN(parsed)) {
+        const diffHours = (now.getTime() - parsed) / (1000 * 60 * 60);
+        return diffHours >= 0 && diffHours < 24;
+      }
+
+      return false;
+    }
+
     const PB_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
       ? 'http://127.0.0.1:8090'
       : '';
 
     try {
-      let res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records?sort=-id&perPage=6`);
+      let res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records?sort=-id&perPage=3`);
       if (!res.ok) {
-        res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records?perPage=6`);
+        res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records?perPage=3`);
       }
       if (res.ok) {
         const data = await res.json();
@@ -148,6 +182,7 @@ const featuredArticles = ARTICLES_DATA;
             const tmp = document.createElement('div');
             tmp.innerHTML = item.ozet || '';
             const plainText = (tmp.querySelector('p')?.innerText || tmp.innerText || item.baslik).slice(0, 180) + '...';
+            const isNew = isArticleNew(item.tarih);
 
             const cardHtml = `
               <article class="home-article-card rounded-3xl bg-white border border-sky-200 p-6 sm:p-8 shadow-sm hover:shadow-md transition-all duration-200 group ring-1 ring-sky-100">
@@ -156,9 +191,11 @@ const featuredArticles = ARTICLES_DATA;
                     <span class="px-2.5 py-1 rounded-md text-[11px] font-bold border bg-sky-50 text-sky-800 border-sky-300">
                       ${item.kategori || 'Site Yönetimi'}
                     </span>
-                    <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500 text-white flex items-center gap-1">
-                      <span class="w-1 h-1 rounded-full bg-white animate-pulse"></span> Yeni
-                    </span>
+                    ${isNew ? `
+                      <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500 text-white flex items-center gap-1 shadow-xs">
+                        <span class="w-1 h-1 rounded-full bg-white animate-pulse"></span> Yeni
+                      </span>
+                    ` : ''}
                     <span class="text-xs text-slate-400">• ${item.okumaSuresi || '4 dk okuma'}</span>
                   </div>
                   <span class="text-xs text-slate-400 font-medium">${item.tarih || 'Güncel'}</span>
@@ -192,6 +229,12 @@ const featuredArticles = ARTICLES_DATA;
           if (newCards.length > 0) {
             container.insertAdjacentHTML('afterbegin', newCards.join(''));
           }
+
+          // Landing page'de tam olarak 3 makale gösterilsin
+          const allCards = container.querySelectorAll('.home-article-card');
+          allCards.forEach((card, idx) => {
+            if (idx >= 3) card.remove();
+          });
         }
       }
     } catch (e) {

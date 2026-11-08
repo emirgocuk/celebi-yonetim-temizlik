@@ -7,9 +7,26 @@ const title = 'Adana Site Yönetimi & Temizlik Rehberi | Çelebi Yönetim';
 const description = 'Adana apartman ve site yönetimi, Kat Mülkiyeti Kanunu (KMK) mevzuatı, aidat tahsilatı ve profesyonel temizlik standartları üzerine uzman rehber makaleleri.';
 
 const categories = ['Tümü', 'Site Yönetimi', 'Hukuk & İcra', 'Kurumsal Temizlik', 'İnşaat Temizliği', 'Dış Cephe & Vinç', 'Apartman Hijyeni'];
+
+const staticArticlesJson = JSON.stringify(ARTICLES_DATA.map(a => ({
+  slug: a.slug,
+  title: a.title,
+  category: a.category,
+  tag: a.tag,
+  tagColor: a.tagColor,
+  readTime: a.readTime,
+  date: a.publishDate,
+  image: a.image,
+  summary: a.summary,
+  author: a.author.name,
+  keyTakeaways: a.keyTakeaways,
+  isNew: false
+})));
 ---
 
 <BaseLayout title={title} description={description}>
+  <!-- Static Articles Data Bridge -->
+  <div id="static-articles-data" data-articles={staticArticlesJson} class="hidden"></div>
   <!-- Page Header -->
   <section class="pt-10 pb-14 sm:pt-16 sm:pb-20 bg-gradient-to-b from-sky-50/60 via-white to-slate-50 border-b border-slate-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
@@ -53,11 +70,22 @@ const categories = ['Tümü', 'Site Yönetimi', 'Hukuk & İcra', 'Kurumsal Temiz
     </div>
   </section>
 
-  <!-- Articles Grid -->
-  <section class="py-16 sm:py-24 bg-white">
+  <!-- Articles Grid & Numbered Pagination -->
+  <section id="yazilar-section" class="py-16 sm:py-24 bg-white scroll-mt-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      
+      <!-- Counter & Page Status Bar -->
+      <div class="flex items-center justify-between mb-8 pb-4 border-b border-slate-100 flex-wrap gap-3">
+        <div id="articles-count-info" class="text-xs sm:text-sm text-slate-500 font-medium">
+          Toplam <strong class="text-slate-900 font-bold" id="articles-total-count">{ARTICLES_DATA.length}</strong> rehber makale listeleniyor
+        </div>
+        <div id="articles-page-indicator" class="text-xs text-sky-800 font-bold bg-sky-50 px-3 py-1 rounded-full border border-sky-200">
+          Sayfa 1
+        </div>
+      </div>
+
       <div id="articles-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {ARTICLES_DATA.map((article) => (
+        {ARTICLES_DATA.slice(0, 9).map((article) => (
           <article
             data-article-category={article.category}
             class="article-card rounded-3xl bg-white border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group"
@@ -125,6 +153,12 @@ const categories = ['Tümü', 'Site Yönetimi', 'Hukuk & İcra', 'Kurumsal Temiz
           </article>
         ))}
       </div>
+
+      <!-- Numbered Pagination Bar: 1 - 2 - 3 ... -->
+      <div id="articles-pagination" class="mt-14 flex items-center justify-center gap-2 flex-wrap">
+        <!-- Injected via JavaScript -->
+      </div>
+
     </div>
   </section>
 
@@ -162,167 +196,306 @@ const categories = ['Tümü', 'Site Yönetimi', 'Hukuk & İcra', 'Kurumsal Temiz
   </section>
 </BaseLayout>
 
-<!-- Client-side Category Filter & Live PocketBase Hydration Script -->
+<!-- Client-side Category Filter & Numbered Pagination Script (9 Items per page) -->
 <script is:inline>
   (async () => {
     const container = document.getElementById('articles-container');
+    const paginationContainer = document.getElementById('articles-pagination');
     const filterBtns = document.querySelectorAll('.category-filter-btn');
+    const articlesTotalCount = document.getElementById('articles-total-count');
+    const articlesPageIndicator = document.getElementById('articles-page-indicator');
+    const staticDataEl = document.getElementById('static-articles-data');
 
-    function applyFilter(category) {
-      const allCards = document.querySelectorAll('.article-card');
-      allCards.forEach((card) => {
-        const cardCat = card.getAttribute('data-article-category');
-        if (category === 'Tümü' || cardCat === category) {
-          card.classList.remove('hidden');
-        } else {
-          card.classList.add('hidden');
+    // Checks if article was published today (disappears tomorrow)
+    function isArticleNew(dateStr) {
+      if (!dateStr) return false;
+      const str = String(dateStr).trim();
+      if (str.toLowerCase() === 'bugün' || str.toLowerCase() === 'yeni') return true;
+
+      const now = new Date();
+      const trMonths = {
+        'ocak': 0, 'şubat': 1, 'mart': 2, 'nisan': 3, 'mayıs': 4, 'haziran': 5,
+        'temmuz': 6, 'ağustos': 7, 'eylül': 8, 'ekim': 9, 'kasım': 10, 'aralık': 11
+      };
+
+      const m = str.match(/^(\d{1,2})\s+([a-zA-ZçÇğĞıİöÖşŞüÜ]+)\s+(\d{4})/i);
+      if (m) {
+        const day = parseInt(m[1], 10);
+        const monthKey = m[2].toLowerCase();
+        const year = parseInt(m[3], 10);
+
+        if (monthKey in trMonths) {
+          const artDate = new Date(year, trMonths[monthKey], day);
+          const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+          return artDate.getTime() === todayDate.getTime();
         }
+      }
+
+      const parsed = Date.parse(str);
+      if (!isNaN(parsed)) {
+        const diffHours = (now.getTime() - parsed) / (1000 * 60 * 60);
+        return diffHours >= 0 && diffHours < 24;
+      }
+
+      return false;
+    }
+
+    // Static articles loaded from server bridge
+    let allArticlesList = [];
+    try {
+      if (staticDataEl && staticDataEl.dataset.articles) {
+        allArticlesList = JSON.parse(staticDataEl.dataset.articles);
+      }
+    } catch (e) {
+      console.warn('Static articles parse error', e);
+    }
+
+    const ITEMS_PER_PAGE = 9;
+    let currentPage = 1;
+    let currentCategory = 'Tümü';
+
+    function getFilteredArticles() {
+      if (currentCategory === 'Tümü') return allArticlesList;
+      return allArticlesList.filter(a => a.category === currentCategory);
+    }
+
+    function renderArticles() {
+      if (!container) return;
+      const filtered = getFilteredArticles();
+      const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
+
+      if (currentPage > totalPages) currentPage = totalPages;
+      if (currentPage < 1) currentPage = 1;
+
+      if (articlesTotalCount) articlesTotalCount.innerText = filtered.length;
+      if (articlesPageIndicator) articlesPageIndicator.innerText = `Sayfa ${currentPage} / ${totalPages}`;
+
+      const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+      const pageItems = filtered.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+      if (pageItems.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full py-16 text-center text-slate-400">
+            Bu kategoride henüz makale bulunmuyor.
+          </div>
+        `;
+        if (paginationContainer) paginationContainer.innerHTML = '';
+        return;
+      }
+
+      container.innerHTML = pageItems.map(item => `
+        <article
+          data-article-category="${item.category}"
+          class="article-card rounded-3xl bg-white border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group"
+        >
+          <div>
+            <!-- Article Cover Photo -->
+            <div class="relative h-52 overflow-hidden bg-slate-100">
+              <img
+                src="${item.image}"
+                alt="${item.title}"
+                width="500"
+                height="300"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                loading="lazy"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent"></div>
+              <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[11px] font-bold border backdrop-blur-md bg-white/95 text-sky-800 border-sky-300 shadow-xs">
+                ${item.tag || item.category}
+              </span>
+              ${item.isNew ? `
+                <span class="absolute top-3 right-3 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500 text-white shadow-xs flex items-center gap-1">
+                  <span class="w-1 h-1 rounded-full bg-white animate-pulse"></span> Yeni
+                </span>
+              ` : ''}
+              <span class="absolute bottom-3 right-3 px-2 py-0.5 rounded-md text-[10px] font-semibold text-white/90 bg-slate-900/60 backdrop-blur-md">
+                ${item.readTime}
+              </span>
+            </div>
+
+            <!-- Article Content Summary -->
+            <div class="p-6">
+              <div class="text-[11px] font-semibold text-sky-700 uppercase tracking-wider mb-2">
+                ${item.category} • ${item.date}
+              </div>
+              
+              <h2 class="text-lg font-bold text-slate-900 mb-3 leading-snug group-hover:text-sky-700 transition-colors">
+                <a href="/yazilar/oku?slug=${item.slug}">
+                  ${item.title}
+                </a>
+              </h2>
+
+              <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-4 line-clamp-3">
+                ${item.summary}
+              </p>
+
+              <!-- Key Takeaways / Trust Indicators -->
+              <div class="space-y-1.5 pt-3 border-t border-slate-100 text-[11px] text-slate-600">
+                ${(item.keyTakeaways || ['634 Sayılı KMK Mevzuatı ile Tam Uyumlu', 'Adana Yerel Site Yönetimi Standartları']).slice(0, 2).map(t => `
+                  <div class="flex items-center gap-2">
+                    <span class="text-emerald-600 font-bold">✓</span>
+                    <span class="truncate">${t}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+
+          <!-- Card Bottom Bar -->
+          <div class="p-6 pt-0 border-t border-slate-100 mt-4 flex items-center justify-between">
+            <span class="text-[11px] text-slate-500">${item.author}</span>
+            <a
+              href="/yazilar/oku?slug=${item.slug}"
+              class="inline-flex items-center gap-1 text-xs font-bold text-sky-700 hover:text-sky-900 transition-colors"
+            >
+              <span>Yazıyı Oku</span>
+              <span>→</span>
+            </a>
+          </div>
+        </article>
+      `).join('');
+
+      renderPagination(totalPages);
+    }
+
+    function renderPagination(totalPages) {
+      if (!paginationContainer) return;
+      if (totalPages <= 1) {
+        paginationContainer.innerHTML = '';
+        return;
+      }
+
+      let html = `
+        <button
+          type="button"
+          data-page="${currentPage - 1}"
+          class="px-4 py-2 text-xs font-bold rounded-2xl border transition-all cursor-pointer flex items-center gap-1.5 ${
+            currentPage === 1
+              ? 'opacity-40 pointer-events-none bg-slate-50 border-slate-200 text-slate-400'
+              : 'bg-white hover:bg-slate-100 border-slate-300 text-slate-700 shadow-2xs'
+          }"
+        >
+          <span>←</span>
+          <span>Önceki</span>
+        </button>
+      `;
+
+      for (let p = 1; p <= totalPages; p++) {
+        const isActive = p === currentPage;
+        html += `
+          <button
+            type="button"
+            data-page="${p}"
+            class="w-10 h-10 text-xs font-bold rounded-2xl border transition-all cursor-pointer flex items-center justify-center ${
+              isActive
+                ? 'bg-slate-900 text-white border-slate-900 shadow-sm scale-105'
+                : 'bg-white hover:bg-slate-100 border-slate-200 text-slate-700 hover:border-slate-400 shadow-2xs'
+            }"
+          >
+            ${p}
+          </button>
+        `;
+      }
+
+      html += `
+        <button
+          type="button"
+          data-page="${currentPage + 1}"
+          class="px-4 py-2 text-xs font-bold rounded-2xl border transition-all cursor-pointer flex items-center gap-1.5 ${
+            currentPage === totalPages
+              ? 'opacity-40 pointer-events-none bg-slate-50 border-slate-200 text-slate-400'
+              : 'bg-white hover:bg-slate-100 border-slate-300 text-slate-700 shadow-2xs'
+          }"
+        >
+          <span>Sonraki</span>
+          <span>→</span>
+        </button>
+      `;
+
+      paginationContainer.innerHTML = html;
+
+      paginationContainer.querySelectorAll('[data-page]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const target = parseInt(btn.getAttribute('data-page'), 10);
+          if (!isNaN(target) && target >= 1 && target <= totalPages && target !== currentPage) {
+            currentPage = target;
+            renderArticles();
+            const sec = document.getElementById('yazilar-section') || container;
+            sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
       });
     }
 
-    function initFilterButtons() {
-      filterBtns.forEach((btn) => {
-        btn.onclick = () => {
-          const cat = btn.getAttribute('data-category');
-          filterBtns.forEach((b) => {
-            b.className = 'category-filter-btn shrink-0 px-4 py-2 text-xs font-bold rounded-full border transition-all cursor-pointer bg-white text-slate-700 border-slate-200 hover:border-slate-400 hover:bg-slate-50';
-          });
-          btn.className = 'category-filter-btn shrink-0 px-4 py-2 text-xs font-bold rounded-full border transition-all cursor-pointer bg-slate-900 text-white border-slate-900 shadow-sm';
-          applyFilter(cat);
-        };
+    // Category filter button click handlers
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const cat = btn.getAttribute('data-category');
+        filterBtns.forEach(b => {
+          b.className = 'category-filter-btn shrink-0 px-4 py-2 text-xs font-bold rounded-full border transition-all cursor-pointer bg-white text-slate-700 border-slate-200 hover:border-slate-400 hover:bg-slate-50';
+        });
+        btn.className = 'category-filter-btn shrink-0 px-4 py-2 text-xs font-bold rounded-full border transition-all cursor-pointer bg-slate-900 text-white border-slate-900 shadow-sm';
+        currentCategory = cat;
+        currentPage = 1;
+        renderArticles();
       });
-    }
+    });
 
-    initFilterButtons();
+    // Initial render with static articles
+    renderArticles();
 
-    // Live PocketBase Article Fetch & Chronological Hydration
+    // Fetch and hydrate with PocketBase articles
     const PB_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
       ? 'http://127.0.0.1:8090'
       : '';
 
     try {
-      let res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records?sort=-id&perPage=50`);
+      let res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records?sort=-id&perPage=100`);
       if (!res.ok) {
-        res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records?perPage=50`);
+        res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records?perPage=100`);
       }
       if (res.ok) {
         const data = await res.json();
         const pbArticles = data.items || [];
+        if (pbArticles.length > 0) {
+          const existingSlugs = new Set(allArticlesList.map(a => a.slug));
+          const newItems = [];
 
-        if (pbArticles.length > 0 && container) {
-          // Collect existing slugs in static HTML to avoid duplicates
-          const existingSlugs = new Set();
-          document.querySelectorAll('.article-card').forEach((card) => {
-            const link = card.querySelector('a[href*="/yazilar/"]');
-            if (link) {
-              const href = link.getAttribute('href');
-              const match = href.match(/slug=([^&]+)/) || href.match(/\/yazilar\/([^/?#]+)/);
-              if (match) existingSlugs.add(match[1]);
-            }
-          });
-
-          // Prepend new PocketBase articles in newest-first order
-          const newHtmlFragments = [];
           for (const item of pbArticles) {
             if (existingSlugs.has(item.slug)) continue;
+            existingSlugs.add(item.slug);
 
-            const category = item.kategori || 'Site Yönetimi';
-            const readTime = item.okumaSuresi || '4 dk okuma';
-            const dateStr = item.tarih || 'Güncel';
-            const cover = item.kapakGorsel || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80';
-            const author = item.kaynak || 'Çelebi Hukuk Servisi';
+            const tmp = document.createElement('div');
+            tmp.innerHTML = item.ozet || '';
+            const plainText = (tmp.querySelector('p')?.innerText || tmp.innerText || item.baslik).slice(0, 180) + '...';
 
-            // Extract plain text excerpt from HTML
-            const tmpDiv = document.createElement('div');
-            tmpDiv.innerHTML = item.ozet || '';
-            const plainExcerpt = (tmpDiv.querySelector('p')?.innerText || tmpDiv.innerText || item.baslik).slice(0, 180) + '...';
-
-            const cardHtml = `
-              <article
-                data-article-category="${category}"
-                class="article-card rounded-3xl bg-white border border-sky-200/90 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group ring-1 ring-sky-100"
-              >
-                <div>
-                  <!-- Article Cover Photo -->
-                  <div class="relative h-52 overflow-hidden bg-slate-100">
-                    <img
-                      src="${cover}"
-                      alt="${item.baslik}"
-                      width="500"
-                      height="300"
-                      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      loading="lazy"
-                    />
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent"></div>
-                    <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[11px] font-bold border backdrop-blur-md bg-white/95 text-sky-800 border-sky-300 shadow-xs">
-                      ${category}
-                    </span>
-                    <span class="absolute top-3 right-3 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500 text-white shadow-xs flex items-center gap-1">
-                      <span class="w-1 h-1 rounded-full bg-white animate-pulse"></span> Yeni
-                    </span>
-                    <span class="absolute bottom-3 right-3 px-2 py-0.5 rounded-md text-[10px] font-semibold text-white/90 bg-slate-900/60 backdrop-blur-md">
-                      ${readTime}
-                    </span>
-                  </div>
-
-                  <!-- Article Content Summary -->
-                  <div class="p-6">
-                    <div class="text-[11px] font-semibold text-sky-700 uppercase tracking-wider mb-2">
-                      ${category} • ${dateStr}
-                    </div>
-                    
-                    <h2 class="text-lg font-bold text-slate-900 mb-3 leading-snug group-hover:text-sky-700 transition-colors">
-                      <a href="/yazilar/oku?slug=${item.slug}">
-                        ${item.baslik}
-                      </a>
-                    </h2>
-
-                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-4 line-clamp-3">
-                      ${plainExcerpt}
-                    </p>
-
-                    <!-- Trust indicators -->
-                    <div class="space-y-1.5 pt-3 border-t border-slate-100 text-[11px] text-slate-600">
-                      <div class="flex items-center gap-2">
-                        <span class="text-emerald-600 font-bold">✓</span>
-                        <span class="truncate">634 Sayılı KMK Mevzuatı ile Tam Uyumlu</span>
-                      </div>
-                      <div class="flex items-center gap-2">
-                        <span class="text-emerald-600 font-bold">✓</span>
-                        <span class="truncate">Adana Yerel Site Yönetimi Standartları</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Card Bottom Bar -->
-                <div class="p-6 pt-0 border-t border-slate-100 mt-4 flex items-center justify-between">
-                  <span class="text-[11px] text-slate-500">${author}</span>
-                  <a
-                    href="/yazilar/oku?slug=${item.slug}"
-                    class="inline-flex items-center gap-1 text-xs font-bold text-sky-700 hover:text-sky-900 transition-colors"
-                  >
-                    <span>Yazıyı Oku</span>
-                    <span>→</span>
-                  </a>
-                </div>
-              </article>
-            `;
-            newHtmlFragments.push(cardHtml);
+            newItems.push({
+              slug: item.slug,
+              title: item.baslik,
+              category: item.kategori || 'Site Yönetimi',
+              tag: item.kategori || 'Rehber',
+              tagColor: 'text-sky-800 border-sky-300',
+              readTime: item.okumaSuresi || '4 dk okuma',
+              date: item.tarih || 'Güncel',
+              image: item.kapakGorsel || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80',
+              summary: plainText,
+              author: item.kaynak || 'Çelebi Hukuk Servisi',
+              keyTakeaways: ['634 Sayılı KMK Mevzuatı ile Tam Uyumlu', 'Adana Yerel Site Yönetimi Standartları'],
+              isNew: isArticleNew(item.tarih)
+            });
           }
 
-          if (newHtmlFragments.length > 0) {
-            container.insertAdjacentHTML('afterbegin', newHtmlFragments.join(''));
-            // Reapply active filter
-            const activeBtn = document.querySelector('.category-filter-btn.bg-slate-900');
-            const activeCat = activeBtn ? activeBtn.getAttribute('data-category') : 'Tümü';
-            applyFilter(activeCat);
+          if (newItems.length > 0) {
+            // New PocketBase articles are prepended to the list (newest first)
+            allArticlesList = [...newItems, ...allArticlesList];
+            renderArticles();
           }
         }
       }
     } catch (e) {
-      console.warn('PocketBase live articles fetch error:', e);
+      console.warn('PocketBase pagination fetch error:', e);
     }
   })();
+</script>
 </script>
 

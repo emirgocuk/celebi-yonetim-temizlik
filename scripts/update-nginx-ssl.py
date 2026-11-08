@@ -23,6 +23,22 @@ nginx_conf = """server {
     root /var/www/celebiyonetim/html;
     index index.html;
 
+    # Automatic HTTPS Redirection
+    # Handles both direct connections and Cloudflare proxy requests safely
+    set $redirect_to_https 0;
+    if ($scheme = "http") {
+        set $redirect_to_https 1;
+    }
+    if ($http_x_forwarded_proto = "http") {
+        set $redirect_to_https 1;
+    }
+    if ($http_x_forwarded_proto = "https") {
+        set $redirect_to_https 0;
+    }
+    if ($redirect_to_https = 1) {
+        return 301 https://$host$request_uri;
+    }
+
     # Gzip Compression
     gzip on;
     gzip_vary on;

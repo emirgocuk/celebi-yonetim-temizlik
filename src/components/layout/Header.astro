@@ -96,15 +96,15 @@ const navLinks = [
         <button
           id="mobile-menu-toggle"
           type="button"
-          class="md:hidden p-2 text-slate-700 hover:text-slate-950 hover:bg-white/60 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600"
+          class="md:hidden w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-slate-800 hover:text-slate-950 bg-slate-100/90 hover:bg-slate-200/90 border border-slate-200/90 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 cursor-pointer shadow-sm active:scale-95"
           aria-expanded="false"
           aria-controls="mobile-nav-panel"
           aria-label="Menüyü Aç"
         >
-          <svg id="hamburger-icon" class="w-5 h-5 stroke-current stroke-2" viewBox="0 0 24 24" fill="none">
+          <svg id="hamburger-icon" class="w-5 h-5 stroke-current stroke-2 pointer-events-none" viewBox="0 0 24 24" fill="none">
             <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/>
           </svg>
-          <svg id="close-icon" class="w-5 h-5 stroke-current stroke-2 hidden" viewBox="0 0 24 24" fill="none">
+          <svg id="close-icon" class="w-5 h-5 stroke-current stroke-2 hidden pointer-events-none" viewBox="0 0 24 24" fill="none">
             <path d="M6 18L18 6M6 6l12 12" stroke-linecap="round"/>
           </svg>
         </button>
@@ -114,7 +114,7 @@ const navLinks = [
     <!-- Mobile Drawer -->
     <div
       id="mobile-nav-panel"
-      class="md:hidden hidden mt-2 p-5 rounded-3xl bg-white/95 border border-slate-200/90 shadow-2xl backdrop-blur-2xl transition-all duration-300 text-slate-900"
+      class="md:hidden hidden mt-2 p-5 rounded-3xl bg-white/98 border border-slate-200/90 shadow-2xl backdrop-blur-2xl transition-all duration-300 text-slate-900 max-h-[calc(100vh-5.5rem)] overflow-y-auto"
     >
       <div class="flex flex-col gap-1.5">
         {navLinks.map((link) => (
@@ -157,18 +157,85 @@ const navLinks = [
 <!-- Highly Accurate Scrollspy & Programmatic Smooth Scroll Coordinator -->
 <script is:inline>
   (() => {
-    function initScrollCoordinator() {
-      const navCard = document.getElementById('header-nav-card');
-      const track = document.getElementById('nav-pill-track');
-      const indicator = document.getElementById('sliding-indicator');
-      const navAnchors = document.querySelectorAll('#nav-pill-track .nav-anchor');
+    let mobileMenuInitialized = false;
+
+    function setupMobileMenu() {
+      if (mobileMenuInitialized) return;
+
       const toggleBtn = document.getElementById('mobile-menu-toggle');
       const mobilePanel = document.getElementById('mobile-nav-panel');
       const hamburger = document.getElementById('hamburger-icon');
       const closeIcon = document.getElementById('close-icon');
+
+      if (!toggleBtn || !mobilePanel) return;
+      mobileMenuInitialized = true;
+
+      function openMenu() {
+        mobilePanel.classList.remove('hidden');
+        if (hamburger) hamburger.classList.add('hidden');
+        if (closeIcon) closeIcon.classList.remove('hidden');
+        toggleBtn.setAttribute('aria-expanded', 'true');
+        toggleBtn.setAttribute('aria-label', 'Menüyü Kapat');
+      }
+
+      function closeMenu() {
+        mobilePanel.classList.add('hidden');
+        if (hamburger) hamburger.classList.remove('hidden');
+        if (closeIcon) closeIcon.classList.add('hidden');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+        toggleBtn.setAttribute('aria-label', 'Menüyü Aç');
+      }
+
+      toggleBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const isOpen = !mobilePanel.classList.contains('hidden');
+        if (isOpen) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      });
+
+      // Close when clicking anywhere outside
+      document.addEventListener('click', (e) => {
+        if (!mobilePanel.classList.contains('hidden')) {
+          if (!mobilePanel.contains(e.target) && !toggleBtn.contains(e.target)) {
+            closeMenu();
+          }
+        }
+      });
+
+      // Close on Escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !mobilePanel.classList.contains('hidden')) {
+          closeMenu();
+        }
+      });
+
+      // Close when any link inside mobilePanel is clicked
+      mobilePanel.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => {
+          closeMenu();
+        });
+      });
+    }
+
+    let scrollCoordinatorInitialized = false;
+
+    function initScrollCoordinator() {
+      setupMobileMenu();
+
+      if (scrollCoordinatorInitialized) return;
+
+      const navCard = document.getElementById('header-nav-card');
+      const track = document.getElementById('nav-pill-track');
+      const indicator = document.getElementById('sliding-indicator');
+      const navAnchors = document.querySelectorAll('#nav-pill-track .nav-anchor');
       const mobileLinks = document.querySelectorAll('.mobile-nav-link');
 
       if (!navCard) return;
+      scrollCoordinatorInitialized = true;
 
       const isHomePage = window.location.pathname === '/' || window.location.pathname === '';
       const sectionIds = ['site-yonetimi', 'temizlik', 'neden-biz', 'yorumlar', 'yazilar', 'iletisim'];
@@ -306,10 +373,6 @@ const navLinks = [
               const targetId = href.substring(1);
               if (scrollToSection(targetId)) {
                 e.preventDefault();
-                if (mobilePanel) mobilePanel.classList.add('hidden');
-                if (hamburger) hamburger.classList.remove('hidden');
-                if (closeIcon) closeIcon.classList.add('hidden');
-                if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
                 history.pushState(null, null, href);
               }
             }
@@ -410,24 +473,6 @@ const navLinks = [
       // Run on initial load
       setTimeout(updateScrollspy, 50);
       setTimeout(updateScrollspy, 250);
-
-      // Mobile menu toggle
-      if (toggleBtn && mobilePanel) {
-        toggleBtn.addEventListener('click', () => {
-          const isOpen = !mobilePanel.classList.contains('hidden');
-          if (isOpen) {
-            mobilePanel.classList.add('hidden');
-            hamburger.classList.remove('hidden');
-            closeIcon.classList.add('hidden');
-            toggleBtn.setAttribute('aria-expanded', 'false');
-          } else {
-            mobilePanel.classList.remove('hidden');
-            hamburger.classList.add('hidden');
-            closeIcon.classList.remove('hidden');
-            toggleBtn.setAttribute('aria-expanded', 'true');
-          }
-        });
-      }
     }
 
     if (document.readyState === 'loading') {

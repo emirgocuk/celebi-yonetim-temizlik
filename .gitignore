@@ -11,6 +11,7 @@ dist/
 # PocketBase local database & uploads
 pb_data/
 pb_public/
+bin/
 
 # Temporary / Scratch files
 scratch/

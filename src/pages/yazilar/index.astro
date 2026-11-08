@@ -89,7 +89,7 @@ const categories = ['Tümü', 'Site Yönetimi', 'Hukuk & İcra', 'Kurumsal Temiz
                 </div>
                 
                 <h2 class="text-lg font-bold text-slate-900 mb-3 leading-snug group-hover:text-sky-700 transition-colors">
-                  <a href={`/yazilar/${article.slug}`}>
+                  <a href={`/yazilar/oku?slug=${article.slug}`}>
                     {article.title}
                   </a>
                 </h2>
@@ -114,7 +114,7 @@ const categories = ['Tümü', 'Site Yönetimi', 'Hukuk & İcra', 'Kurumsal Temiz
             <div class="p-6 pt-0 border-t border-slate-100 mt-4 flex items-center justify-between">
               <span class="text-[11px] text-slate-500">{article.author.name}</span>
               <a
-                href={`/yazilar/${article.slug}`}
+                href={`/yazilar/oku?slug=${article.slug}`}
                 class="inline-flex items-center gap-1 text-xs font-bold text-sky-700 hover:text-sky-900 transition-colors"
               >
                 <span>Yazıyı Oku</span>
@@ -162,31 +162,164 @@ const categories = ['Tümü', 'Site Yönetimi', 'Hukuk & İcra', 'Kurumsal Temiz
   </section>
 </BaseLayout>
 
-<!-- Client-side Category Filter Script (< 300 bytes) -->
+<!-- Client-side Category Filter & Live PocketBase Hydration Script -->
 <script is:inline>
-  (() => {
+  (async () => {
+    const container = document.getElementById('articles-container');
     const filterBtns = document.querySelectorAll('.category-filter-btn');
-    const cards = document.querySelectorAll('.article-card');
 
-    filterBtns.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const cat = btn.getAttribute('data-category');
-        
-        filterBtns.forEach((b) => {
-          b.className = 'category-filter-btn shrink-0 px-4 py-2 text-xs font-bold rounded-full border transition-all cursor-pointer bg-white text-slate-700 border-slate-200 hover:border-slate-400 hover:bg-slate-50';
-        });
-        btn.className = 'category-filter-btn shrink-0 px-4 py-2 text-xs font-bold rounded-full border transition-all cursor-pointer bg-slate-900 text-white border-slate-900 shadow-sm';
-
-        cards.forEach((card) => {
-          const cardCat = card.getAttribute('data-article-category');
-          if (cat === 'Tümü' || cardCat === cat) {
-            card.classList.remove('hidden');
-          } else {
-            card.classList.add('hidden');
-          }
-        });
+    function applyFilter(category) {
+      const allCards = document.querySelectorAll('.article-card');
+      allCards.forEach((card) => {
+        const cardCat = card.getAttribute('data-article-category');
+        if (category === 'Tümü' || cardCat === category) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
       });
-    });
+    }
+
+    function initFilterButtons() {
+      filterBtns.forEach((btn) => {
+        btn.onclick = () => {
+          const cat = btn.getAttribute('data-category');
+          filterBtns.forEach((b) => {
+            b.className = 'category-filter-btn shrink-0 px-4 py-2 text-xs font-bold rounded-full border transition-all cursor-pointer bg-white text-slate-700 border-slate-200 hover:border-slate-400 hover:bg-slate-50';
+          });
+          btn.className = 'category-filter-btn shrink-0 px-4 py-2 text-xs font-bold rounded-full border transition-all cursor-pointer bg-slate-900 text-white border-slate-900 shadow-sm';
+          applyFilter(cat);
+        };
+      });
+    }
+
+    initFilterButtons();
+
+    // Live PocketBase Article Fetch & Chronological Hydration
+    const PB_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? 'http://127.0.0.1:8090'
+      : window.location.origin;
+
+    try {
+      const res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records?sort=-id&perPage=50`);
+      if (res.ok) {
+        const data = await res.json();
+        const pbArticles = data.items || [];
+
+        if (pbArticles.length > 0 && container) {
+          // Collect existing slugs in static HTML to avoid duplicates
+          const existingSlugs = new Set();
+          document.querySelectorAll('.article-card').forEach((card) => {
+            const link = card.querySelector('a[href*="/yazilar/"]');
+            if (link) {
+              const href = link.getAttribute('href');
+              const match = href.match(/slug=([^&]+)/) || href.match(/\/yazilar\/([^/?#]+)/);
+              if (match) existingSlugs.add(match[1]);
+            }
+          });
+
+          // Prepend new PocketBase articles in newest-first order
+          const newHtmlFragments = [];
+          for (const item of pbArticles) {
+            if (existingSlugs.has(item.slug)) continue;
+
+            const category = item.kategori || 'Site Yönetimi';
+            const readTime = item.okumaSuresi || '4 dk okuma';
+            const dateStr = item.tarih || 'Güncel';
+            const cover = item.kapakGorsel || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80';
+            const author = item.kaynak || 'Çelebi Hukuk Servisi';
+
+            // Extract plain text excerpt from HTML
+            const tmpDiv = document.createElement('div');
+            tmpDiv.innerHTML = item.ozet || '';
+            const plainExcerpt = (tmpDiv.querySelector('p')?.innerText || tmpDiv.innerText || item.baslik).slice(0, 180) + '...';
+
+            const cardHtml = `
+              <article
+                data-article-category="${category}"
+                class="article-card rounded-3xl bg-white border border-sky-200/90 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group ring-1 ring-sky-100"
+              >
+                <div>
+                  <!-- Article Cover Photo -->
+                  <div class="relative h-52 overflow-hidden bg-slate-100">
+                    <img
+                      src="${cover}"
+                      alt="${item.baslik}"
+                      width="500"
+                      height="300"
+                      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent"></div>
+                    <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[11px] font-bold border backdrop-blur-md bg-white/95 text-sky-800 border-sky-300 shadow-xs">
+                      ${category}
+                    </span>
+                    <span class="absolute top-3 right-3 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500 text-white shadow-xs flex items-center gap-1">
+                      <span class="w-1 h-1 rounded-full bg-white animate-pulse"></span> Yeni
+                    </span>
+                    <span class="absolute bottom-3 right-3 px-2 py-0.5 rounded-md text-[10px] font-semibold text-white/90 bg-slate-900/60 backdrop-blur-md">
+                      ${readTime}
+                    </span>
+                  </div>
+
+                  <!-- Article Content Summary -->
+                  <div class="p-6">
+                    <div class="text-[11px] font-semibold text-sky-700 uppercase tracking-wider mb-2">
+                      ${category} • ${dateStr}
+                    </div>
+                    
+                    <h2 class="text-lg font-bold text-slate-900 mb-3 leading-snug group-hover:text-sky-700 transition-colors">
+                      <a href="/yazilar/oku?slug=${item.slug}">
+                        ${item.baslik}
+                      </a>
+                    </h2>
+
+                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-4 line-clamp-3">
+                      ${plainExcerpt}
+                    </p>
+
+                    <!-- Trust indicators -->
+                    <div class="space-y-1.5 pt-3 border-t border-slate-100 text-[11px] text-slate-600">
+                      <div class="flex items-center gap-2">
+                        <span class="text-emerald-600 font-bold">✓</span>
+                        <span class="truncate">634 Sayılı KMK Mevzuatı ile Tam Uyumlu</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-emerald-600 font-bold">✓</span>
+                        <span class="truncate">Adana Yerel Site Yönetimi Standartları</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card Bottom Bar -->
+                <div class="p-6 pt-0 border-t border-slate-100 mt-4 flex items-center justify-between">
+                  <span class="text-[11px] text-slate-500">${author}</span>
+                  <a
+                    href="/yazilar/oku?slug=${item.slug}"
+                    class="inline-flex items-center gap-1 text-xs font-bold text-sky-700 hover:text-sky-900 transition-colors"
+                  >
+                    <span>Yazıyı Oku</span>
+                    <span>→</span>
+                  </a>
+                </div>
+              </article>
+            `;
+            newHtmlFragments.push(cardHtml);
+          }
+
+          if (newHtmlFragments.length > 0) {
+            container.insertAdjacentHTML('afterbegin', newHtmlFragments.join(''));
+            // Reapply active filter
+            const activeBtn = document.querySelector('.category-filter-btn.bg-slate-900');
+            const activeCat = activeBtn ? activeBtn.getAttribute('data-category') : 'Tümü';
+            applyFilter(activeCat);
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('PocketBase live articles fetch error:', e);
+    }
   })();
 </script>
 

@@ -1,0 +1,209 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { COMPANY_INFO } from '@/lib/fallback-data';
+import { ARTICLES_DATA } from '@/lib/articles-data';
+
+const title = 'Makale Detayı | Çelebi Yönetim ve Temizlik';
+const description = 'Adana profesyonel apartman, site yönetimi ve kurumsal temizlik hizmetleri rehber makalesi.';
+---
+
+<BaseLayout title={title} description={description}>
+  <!-- Dynamic Article Reader Canvas -->
+  <article class="pt-8 pb-16 sm:pt-14 sm:pb-24 bg-white min-h-[70vh]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
+      
+      <!-- Breadcrumbs -->
+      <nav class="flex items-center gap-2 text-xs text-slate-500 mb-6" aria-label="Ekmek Kırıntısı">
+        <a href="/" class="hover:text-sky-700 transition-colors">Ana Sayfa</a>
+        <span>/</span>
+        <a href="/yazilar" class="hover:text-sky-700 transition-colors">Sektörel Yazılar</a>
+        <span>/</span>
+        <span id="reader-breadcrumb-cat" class="text-slate-900 font-bold truncate max-w-[200px] sm:max-w-xs">Site Yönetimi</span>
+      </nav>
+
+      <!-- Category Pill & Read Meta -->
+      <div class="flex flex-wrap items-center gap-3 mb-4">
+        <span id="reader-category-pill" class="px-3 py-1 rounded-full text-xs font-bold border bg-sky-50 text-sky-800 border-sky-200">
+          Site Yönetimi
+        </span>
+        <span id="reader-read-time" class="text-xs text-slate-400 font-medium">• 4 dk okuma</span>
+        <span id="reader-date" class="text-xs text-slate-400 font-medium">• 08 Kasım 2026</span>
+      </div>
+
+      <!-- Main Title -->
+      <h1 id="reader-title" class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-[1.15] mb-6">
+        Makale Yükleniyor...
+      </h1>
+
+      <!-- Author Byline -->
+      <div class="flex items-center gap-3.5 pb-8 border-b border-slate-200">
+        <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-slate-900 via-slate-800 to-sky-900 text-white flex items-center justify-center font-bold text-sm shadow-sm border border-slate-200">
+          Ç
+        </div>
+        <div>
+          <div id="reader-author" class="text-sm font-bold text-slate-900">Çelebi Hukuk & Yönetim Kurulu</div>
+          <div class="text-xs text-slate-500">Kat Mülkiyeti Kanunu ve Tesis Yönetimi Uzmanı • Çelebi Yönetim</div>
+        </div>
+      </div>
+
+      <!-- Featured Image -->
+      <div id="reader-image-wrapper" class="my-8 rounded-3xl overflow-hidden shadow-xl border border-slate-200 max-h-[460px] bg-slate-100">
+        <img
+          id="reader-image"
+          src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80"
+          alt="Çelebi Yönetim Makale Görseli"
+          class="w-full h-full object-cover"
+          loading="eager"
+        />
+      </div>
+
+      <!-- Article Rich Content Body -->
+      <div id="reader-content" class="prose prose-slate max-w-none text-slate-700 leading-relaxed space-y-6 pt-4">
+        <div class="animate-pulse space-y-4">
+          <div class="h-4 bg-slate-200 rounded w-3/4"></div>
+          <div class="h-4 bg-slate-200 rounded"></div>
+          <div class="h-4 bg-slate-200 rounded w-5/6"></div>
+        </div>
+      </div>
+
+      <!-- In-Article Lead Generation Callout -->
+      <div class="my-12 p-8 rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-sky-950 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+        <div>
+          <span class="inline-block px-2.5 py-1 rounded-md text-[11px] font-bold bg-sky-900/80 text-sky-300 border border-sky-700 mb-2">
+            Adana Yerel Uzmanlık
+          </span>
+          <h3 class="text-xl font-bold mb-1">Apartmanınız İçin Profesyonel Destek Alın</h3>
+          <p class="text-xs text-slate-300">
+            Aidat tahsilatı, işletme projesi veya kurumsal temizlik için ücretsiz keşif ve teklif sunuyoruz.
+          </p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3 shrink-0">
+          <a
+            href="/#iletisim"
+            class="px-5 py-3 text-xs font-bold text-slate-900 bg-white hover:bg-sky-100 rounded-xl transition-all shadow-md text-center"
+          >
+            Teklif Alın
+          </a>
+          <a
+            href={`https://wa.me/${COMPANY_INFO.whatsapp}?text=${encodeURIComponent('Merhaba, web sitenizdeki makaleyi okudum. Apartman/site yönetimi veya temizlik hizmetleriniz için bilgi almak istiyorum.')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="px-5 py-3 text-xs font-bold text-emerald-300 bg-emerald-950/80 border border-emerald-500/40 hover:bg-emerald-900/80 rounded-xl transition-all text-center"
+          >
+            WhatsApp'tan Yazın
+          </a>
+        </div>
+      </div>
+
+      <!-- Back to all articles -->
+      <div class="pt-8 border-t border-slate-200 flex items-center justify-between">
+        <a href="/yazilar" class="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-sky-700 hover:text-sky-900 transition-colors">
+          <span>←</span>
+          <span>Tüm Rehber ve Sektörel Yazılara Dön</span>
+        </a>
+        <a href="/#iletisim" class="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-700 hover:text-slate-900 transition-colors">
+          <span>Ücretsiz Keşif Formu</span>
+          <span>→</span>
+        </a>
+      </div>
+
+    </div>
+  </article>
+</BaseLayout>
+
+<!-- Client-side PocketBase Article Loader -->
+<script is:inline define:vars={{ staticArticles: ARTICLES_DATA }}>
+  (async () => {
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get('slug');
+
+    const titleEl = document.getElementById('reader-title');
+    const contentEl = document.getElementById('reader-content');
+    const catPill = document.getElementById('reader-category-pill');
+    const breadcrumbCat = document.getElementById('reader-breadcrumb-cat');
+    const dateEl = document.getElementById('reader-date');
+    const readTimeEl = document.getElementById('reader-read-time');
+    const authorEl = document.getElementById('reader-author');
+    const imgEl = document.getElementById('reader-image');
+
+    if (!slug) {
+      if (titleEl) titleEl.innerText = 'Makale Bulunamadı';
+      if (contentEl) contentEl.innerHTML = '<p class="text-slate-500 text-sm">Lütfen geçerli bir makale bağlantısı seçin. <a href="/yazilar" class="text-sky-600 font-bold underline">Tüm yazılar listesine dön</a>.</p>';
+      return;
+    }
+
+    // 1. Check if matching static article first
+    const staticMatch = staticArticles.find(a => a.slug === slug);
+    if (staticMatch) {
+      document.title = `${staticMatch.title} | Çelebi Yönetim & Temizlik`;
+      if (titleEl) titleEl.innerText = staticMatch.title;
+      if (catPill) catPill.innerText = staticMatch.category;
+      if (breadcrumbCat) breadcrumbCat.innerText = staticMatch.category;
+      if (dateEl) dateEl.innerText = `• ${staticMatch.publishDate}`;
+      if (readTimeEl) readTimeEl.innerText = `• ${staticMatch.readTime}`;
+      if (authorEl) authorEl.innerText = `${staticMatch.author.name} (${staticMatch.author.role})`;
+      if (imgEl && staticMatch.image) imgEl.src = staticMatch.image;
+
+      let sectionsHtml = staticMatch.content.sections.map(s => `
+        <h2 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight pt-4">${s.heading}</h2>
+        ${s.paragraphs.map(p => `<p class="text-sm sm:text-base text-slate-600 leading-relaxed">${p}</p>`).join('')}
+        ${s.listItems && s.listItems.length ? `
+          <ul class="space-y-2 my-4 pl-2">
+            ${s.listItems.map(li => `<li class="flex items-start gap-2 text-xs sm:text-sm text-slate-700 font-medium"><span class="w-1.5 h-1.5 rounded-full bg-sky-600 mt-2 shrink-0"></span><span>${li}</span></li>`).join('')}
+          </ul>
+        ` : ''}
+      `).join('');
+
+      if (contentEl) {
+        contentEl.innerHTML = `
+          <p class="text-base sm:text-lg text-slate-700 font-normal leading-relaxed border-l-4 border-sky-600 pl-4 py-1 italic bg-sky-50/30 rounded-r-xl">${staticMatch.content.lead}</p>
+          ${sectionsHtml}
+        `;
+      }
+      return;
+    }
+
+    // 2. Fetch from PocketBase
+    const PB_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? 'http://127.0.0.1:8090'
+      : window.location.origin;
+
+    try {
+      const filterQuery = encodeURIComponent(`slug = "${slug}"`);
+      const res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records?filter=${filterQuery}`);
+      if (!res.ok) throw new Error('PocketBase request failed');
+      const data = await res.json();
+
+      if (data.items && data.items.length > 0) {
+        const item = data.items[0];
+        document.title = `${item.baslik} | Çelebi Yönetim & Temizlik`;
+
+        if (titleEl) titleEl.innerText = item.baslik;
+        if (catPill) catPill.innerText = item.kategori || 'Site Yönetimi';
+        if (breadcrumbCat) breadcrumbCat.innerText = item.kategori || 'Site Yönetimi';
+        if (dateEl) dateEl.innerText = `• ${item.tarih || 'Güncel'}`;
+        if (readTimeEl) readTimeEl.innerText = `• ${item.okumaSuresi || '4 dk okuma'}`;
+        if (authorEl) authorEl.innerText = item.kaynak || 'Çelebi Hukuk & Yönetim Kurulu';
+        if (imgEl && item.kapakGorsel) imgEl.src = item.kapakGorsel;
+
+        if (contentEl) {
+          contentEl.innerHTML = item.ozet;
+        }
+        return;
+      }
+    } catch (e) {
+      console.warn('PocketBase fetch error:', e);
+    }
+
+    if (titleEl) titleEl.innerText = 'Makale Bulunamadı';
+    if (contentEl) {
+      contentEl.innerHTML = `
+        <div class="p-6 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-sm">
+          <p class="font-bold mb-1">Aradığınız makale bulunamadı veya henüz yayına alınmadı.</p>
+          <p class="text-xs text-amber-700 mb-4">Lütfen diğer sektörel yazılarımızı inceleyin.</p>
+          <a href="/yazilar" class="px-4 py-2 rounded-xl bg-slate-900 text-white font-bold text-xs inline-block">Tüm Yazılara Git →</a>
+        </div>
+      `;
+    }
+  })();
+</script>

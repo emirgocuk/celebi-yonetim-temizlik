@@ -35,9 +35,9 @@ const featuredArticles = ARTICLES_DATA;
     </div>
 
     <!-- Structured Topic Articles with Rich Authority & Direct Read Links -->
-    <div class="space-y-6 text-slate-700">
+    <div id="home-articles-container" class="space-y-6 text-slate-700">
       {featuredArticles.map((article) => (
-        <article class="rounded-3xl bg-white border border-slate-200 p-6 sm:p-8 shadow-sm hover:shadow-md transition-all duration-200 group">
+        <article class="home-article-card rounded-3xl bg-white border border-slate-200 p-6 sm:p-8 shadow-sm hover:shadow-md transition-all duration-200 group">
           <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
             <div class="flex items-center gap-2.5">
               <span class={`px-2.5 py-1 rounded-md text-[11px] font-bold border ${article.tagColor}`}>
@@ -49,7 +49,7 @@ const featuredArticles = ARTICLES_DATA;
           </div>
 
           <h3 class="text-xl sm:text-2xl font-bold text-slate-900 mb-3 group-hover:text-sky-700 transition-colors">
-            <a href={`/yazilar/${article.slug}`}>
+            <a href={`/yazilar/oku?slug=${article.slug}`}>
               {article.title}
             </a>
           </h3>
@@ -71,7 +71,7 @@ const featuredArticles = ARTICLES_DATA;
           <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
             <span class="text-xs text-slate-500 font-medium">Yazar: {article.author.name}</span>
             <a
-              href={`/yazilar/${article.slug}`}
+              href={`/yazilar/oku?slug=${article.slug}`}
               class="inline-flex items-center gap-1.5 text-xs font-bold text-sky-700 hover:text-sky-900 transition-colors"
             >
               <span>Yazının Devamını Oku</span>
@@ -115,3 +115,84 @@ const featuredArticles = ARTICLES_DATA;
 
   </div>
 </section>
+
+<!-- Homepage Live PocketBase Hydration -->
+<script is:inline>
+  (async () => {
+    const container = document.getElementById('home-articles-container');
+    if (!container) return;
+
+    const PB_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? 'http://127.0.0.1:8090'
+      : window.location.origin;
+
+    try {
+      const res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records?sort=-id&perPage=6`);
+      if (res.ok) {
+        const data = await res.json();
+        const pbArticles = data.items || [];
+        if (pbArticles.length > 0) {
+          const existingSlugs = new Set();
+          container.querySelectorAll('a[href*="/yazilar/"]').forEach((link) => {
+            const match = link.getAttribute('href').match(/slug=([^&]+)/) || link.getAttribute('href').match(/\/yazilar\/([^/?#]+)/);
+            if (match) existingSlugs.add(match[1]);
+          });
+
+          const newCards = [];
+          for (const item of pbArticles) {
+            if (existingSlugs.has(item.slug)) continue;
+
+            const tmp = document.createElement('div');
+            tmp.innerHTML = item.ozet || '';
+            const plainText = (tmp.querySelector('p')?.innerText || tmp.innerText || item.baslik).slice(0, 180) + '...';
+
+            const cardHtml = `
+              <article class="home-article-card rounded-3xl bg-white border border-sky-200 p-6 sm:p-8 shadow-sm hover:shadow-md transition-all duration-200 group ring-1 ring-sky-100">
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                  <div class="flex items-center gap-2.5">
+                    <span class="px-2.5 py-1 rounded-md text-[11px] font-bold border bg-sky-50 text-sky-800 border-sky-300">
+                      ${item.kategori || 'Site Yönetimi'}
+                    </span>
+                    <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500 text-white flex items-center gap-1">
+                      <span class="w-1 h-1 rounded-full bg-white animate-pulse"></span> Yeni
+                    </span>
+                    <span class="text-xs text-slate-400">• ${item.okumaSuresi || '4 dk okuma'}</span>
+                  </div>
+                  <span class="text-xs text-slate-400 font-medium">${item.tarih || 'Güncel'}</span>
+                </div>
+
+                <h3 class="text-xl sm:text-2xl font-bold text-slate-900 mb-3 group-hover:text-sky-700 transition-colors">
+                  <a href="/yazilar/oku?slug=${item.slug}">
+                    ${item.baslik}
+                  </a>
+                </h3>
+
+                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-6 font-normal">
+                  ${plainText}
+                </p>
+
+                <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                  <span class="text-xs text-slate-500 font-medium">Yazar: ${item.kaynak || 'Çelebi Hukuk Servisi'}</span>
+                  <a
+                    href="/yazilar/oku?slug=${item.slug}"
+                    class="inline-flex items-center gap-1.5 text-xs font-bold text-sky-700 hover:text-sky-900 transition-colors"
+                  >
+                    <span>Yazının Devamını Oku</span>
+                    <span>→</span>
+                  </a>
+                </div>
+              </article>
+            `;
+            newCards.push(cardHtml);
+          }
+
+          if (newCards.length > 0) {
+            container.insertAdjacentHTML('afterbegin', newCards.join(''));
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Home articles hydration error:', e);
+    }
+  })();
+</script>

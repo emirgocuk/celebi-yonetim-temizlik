@@ -12,7 +12,7 @@ const articlePages = ARTICLES_DATA.map((a) => `yazilar/${a.slug}`);
 const allPages = [...staticPages, ...articlePages];
 
 export const GET: APIRoute = async ({ site }) => {
-  const baseUrl = site ? site.origin : 'https://www.celebiyonetim.com';
+  const baseUrl = site ? site.origin : 'https://www.celebiyonetim.com.tr';
   const lastmod = new Date().toISOString().split('T')[0];
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>

@@ -3,8 +3,8 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import QuoteForm from '@/components/sections/QuoteForm.astro';
 import { COMPANY_INFO } from '@/lib/fallback-data';
 
-const title = 'İletişim & Konum Bilgileri | Çelebi Yönetim ve Temizlik';
-const description = 'Çelebi Yönetim ve Temizlik ofis konumu, Google Haritalar yol tarifi, doğrudan telefon ve WhatsApp hatları ile 15 dakikada hızlı teklif formu.';
+const title = 'İletişim & Konum Bilgileri | Çelebi Yönetim ve Temizlik Adana';
+const description = 'Çelebi Yönetim ve Temizlik Adana Çukurova ofis konumu, Google Haritalar yol tarifi, sabit ve mobil hatlar ile 15 dakikada hızlı teklif formu.';
 ---
 
 <BaseLayout title={title} description={description}>
@@ -34,65 +34,64 @@ const description = 'Çelebi Yönetim ve Temizlik ofis konumu, Google Haritalar 
       <!-- Quick Contact Cards Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mt-10">
         
-        <!-- Telefon -->
+        <!-- Sabit Ofis Hattı -->
         <div class="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md transition-shadow">
           <div class="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center font-bold mb-3 shadow-inner">
             <svg class="w-5 h-5 stroke-current stroke-2 fill-none" viewBox="0 0 24 24">
               <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
             </svg>
           </div>
-          <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Müşteri Hizmetleri</div>
-          <a href={`tel:${COMPANY_INFO.phone}`} class="text-base font-bold text-slate-900 hover:text-sky-600 transition-colors block">
-            {COMPANY_INFO.phoneFormatted}
+          <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Sabit Ofis Hattı</div>
+          <a href={`tel:${COMPANY_INFO.landlinePhone}`} class="text-base font-bold text-slate-900 hover:text-sky-600 transition-colors block">
+            {COMPANY_INFO.landlineFormatted}
           </a>
-          <p class="text-xs text-slate-500 mt-1">Sabit & Mobil Danışma</p>
+          <p class="text-xs text-slate-500 mt-1">Santral & Genel Danışma</p>
         </div>
 
-        <!-- WhatsApp -->
+        <!-- Temizlik Hizmetleri Hattı -->
+        <div class="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md transition-shadow">
+          <div class="w-10 h-10 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center font-bold mb-3 shadow-inner">
+            <svg class="w-5 h-5 stroke-current stroke-2 fill-none" viewBox="0 0 24 24">
+              <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+              <line x1="12" y1="18" x2="12.01" y2="18"/>
+            </svg>
+          </div>
+          <div class="text-xs font-bold text-cyan-700 uppercase tracking-wider mb-1">Temizlik Hizmetleri</div>
+          <a href={`tel:${COMPANY_INFO.cleaningPhone}`} class="text-base font-bold text-slate-900 hover:text-cyan-600 transition-colors block">
+            {COMPANY_INFO.cleaningPhoneFormatted}
+          </a>
+          <p class="text-xs text-slate-500 mt-1">Mobil Operasyon Hattı</p>
+        </div>
+
+        <!-- Site Yönetimi & WhatsApp -->
         <div class="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md transition-shadow">
           <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold mb-3 shadow-inner">
             <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
               <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.18-2.587-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.106.005.249-.04.39.299.144.347.491 1.2.534 1.288.043.087.072.188.014.303-.058.116-.087.188-.173.289l-.26.302c-.087.087-.179.182-.077.357.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.174.086.275.072.376-.043.101-.116.433-.506.549-.679.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.043.073.043.419-.101.824z"/>
             </svg>
           </div>
-          <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">WhatsApp Destek</div>
+          <div class="text-xs font-bold text-emerald-700 uppercase tracking-wider mb-1">Yönetim & WhatsApp</div>
           <a
-            href={`https://wa.me/${COMPANY_INFO.whatsapp}?text=${encodeURIComponent('Merhaba, bilgi ve teklif almak istiyorum.')}`}
+            href={`https://wa.me/${COMPANY_INFO.whatsapp}?text=${encodeURIComponent('Merhaba, Adana site yönetimi ve temizlik hizmetleriniz için bilgi ve teklif almak istiyorum.')}`}
             target="_blank"
             rel="noopener noreferrer"
             class="text-base font-bold text-emerald-800 hover:text-emerald-900 transition-colors block"
           >
-            Hemen Mesaj Gönderin
+            {COMPANY_INFO.managementPhoneFormatted}
           </a>
-          <p class="text-xs text-slate-500 mt-1">Anında yanıt süresi</p>
+          <p class="text-xs text-slate-500 mt-1">Anında WhatsApp teklif</p>
         </div>
 
-        <!-- E-posta -->
-        <div class="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md transition-shadow">
-          <div class="w-10 h-10 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center font-bold mb-3 shadow-inner">
-            <svg class="w-5 h-5 stroke-current stroke-2 fill-none" viewBox="0 0 24 24">
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-              <polyline points="22,6 12,13 2,6"/>
-            </svg>
-          </div>
-          <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Resmi E-Posta</div>
-          <a href={`mailto:${COMPANY_INFO.email}`} class="text-sm font-bold text-slate-900 hover:text-sky-600 transition-colors block break-all">
-            {COMPANY_INFO.email}
-          </a>
-          <p class="text-xs text-slate-500 mt-1">Kurumsal yazışmalar</p>
-        </div>
-
-        <!-- Çalışma Saatleri -->
+        <!-- Ofis Adresi & E-Posta -->
         <div class="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md transition-shadow">
           <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold mb-3 shadow-inner">
-            <svg class="w-5 h-5 stroke-current stroke-2 fill-none" viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10"/>
-              <polyline points="12 6 12 12 16 14"/>
+            <svg class="w-5 h-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
             </svg>
           </div>
-          <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Çalışma Saatleri</div>
-          <div class="text-xs font-bold text-slate-900">08:30 - 19:00</div>
-          <p class="text-xs text-slate-500 mt-1">Teknik Arıza Hattı: 7/24</p>
+          <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Çukurova / Adana</div>
+          <div class="text-xs font-bold text-slate-900 leading-snug">Mahfesığmaz Mah. 78033 Sk.</div>
+          <p class="text-[11px] text-slate-500 mt-1">No: 3 Zemin Kat, Çukurova</p>
         </div>
 
       </div>

@@ -17,12 +17,12 @@ const currentYear = new Date().getFullYear();
           <span class="text-xl font-bold tracking-tight text-white">Çelebi Yönetim & Temizlik</span>
         </div>
         <p class="text-sm text-slate-400 max-w-sm leading-relaxed">
-          Toplu yaşam alanlarında Kat Mülkiyeti Kanunu'na tam uyumlu, şeffaf site yönetimi ve SGK güvenceli kadromuzla kurumsal hijyen çözümleri sunuyoruz.
+          Adana Çukurova ve Seyhan başta olmak üzere; Kat Mülkiyeti Kanunu'na tam uyumlu şeffaf site yönetimi ve SGK güvenceli kadromuzla kurumsal temizlik çözümleri sunuyoruz.
         </p>
         <div class="flex items-center gap-3 pt-2">
           <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-950/60 text-emerald-300 border border-emerald-800/60">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-            7/24 Acil Destek Hattı Aktif
+            Adana Geneli 7/24 Aktif
           </span>
           <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-slate-900 text-slate-300 border border-slate-800">
             SGK'lı Kadro
@@ -34,7 +34,7 @@ const currentYear = new Date().getFullYear();
       <div class="flex flex-col gap-3">
         <h3 class="text-xs font-bold uppercase tracking-wider text-sky-400">Site Yönetimi</h3>
         <ul class="flex flex-col gap-2.5 text-xs text-slate-400">
-          <li><a href="/#site-yonetimi" class="hover:text-white transition-colors">Mali & Finansal Şeffaflık</a></li>
+          <li><a href="/#site-yonetimi" class="hover:text-white transition-colors">Adana Şeffaf Kasa & Aidat</a></li>
           <li><a href="/#site-yonetimi" class="hover:text-white transition-colors">KMK Hukuki Danışmanlık</a></li>
           <li><a href="/#site-yonetimi" class="hover:text-white transition-colors">Asansör & Tesisat Bakımı</a></li>
           <li><a href="/#site-yonetimi" class="hover:text-white transition-colors">Bina Görevlisi SGK Bordrolama</a></li>
@@ -46,7 +46,7 @@ const currentYear = new Date().getFullYear();
       <div class="flex flex-col gap-3">
         <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-400">Temizlik Hizmetleri</h3>
         <ul class="flex flex-col gap-2.5 text-xs text-slate-400">
-          <li><a href="/#temizlik" class="hover:text-white transition-colors">Ofis ve Ticari Alan Temizliği</a></li>
+          <li><a href="/#temizlik" class="hover:text-white transition-colors">Adana Ofis & Plaza Temizliği</a></li>
           <li><a href="/#temizlik" class="hover:text-white transition-colors">Dış Cephe & Cam Yıkama (Vinçli)</a></li>
           <li><a href="/#temizlik" class="hover:text-white transition-colors">İnşaat ve Tadilat Sonrası</a></li>
           <li><a href="/#temizlik" class="hover:text-white transition-colors">Apartman Merdiven Hijyeni</a></li>
@@ -56,14 +56,22 @@ const currentYear = new Date().getFullYear();
 
       <!-- Sektörel Rehber & İletişim -->
       <div class="flex flex-col gap-3">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-white">Rehber & İletişim</h3>
-        <ul class="flex flex-col gap-2.5 text-xs text-slate-400">
-          <li><a href="/yazilar" class="hover:text-white transition-colors">Sektörel Yazılar & Rehber</a></li>
-          <li><a href="/#neden-biz" class="hover:text-white transition-colors">Neden Çelebi?</a></li>
-          <li><a href="/#yorumlar" class="hover:text-white transition-colors">Müşteri Yorumları</a></li>
-          <li><a href="/#iletisim" class="hover:text-white transition-colors font-bold text-sky-400">Hemen Fiyat Teklifi Al</a></li>
-          <li class="pt-2 text-slate-500">
-            {COMPANY_INFO.phoneFormatted}
+        <h3 class="text-xs font-bold uppercase tracking-wider text-white">Adana İletişim</h3>
+        <ul class="flex flex-col gap-2 text-xs text-slate-400">
+          <li>
+            <span class="text-slate-500 block text-[10px] uppercase font-bold">Sabit Hat:</span>
+            <a href={`tel:${COMPANY_INFO.landlinePhone}`} class="hover:text-white font-bold text-slate-300">{COMPANY_INFO.landlineFormatted}</a>
+          </li>
+          <li>
+            <span class="text-cyan-400 block text-[10px] uppercase font-bold">Temizlik Hattı:</span>
+            <a href={`tel:${COMPANY_INFO.cleaningPhone}`} class="hover:text-white font-bold text-slate-300">{COMPANY_INFO.cleaningPhoneFormatted}</a>
+          </li>
+          <li>
+            <span class="text-emerald-400 block text-[10px] uppercase font-bold">Yönetim & WhatsApp:</span>
+            <a href={`https://wa.me/${COMPANY_INFO.whatsapp}?text=${encodeURIComponent('Merhaba, Adana site yönetimi ve temizlik için yazıyorum.')}`} target="_blank" rel="noopener noreferrer" class="hover:text-white font-bold text-emerald-300">{COMPANY_INFO.managementPhoneFormatted}</a>
+          </li>
+          <li class="pt-1 text-[11px] text-slate-400 leading-tight">
+            📍 {COMPANY_INFO.address}
           </li>
         </ul>
       </div>

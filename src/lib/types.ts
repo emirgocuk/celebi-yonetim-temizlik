@@ -42,10 +42,18 @@ export interface CompanyMeta {
   description: string;
   phone: string;
   phoneFormatted: string;
+  landlinePhone: string;
+  landlineFormatted: string;
+  cleaningPhone: string;
+  cleaningPhoneFormatted: string;
+  managementPhone: string;
+  managementPhoneFormatted: string;
   whatsapp: string;
   whatsappFormatted: string;
   email: string;
   address: string;
+  city: string;
+  district: string;
   workingHours: string;
   mapsEmbedUrl?: string;
   mapsQuery?: string;

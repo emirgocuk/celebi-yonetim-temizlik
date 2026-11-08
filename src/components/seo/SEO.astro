@@ -19,11 +19,11 @@ const {
   noindex = false,
 } = Astro.props;
 
-const siteUrl = Astro.site ? Astro.site.origin : 'https://www.celebiyonetim.com';
+const siteUrl = Astro.site ? Astro.site.origin : 'https://www.celebiyonetim.com.tr';
 const fullCanonical = new URL(canonical, siteUrl).href;
 const fullOgImage = new URL(ogImage, siteUrl).href;
 
-// Google LocalBusiness & Service JSON-LD Schema
+// Google LocalBusiness & Service JSON-LD Schema (Adana Local SEO)
 const schemaData = {
   '@context': 'https://schema.org',
   '@graph': [
@@ -38,8 +38,16 @@ const schemaData = {
       priceRange: '$$',
       address: {
         '@type': 'PostalAddress',
-        streetAddress: COMPANY_INFO.address,
+        streetAddress: 'Mahfesığmaz Mah. 78033 Sk. No: 3 Zemin Kat',
+        addressLocality: 'Çukurova',
+        addressRegion: 'Adana',
+        postalCode: '01170',
         addressCountry: 'TR',
+      },
+      geo: {
+        '@type': 'GeoCoordinates',
+        latitude: 37.0354,
+        longitude: 35.2958,
       },
       openingHoursSpecification: [
         {
@@ -49,10 +57,13 @@ const schemaData = {
           closes: '19:00',
         },
       ],
-      areaServed: {
-        '@type': 'AdministrativeArea',
-        name: 'Türkiye',
-      },
+      areaServed: [
+        { '@type': 'City', name: 'Adana' },
+        { '@type': 'AdministrativeArea', name: 'Çukurova' },
+        { '@type': 'AdministrativeArea', name: 'Seyhan' },
+        { '@type': 'AdministrativeArea', name: 'Yüreğir' },
+        { '@type': 'AdministrativeArea', name: 'Sarıçam' },
+      ],
       sameAs: [],
     },
     {

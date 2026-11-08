@@ -18,7 +18,7 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
     <div id="merkez-app" class="min-h-screen py-6 sm:py-10">
     
     <!-- AUTH VIEW: Login Screen -->
-    <div id="auth-screen" class="max-w-md mx-auto px-4 sm:px-6 pt-8 pb-16">
+    <div id="auth-screen" class="max-w-md mx-auto px-4 sm:px-6 pt-12 pb-16">
       <div class="bg-white rounded-3xl p-8 sm:p-10 shadow-2xl border border-slate-200/90 relative overflow-hidden">
         
         <!-- Ambient top sheen -->
@@ -34,13 +34,13 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
 
         <form id="login-form" class="space-y-4">
           <div>
-            <label for="admin-email" class="block text-xs font-bold text-slate-700 mb-1.5">Yönetici E-Posta</label>
+            <label for="admin-email" class="block text-xs font-bold text-slate-700 mb-1.5">Kullanıcı E-Posta</label>
             <input
               type="email"
               id="admin-email"
               required
               autocomplete="username"
-              placeholder="admin@celebi.com"
+              placeholder="ornek@celebiyonetim.com.tr"
               class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:border-sky-600 focus:ring-2 focus:ring-sky-100 outline-none transition-all"
             />
           </div>
@@ -58,31 +58,21 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
           </div>
 
           <div id="login-error" class="hidden p-3 rounded-xl bg-red-50 border border-red-200 text-xs font-semibold text-red-700 text-center">
-            Hatalı kullanıcı adı veya şifre!
+            Hatalı e-posta veya şifre girdiniz! Lütfen kontrol edin.
           </div>
 
           <button
             type="submit"
-            class="w-full py-3.5 px-6 rounded-xl text-sm font-bold text-white bg-slate-900 hover:bg-sky-700 transition-all duration-150 shadow-lg shadow-slate-900/10 subtle-tap"
+            class="w-full py-3.5 px-6 rounded-xl text-sm font-bold text-white bg-slate-900 hover:bg-sky-700 transition-all duration-150 shadow-lg shadow-slate-900/10 subtle-tap cursor-pointer"
           >
-            Giriş Yap
+            Güvenli Giriş Yap
           </button>
 
-          <!-- Quick Fill Demo Button -->
-          <div class="pt-3 border-t border-slate-100 text-center space-y-2">
-            <button
-              type="button"
-              id="quick-demo-fill"
-              class="text-xs font-bold text-sky-700 hover:text-sky-900 underline cursor-pointer block w-full"
-            >
-              (Tek Tıkla Demo Giriş Bilgilerini Doldur)
-            </button>
-            <div class="text-[11px] text-slate-400">Kullanıcı: admin@celebi.com | Şifre: celebi.12</div>
-            <div class="pt-2">
-              <a href="/" class="text-xs text-slate-500 hover:text-slate-800 transition-colors">
-                ← Web Sitesine Geri Dön
-              </a>
-            </div>
+          <div class="pt-4 text-center">
+            <a href="/" class="text-xs text-slate-500 hover:text-slate-800 transition-colors inline-flex items-center gap-1">
+              <span>←</span>
+              <span>Web Sitesine Geri Dön</span>
+            </a>
           </div>
         </form>
 
@@ -99,13 +89,13 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
             Ç
           </div>
           <div>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 flex-wrap">
               <h2 class="text-lg font-bold text-slate-900">Yönetim Merkezi</h2>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
-                Oturum Açık: admin@celebi.com
+              <span id="user-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                Oturum Açık: emrggck@gmail.com
               </span>
             </div>
-            <p class="text-xs text-slate-500">Çelebi Yönetim ve Temizlik Operasyon Paneli</p>
+            <p class="text-xs text-slate-500">Çelebi Yönetim ve Temizlik Operasyon & Yetkilendirme Paneli</p>
           </div>
         </div>
 
@@ -133,7 +123,7 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
         <button
           type="button"
           data-tab="inquiries"
-          class="tab-btn px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer bg-slate-900 text-white shadow-sm flex items-center gap-2"
+          class="tab-btn px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer bg-slate-900 text-white shadow-sm flex items-center gap-2 shrink-0"
         >
           <span>📬 İletişim Formları & Gelen Talepler</span>
           <span id="tab-inquiries-badge" class="px-1.5 py-0.2 rounded-full text-[10px] bg-sky-400 text-slate-950 font-black">0</span>
@@ -142,17 +132,25 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
         <button
           type="button"
           data-tab="settings"
-          class="tab-btn px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 flex items-center gap-2"
+          class="tab-btn px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 flex items-center gap-2 shrink-0"
         >
-          <span>⚙️ İletişim Bilgileri & Konum Düzenle</span>
+          <span>🏢 İletişim & Konum Bilgileri</span>
+        </button>
+
+        <button
+          type="button"
+          data-tab="users-settings"
+          class="tab-btn px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 flex items-center gap-2 shrink-0"
+        >
+          <span>👥 Kullanıcılar & Sistem Ayarları</span>
         </button>
 
         <button
           type="button"
           data-tab="ceo-seo"
-          class="tab-btn px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 flex items-center gap-2"
+          class="tab-btn px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 flex items-center gap-2 shrink-0"
         >
-          <span>🚀 CEO & Otomatik Haber Oluşturucu (SEO)</span>
+          <span>🚀 CEO & Otomatik Haber Motoru</span>
         </button>
       </div>
 
@@ -219,13 +217,13 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
                 WhatsApp Bağlantı Butonuna Yazılacak Numara *
               </label>
               <div class="text-[11px] text-emerald-700 mb-2 font-medium">
-                Başında 90 olacak şekilde boşluksuz ve parantezsiz yazınız (Örn: 905550000000). Sitedeki tüm WhatsApp butonları doğrudan bu numaraya bağlanır.
+                Başında 90 olacak şekilde boşluksuz ve parantezsiz yazınız (Örn: 905358730324). Sitedeki tüm WhatsApp butonları doğrudan bu numaraya bağlanır.
               </div>
               <input
                 type="text"
                 id="cfg-whatsapp"
                 required
-                placeholder="905550000000"
+                placeholder="905358730324"
                 class="w-full px-4 py-3 text-sm rounded-xl border border-emerald-300 bg-white focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none font-bold text-slate-900"
               />
             </div>
@@ -304,7 +302,7 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
                 type="text"
                 id="cfg-maps-url"
                 required
-                placeholder="https://maps.google.com/maps?q=Atat%C3%BCrk%20Caddesi%20No:42...&output=embed"
+                placeholder="https://maps.google.com/maps?q=Mahfes%C4%B1%C4%9Fmaz%20Mah.%2078033%20Sk.%20No%203...&output=embed"
                 class="w-full px-4 py-3 text-xs sm:text-sm rounded-xl border border-sky-300 bg-white focus:border-sky-600 focus:ring-2 focus:ring-sky-100 outline-none font-mono text-slate-800"
               />
 
@@ -332,7 +330,7 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
             <!-- Submit -->
             <button
               type="submit"
-              class="px-8 py-3.5 text-sm font-bold text-white bg-slate-900 hover:bg-sky-700 rounded-xl transition-all duration-150 subtle-tap shadow-lg"
+              class="px-8 py-3.5 text-sm font-bold text-white bg-slate-900 hover:bg-sky-700 rounded-xl transition-all duration-150 subtle-tap shadow-lg cursor-pointer"
             >
               Değişiklikleri Kaydet
             </button>
@@ -340,7 +338,138 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
         </div>
       </div>
 
-      <!-- TAB 3 CONTENT: CEO & Otomatik Haber Oluşturucu (SEO) -->
+      <!-- TAB 3 CONTENT: Kullanıcı Tanımlama & Sistem Ayarları -->
+      <div id="tab-content-users-settings" class="tab-pane hidden space-y-6">
+        
+        <!-- Section 1: Kullanıcı Tanımlama (Firma Sahibi & Ekip) -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-100">
+            <div>
+              <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-sky-100 text-sky-800 mb-2">
+                👥 Yetkili Kullanıcı Yönetimi
+              </div>
+              <h3 class="text-xl font-bold text-slate-900">Firma Sahibi & Ekip Hesabı Tanımla</h3>
+              <p class="text-xs sm:text-sm text-slate-600 mt-1">
+                Firma sahibine veya personelinize bu panele erişmeleri için hesap oluşturabilirsiniz. Oluşturduğunuz kullanıcılar kendi bilgileriyle güvenle giriş yapabilir.
+              </p>
+            </div>
+          </div>
+
+          <!-- New User Form -->
+          <form id="new-user-form" class="space-y-4 max-w-2xl bg-slate-50/70 p-5 rounded-2xl border border-slate-200 mb-8">
+            <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider">➕ Yeni Kullanıcı Ekle</h4>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="new-user-name" class="block text-xs font-bold text-slate-700 mb-1">Ad Soyad / Ünvan *</label>
+                <input
+                  type="text"
+                  id="new-user-name"
+                  required
+                  placeholder="Örn: Murat Çelebi (Firma Sahibi)"
+                  class="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white focus:border-sky-600 focus:ring-2 focus:ring-sky-100 outline-none"
+                />
+              </div>
+
+              <div>
+                <label for="new-user-role" class="block text-xs font-bold text-slate-700 mb-1">Kullanıcı Rolü *</label>
+                <select
+                  id="new-user-role"
+                  class="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white focus:border-sky-600 focus:ring-2 focus:ring-sky-100 outline-none font-medium"
+                >
+                  <option value="Firma Sahibi / Üst Yönetim">Firma Sahibi / Üst Yönetim</option>
+                  <option value="Site Yönetim Uzmanı">Site Yönetim Uzmanı</option>
+                  <option value="Temizlik Operasyon Şefi">Temizlik Operasyon Şefi</option>
+                  <option value="Müşteri Temsilcisi">Müşteri Temsilcisi</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="new-user-email" class="block text-xs font-bold text-slate-700 mb-1">Giriş E-Postası *</label>
+                <input
+                  type="email"
+                  id="new-user-email"
+                  required
+                  placeholder="sahip@celebiyonetim.com.tr"
+                  class="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white focus:border-sky-600 focus:ring-2 focus:ring-sky-100 outline-none"
+                />
+              </div>
+
+              <div>
+                <label for="new-user-password" class="block text-xs font-bold text-slate-700 mb-1">Giriş Şifresi *</label>
+                <input
+                  type="text"
+                  id="new-user-password"
+                  required
+                  placeholder="En az 6 karakterli şifre"
+                  class="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white focus:border-sky-600 focus:ring-2 focus:ring-sky-100 outline-none font-mono"
+                />
+              </div>
+            </div>
+
+            <div id="new-user-alert" class="hidden p-3 rounded-xl text-xs font-bold bg-emerald-100 text-emerald-900 border border-emerald-300">
+              ✓ Kullanıcı başarıyla tanımlandı! Artık bu e-posta ve şifre ile panele giriş yapabilir.
+            </div>
+
+            <button
+              type="submit"
+              class="px-6 py-2.5 text-xs sm:text-sm font-bold text-white bg-slate-900 hover:bg-sky-700 rounded-xl transition-all shadow-sm cursor-pointer"
+            >
+              Kullanıcıyı Kaydet ve Yetkilendir
+            </button>
+          </form>
+
+          <!-- Registered Users List -->
+          <div>
+            <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">Mevcut Yetkili Kullanıcılar</h4>
+            <div id="users-list-container" class="space-y-3">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Sistem ve Veritabanı Altyapı Durumu -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 mb-2">
+            ⚙️ Sistem & Altyapı Durumu
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 mb-2">Sunucu & Veritabanı Entegrasyonu</h3>
+          <p class="text-xs sm:text-sm text-slate-600 mb-6">
+            Sitenin arkasında çalışan Ubuntu 22.04 LTS VDS sunucusu, PocketBase veritabanı ve Cloudflare güvenlik katmanı.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+              <div class="text-[11px] font-bold text-slate-500 uppercase">Sunucu IP (VDS)</div>
+              <div class="text-sm font-mono font-bold text-slate-900 mt-1">2.27.101.128</div>
+              <div class="text-[10px] text-emerald-700 font-semibold mt-1 flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Nginx + 2 GB Swap Aktif
+              </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+              <div class="text-[11px] font-bold text-slate-500 uppercase">PocketBase Veritabanı</div>
+              <div class="text-sm font-mono font-bold text-slate-900 mt-1">v0.41.1 (Systemd)</div>
+              <div class="text-[10px] text-emerald-700 font-semibold mt-1 flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> 7/24 Arka Planda Aktif (10 MB RAM)
+              </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+              <div class="text-[11px] font-bold text-slate-500 uppercase">Güvenlik & SSL</div>
+              <div class="text-sm font-mono font-bold text-slate-900 mt-1">Cloudflare Full SSL</div>
+              <div class="text-[10px] text-sky-700 font-semibold mt-1 flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-sky-500"></span> DDoS & CDN Korumalı
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- TAB 4 CONTENT: CEO & Otomatik Haber Oluşturucu (SEO) -->
       <div id="tab-content-ceo-seo" class="tab-pane hidden space-y-6">
         
         <!-- Welcome & Future Ready Notice -->
@@ -351,7 +480,7 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
             </span>
             <h3 class="text-2xl sm:text-3xl font-extrabold mb-3">Otomatik Haber Oluşturucu & SEO Motoru</h3>
             <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
-              Bu alan, elinizdeki hazır tasarım ve otomatik haber motorunun doğrudan entegre edilebilmesi için özel olarak hazırlanmıştır. Gelecekte tasarımınız geldiğinde tek tıkla buraya bağlanacaktır.
+              Bu alan, elinizdeki hazır tasarım ve otomatik haber motorunun doğrudan entegre edilebilmesi için özel olarak hazırlanmıştır. Tasarımınız geldiğinde tek tıkla buraya bağlanacaktır.
             </p>
           </div>
         </div>
@@ -456,6 +585,14 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
 <!-- Client Script for Authentication & State Management -->
 <script is:inline>
   (() => {
+    // Primary Super Admin Config
+    const PRIMARY_ADMIN = {
+      email: 'emrggck@gmail.com',
+      password: 'Awseqdll.12',
+      name: 'Emir G. (Süper Yönetici)',
+      role: 'Süper Admin',
+    };
+
     // DOM Elements
     const authScreen = document.getElementById('auth-screen');
     const dashboardScreen = document.getElementById('dashboard-screen');
@@ -463,8 +600,8 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
     const emailInput = document.getElementById('admin-email');
     const passwordInput = document.getElementById('admin-password');
     const loginError = document.getElementById('login-error');
-    const quickDemoBtn = document.getElementById('quick-demo-fill');
     const logoutBtn = document.getElementById('logout-btn');
+    const userBadge = document.getElementById('user-badge');
 
     // Tab buttons & panes
     const tabBtns = document.querySelectorAll('.tab-btn');
@@ -488,6 +625,15 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
     const statPending = document.getElementById('stat-pending-inquiries');
     const tabBadge = document.getElementById('tab-inquiries-badge');
     const clearInquiriesBtn = document.getElementById('clear-all-inquiries-btn');
+
+    // User management elements
+    const newUserForm = document.getElementById('new-user-form');
+    const newUserName = document.getElementById('new-user-name');
+    const newUserRole = document.getElementById('new-user-role');
+    const newUserEmail = document.getElementById('new-user-email');
+    const newUserPassword = document.getElementById('new-user-password');
+    const newUserAlert = document.getElementById('new-user-alert');
+    const usersContainer = document.getElementById('users-list-container');
 
     // Default Seed Inquiries so the admin panel looks populated
     const defaultSeedInquiries = [
@@ -544,42 +690,75 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
       mapsEmbedUrl: 'https://maps.google.com/maps?q=Mahfes%C4%B1%C4%9Fmaz%20Mah.%2078033%20Sk.%20No%203%20%C3%87ukurova%20Adana&t=&z=16&ie=UTF8&iwloc=&output=embed',
     };
 
+    // Get all authorized users
+    function getStoredUsers() {
+      try {
+        const raw = localStorage.getItem('celebi_team_users');
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveStoredUsers(users) {
+      localStorage.setItem('celebi_team_users', JSON.stringify(users));
+    }
+
     // Check Authentication
     function checkAuth() {
       const isAuth = localStorage.getItem('celebi_admin_auth') === 'true';
       if (isAuth) {
         authScreen.classList.add('hidden');
         dashboardScreen.classList.remove('hidden');
+
+        // Display current user
+        try {
+          const userRaw = localStorage.getItem('celebi_current_user');
+          if (userRaw && userBadge) {
+            const user = JSON.parse(userRaw);
+            userBadge.innerText = `Oturum Açık: ${user.name || user.email} (${user.role || 'Yetkili'})`;
+          }
+        } catch (e) {}
+
         loadSettings();
         loadInquiries();
+        renderUsersList();
       } else {
         authScreen.classList.remove('hidden');
         dashboardScreen.classList.add('hidden');
       }
     }
 
-    // Demo Fill Button
-    if (quickDemoBtn) {
-      quickDemoBtn.addEventListener('click', () => {
-        emailInput.value = 'admin@celebi.com';
-        passwordInput.value = 'celebi.12';
-      });
-    }
-
     // Handle Login
     if (loginForm) {
       loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const email = emailInput.value.trim();
+        const email = emailInput.value.trim().toLowerCase();
         const password = passwordInput.value.trim();
 
-        if (email === 'admin@celebi.com' && password === 'celebi.12') {
+        // 1. Check Primary Super Admin
+        if (email === PRIMARY_ADMIN.email.toLowerCase() && password === PRIMARY_ADMIN.password) {
           localStorage.setItem('celebi_admin_auth', 'true');
+          localStorage.setItem('celebi_current_user', JSON.stringify(PRIMARY_ADMIN));
           loginError.classList.add('hidden');
           checkAuth();
-        } else {
-          loginError.classList.remove('hidden');
+          return;
         }
+
+        // 2. Check Custom Created Users
+        const users = getStoredUsers();
+        const matched = users.find(u => u.email.toLowerCase() === email && u.password === password);
+
+        if (matched) {
+          localStorage.setItem('celebi_admin_auth', 'true');
+          localStorage.setItem('celebi_current_user', JSON.stringify(matched));
+          loginError.classList.add('hidden');
+          checkAuth();
+          return;
+        }
+
+        // Invalid credentials
+        loginError.classList.remove('hidden');
       });
     }
 
@@ -587,6 +766,7 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
     if (logoutBtn) {
       logoutBtn.addEventListener('click', () => {
         localStorage.removeItem('celebi_admin_auth');
+        localStorage.removeItem('celebi_current_user');
         checkAuth();
       });
     }
@@ -597,9 +777,9 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
         const targetTab = btn.getAttribute('data-tab');
 
         tabBtns.forEach((b) => {
-          b.className = 'tab-btn px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 flex items-center gap-2';
+          b.className = 'tab-btn px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 flex items-center gap-2 shrink-0';
         });
-        btn.className = 'tab-btn px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer bg-slate-900 text-white shadow-sm flex items-center gap-2';
+        btn.className = 'tab-btn px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer bg-slate-900 text-white shadow-sm flex items-center gap-2 shrink-0';
 
         tabPanes.forEach((pane) => {
           if (pane.id === `tab-content-${targetTab}`) {
@@ -610,6 +790,115 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
         });
       });
     });
+
+    // Render Users List
+    function renderUsersList() {
+      if (!usersContainer) return;
+      const users = getStoredUsers();
+
+      let html = `
+        <!-- Primary Super Admin (Immutable) -->
+        <div class="p-4 rounded-2xl bg-slate-900 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-sm text-white">${PRIMARY_ADMIN.name}</span>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-sky-400 text-slate-950">Ana Yönetici</span>
+            </div>
+            <div class="text-xs text-slate-300 font-mono">${PRIMARY_ADMIN.email}</div>
+          </div>
+          <div class="text-[11px] font-semibold text-emerald-300">✓ Sistem Korumalı (Tam Yetkili)</div>
+        </div>
+      `;
+
+      if (users.length === 0) {
+        html += `
+          <div class="p-6 rounded-2xl bg-slate-50 border border-dashed border-slate-300 text-center text-xs text-slate-500">
+            Henüz tanımlanmış ek kullanıcı bulunmuyor. Firma sahibine vermek istediğiniz hesabı yukarıdaki formdan hemen ekleyebilirsiniz.
+          </div>
+        `;
+      } else {
+        html += users.map((u, idx) => `
+          <div class="p-4 rounded-2xl bg-white border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs hover:border-slate-300 transition-colors">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-bold text-sm text-slate-900">${u.name}</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-50 text-sky-800 border border-sky-200">${u.role}</span>
+                <span class="text-[10px] text-slate-400">• Eklendi: ${u.created || 'Bugün'}</span>
+              </div>
+              <div class="flex items-center gap-3 text-xs text-slate-600 font-mono">
+                <span>E-posta: <strong>${u.email}</strong></span>
+                <span>Şifre: <strong class="bg-slate-100 px-1.5 py-0.5 rounded text-slate-800">${u.password}</strong></span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                data-action="delete-user"
+                data-index="${idx}"
+                class="px-3 py-1.5 text-xs font-bold text-red-700 bg-red-50 hover:bg-red-600 hover:text-white rounded-xl border border-red-200 transition-all cursor-pointer"
+              >
+                Kullanıcıyı Sil
+              </button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      usersContainer.innerHTML = html;
+
+      // Bind delete handlers
+      usersContainer.querySelectorAll('[data-action="delete-user"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.getAttribute('data-index'), 10);
+          if (confirm('Bu kullanıcı hesabını silmek istediğinize emin misiniz?')) {
+            const currentUsers = getStoredUsers();
+            currentUsers.splice(idx, 1);
+            saveStoredUsers(currentUsers);
+            renderUsersList();
+          }
+        });
+      });
+    }
+
+    // Handle New User Form Submission
+    if (newUserForm) {
+      newUserForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = newUserName.value.trim();
+        const role = newUserRole.value;
+        const email = newUserEmail.value.trim();
+        const password = newUserPassword.value.trim();
+
+        if (!name || !email || !password) return;
+
+        const currentUsers = getStoredUsers();
+        
+        // Check duplicate
+        if (email.toLowerCase() === PRIMARY_ADMIN.email.toLowerCase() || currentUsers.some(u => u.email.toLowerCase() === email.toLowerCase())) {
+          alert('Bu e-posta adresiyle kayıtlı bir kullanıcı zaten mevcut!');
+          return;
+        }
+
+        const newUser = {
+          id: 'user_' + Date.now(),
+          name,
+          role,
+          email,
+          password,
+          created: new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' })
+        };
+
+        currentUsers.push(newUser);
+        saveStoredUsers(currentUsers);
+
+        // Reset form & notify
+        newUserForm.reset();
+        newUserAlert.classList.remove('hidden');
+        setTimeout(() => newUserAlert.classList.add('hidden'), 5000);
+
+        renderUsersList();
+      });
+    }
 
     // Load Settings
     function loadSettings() {
@@ -822,4 +1111,3 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
 </script>
   </body>
 </html>
-

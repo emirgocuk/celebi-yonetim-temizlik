@@ -122,12 +122,15 @@ const featuredArticles = ARTICLES_DATA;
     const container = document.getElementById('home-articles-container');
     if (!container) return;
 
-    const PB_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    const PB_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
       ? 'http://127.0.0.1:8090'
-      : window.location.origin;
+      : '';
 
     try {
-      const res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records?sort=-id&perPage=6`);
+      let res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records?sort=-id&perPage=6`);
+      if (!res.ok) {
+        res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records?perPage=6`);
+      }
       if (res.ok) {
         const data = await res.json();
         const pbArticles = data.items || [];

@@ -196,12 +196,15 @@ const categories = ['Tümü', 'Site Yönetimi', 'Hukuk & İcra', 'Kurumsal Temiz
     initFilterButtons();
 
     // Live PocketBase Article Fetch & Chronological Hydration
-    const PB_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    const PB_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
       ? 'http://127.0.0.1:8090'
-      : window.location.origin;
+      : '';
 
     try {
-      const res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records?sort=-id&perPage=50`);
+      let res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records?sort=-id&perPage=50`);
+      if (!res.ok) {
+        res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records?perPage=50`);
+      }
       if (res.ok) {
         const data = await res.json();
         const pbArticles = data.items || [];

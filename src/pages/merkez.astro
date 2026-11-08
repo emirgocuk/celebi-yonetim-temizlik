@@ -1,5 +1,6 @@
 ---
 import { COMPANY_INFO } from '@/lib/fallback-data';
+import { STOCK_IMAGES_COLLECTION } from '@/lib/contentEngine/stockImages';
 import '@/styles/global.css';
 
 const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
@@ -8,6 +9,7 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
 const envOpenRouterKey = import.meta.env.PUBLIC_OPENROUTER_API_KEY || import.meta.env.OPENROUTER_API_KEY || '';
 const envImgbbKey = import.meta.env.PUBLIC_IMGBB_API_KEY || import.meta.env.IMGBB_API_KEY || '';
 const envPbUrl = import.meta.env.PUBLIC_POCKETBASE_URL || import.meta.env.POCKETBASE_URL || '';
+const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
 ---
 
 <!doctype html>
@@ -16,6 +18,9 @@ const envPbUrl = import.meta.env.PUBLIC_POCKETBASE_URL || import.meta.env.POCKET
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
@@ -28,6 +33,7 @@ const envPbUrl = import.meta.env.PUBLIC_POCKETBASE_URL || import.meta.env.POCKET
       data-has-imgbb={envImgbbKey ? 'true' : 'false'}
       data-imgbb-key={envImgbbKey}
       data-pb-url={envPbUrl}
+      data-stock-images={stockImagesJson}
       class="hidden"
     ></div>
 
@@ -870,15 +876,79 @@ const envPbUrl = import.meta.env.PUBLIC_POCKETBASE_URL || import.meta.env.POCKET
               </div>
             </div>
 
-            <!-- Cover Image URL -->
-            <div>
-              <label for="ce-cover-image" class="block text-xs font-bold text-slate-700 mb-1">Kapak Görseli URL (CDN)</label>
-              <input
-                type="url"
-                id="ce-cover-image"
-                placeholder="https://i.ibb.co/... veya https://images.unsplash.com/..."
-                class="w-full px-4 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 font-mono text-slate-700 outline-none focus:border-sky-600"
-              />
+            <!-- Cover Image URL & Stock Image Selector -->
+            <div class="space-y-3">
+              <div class="flex items-center justify-between flex-wrap gap-2">
+                <label for="ce-cover-image" class="block text-xs font-bold text-slate-700">Kapak Görseli URL (CDN)</label>
+                <div class="flex items-center gap-2">
+                  <button
+                    type="button"
+                    id="ce-btn-toggle-gallery"
+                    class="px-2.5 py-1 text-xs font-bold text-sky-700 bg-sky-50 hover:bg-sky-100 border border-sky-200 rounded-lg transition-all flex items-center gap-1 cursor-pointer"
+                  >
+                    <span>🖼️</span>
+                    <span>Telifsiz Görsel Galerisi</span>
+                  </button>
+                  <button
+                    type="button"
+                    id="ce-btn-auto-stock"
+                    class="px-2.5 py-1 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition-all flex items-center gap-1 cursor-pointer"
+                    title="Konuya en uygun telifsiz görseli otomatik seç"
+                  >
+                    <span>⚡</span>
+                    <span>Konuya Göre Ata</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <input
+                  type="url"
+                  id="ce-cover-image"
+                  placeholder="https://images.unsplash.com/... veya https://i.ibb.co/..."
+                  class="flex-1 px-4 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 font-mono text-slate-700 outline-none focus:border-sky-600"
+                />
+                <button
+                  type="button"
+                  id="ce-btn-clear-cover"
+                  class="px-3 py-2 text-xs text-slate-400 hover:text-rose-600 rounded-lg transition-all cursor-pointer font-bold"
+                  title="Görseli Temizle"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <!-- Live Cover Thumbnail Preview -->
+              <div id="ce-cover-preview" class="hidden relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-900 aspect-[16/7] max-h-48 group shadow-inner">
+                <img id="ce-cover-preview-img" src="" alt="Kapak Görseli Önizleme" class="w-full h-full object-cover" />
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent flex items-end justify-between p-3">
+                  <span id="ce-cover-preview-badge" class="text-[11px] font-bold text-white drop-shadow-sm flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                    <span>Kapak Görseli Önizleme (CDN)</span>
+                  </span>
+                  <a id="ce-cover-preview-link" href="#" target="_blank" class="text-[10px] text-sky-200 hover:text-white underline font-medium">Tam Boyut ↗</a>
+                </div>
+              </div>
+
+              <!-- Collapsible Stock Photo Gallery -->
+              <div id="ce-stock-gallery" class="hidden p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3 shadow-xs">
+                <div class="flex items-center justify-between flex-wrap gap-2 pb-2 border-b border-slate-200">
+                  <div class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                    <span>📚</span>
+                    <span>Telifsiz Stok Fotoğraf Kataloğu (%100 Ticari Kullanım İzinli)</span>
+                  </div>
+                  <div id="ce-stock-filter-tags" class="flex items-center gap-1 flex-wrap">
+                    <!-- Category filter tags injected via JS -->
+                  </div>
+                </div>
+                <div id="ce-stock-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 max-h-72 overflow-y-auto pr-1">
+                  <!-- Thumbnails injected via JS -->
+                </div>
+                <div class="text-[10px] text-slate-500 flex items-center justify-between pt-1">
+                  <span>💡 Bir fotoğrafa tıklayarak anında kapak görseli olarak atayabilirsiniz.</span>
+                  <span class="text-emerald-700 font-semibold">Unsplash Imgix CDN • Hızlı & Telifsiz</span>
+                </div>
+              </div>
             </div>
 
             <!-- SEO Meta Title & Description -->
@@ -1060,6 +1130,15 @@ const envPbUrl = import.meta.env.PUBLIC_POCKETBASE_URL || import.meta.env.POCKET
     const ceCategory = document.getElementById('ce-category');
     const ceReadTime = document.getElementById('ce-read-time');
     const ceCoverImage = document.getElementById('ce-cover-image');
+    const ceBtnToggleGallery = document.getElementById('ce-btn-toggle-gallery');
+    const ceBtnAutoStock = document.getElementById('ce-btn-auto-stock');
+    const ceBtnClearCover = document.getElementById('ce-btn-clear-cover');
+    const ceCoverPreview = document.getElementById('ce-cover-preview');
+    const ceCoverPreviewImg = document.getElementById('ce-cover-preview-img');
+    const ceCoverPreviewLink = document.getElementById('ce-cover-preview-link');
+    const ceStockGallery = document.getElementById('ce-stock-gallery');
+    const ceStockFilterTags = document.getElementById('ce-stock-filter-tags');
+    const ceStockGrid = document.getElementById('ce-stock-grid');
     const ceImageFile = document.getElementById('ce-image-file');
     const ceBtnUploadImage = document.getElementById('ce-btn-upload-image');
     const ceSeoTitle = document.getElementById('ce-seo-title');
@@ -1078,10 +1157,12 @@ const envPbUrl = import.meta.env.PUBLIC_POCKETBASE_URL || import.meta.env.POCKET
     const badgeCta = document.getElementById('badge-cta');
     const badgeLinks = document.getElementById('badge-links');
 
-    // PocketBase URL resolution (relative / api or direct IP)
-    const PB_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    // PocketBase URL resolution:
+    // If running on localhost / 127.0.0.1, connect to local PocketBase port 8090.
+    // In production, use relative '' so it goes through Nginx proxy directly without origin mismatch.
+    const PB_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
       ? 'http://127.0.0.1:8090'
-      : window.location.origin;
+      : '';
 
     // Environment & API Key Management (.env first, localStorage fallback, manual override)
     const envConfigEl = document.getElementById('ce-env-config');
@@ -1089,6 +1170,15 @@ const envPbUrl = import.meta.env.PUBLIC_POCKETBASE_URL || import.meta.env.POCKET
     const envImgbbKey = envConfigEl?.dataset?.imgbbKey || '';
     const hasEnvOpenRouter = envConfigEl?.dataset?.hasOpenrouter === 'true';
     const hasEnvImgbb = envConfigEl?.dataset?.hasImgbb === 'true';
+
+    // Stock Images Collection Loaded from Server Bridge
+    let STOCK_IMAGES = {};
+    try {
+      const rawStock = envConfigEl?.dataset?.stockImages;
+      if (rawStock) STOCK_IMAGES = JSON.parse(rawStock);
+    } catch (e) {
+      console.warn('Stock images parse error', e);
+    }
 
     const badgeOpenRouterEnv = document.getElementById('badge-openrouter-env');
     const badgeImgbbEnv = document.getElementById('badge-imgbb-env');
@@ -1149,6 +1239,167 @@ const envPbUrl = import.meta.env.PUBLIC_POCKETBASE_URL || import.meta.env.POCKET
       }
       ceImgbbKey.addEventListener('change', () => {
         localStorage.setItem('celebi_imgbb_key', ceImgbbKey.value.trim());
+      });
+    }
+
+    // Cover Image Live Preview Updater
+    function updateCoverPreview(url) {
+      if (!ceCoverPreview || !ceCoverPreviewImg) return;
+      const cleanUrl = (url || '').trim();
+      if (cleanUrl) {
+        ceCoverPreviewImg.src = cleanUrl;
+        if (ceCoverPreviewLink) ceCoverPreviewLink.href = cleanUrl;
+        ceCoverPreview.classList.remove('hidden');
+      } else {
+        ceCoverPreviewImg.src = '';
+        ceCoverPreview.classList.add('hidden');
+      }
+    }
+
+    if (ceCoverImage) {
+      ceCoverImage.addEventListener('input', () => {
+        updateCoverPreview(ceCoverImage.value.trim());
+      });
+    }
+
+    if (ceBtnClearCover) {
+      ceBtnClearCover.addEventListener('click', () => {
+        if (ceCoverImage) ceCoverImage.value = '';
+        updateCoverPreview('');
+        runQualityGateCheck();
+      });
+    }
+
+    // Smart Stock Image Matcher
+    function getMatchedStockImage(topic, category = '') {
+      const t = (topic + ' ' + category).toLowerCase();
+      let pool = STOCK_IMAGES.site_yonetimi || [];
+
+      if (/aidat|icra|kanun|kmk|hukuk|dava|borç|muhasebe|bütçe|avukat|ihtar/.test(t)) {
+        pool = STOCK_IMAGES.hukuk_icra || pool;
+      } else if (/dış cephe|cam temiz|vinç|kompozit|yüksek bina/.test(t)) {
+        pool = STOCK_IMAGES.dis_cephe || pool;
+      } else if (/inşaat|tadilat|şantiye|harç|boya|moloz|teslim temiz/.test(t)) {
+        pool = STOCK_IMAGES.insaat_temizlik || pool;
+      } else if (/ofis|kurumsal|plaza|şirket|iş yeri|büro/.test(t)) {
+        pool = STOCK_IMAGES.kurumsal_temizlik || pool;
+      } else if (/merdiven|asansör|hol|apartman temizli|giriş/.test(t)) {
+        pool = STOCK_IMAGES.merdiven_temizlik || pool;
+      }
+
+      if (!pool || pool.length === 0) return null;
+      let hash = 0;
+      for (let i = 0; i < topic.length; i++) {
+        hash = (hash << 5) - hash + topic.charCodeAt(i);
+        hash |= 0;
+      }
+      const idx = Math.abs(hash) % pool.length;
+      return pool[idx];
+    }
+
+    // Royalty-free Stock Image Gallery Renderer
+    const categoryLabels = {
+      all: 'Tümü',
+      site_yonetimi: 'Site Yönetimi',
+      hukuk_icra: 'Hukuk & İcra',
+      kurumsal_temizlik: 'Kurumsal Temizlik',
+      insaat_temizlik: 'İnşaat Temizliği',
+      dis_cephe: 'Dış Cephe',
+      merdiven_temizlik: 'Merdiven & Ortak Alan'
+    };
+
+    let currentStockCategory = 'all';
+
+    function renderStockGallery(categoryKey = 'all') {
+      currentStockCategory = categoryKey;
+      if (!ceStockGrid || !ceStockFilterTags) return;
+
+      // Render category filter tags
+      ceStockFilterTags.innerHTML = Object.entries(categoryLabels).map(([k, label]) => `
+        <button
+          type="button"
+          data-cat="${k}"
+          class="px-2 py-0.5 text-[10px] font-bold rounded-lg transition-all cursor-pointer ${currentStockCategory === k ? 'bg-sky-600 text-white shadow-xs' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}"
+        >
+          ${label}
+        </button>
+      `).join('');
+
+      ceStockFilterTags.querySelectorAll('button[data-cat]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          renderStockGallery(btn.getAttribute('data-cat'));
+        });
+      });
+
+      // Gather items
+      let items = [];
+      if (currentStockCategory === 'all') {
+        Object.values(STOCK_IMAGES).forEach(list => {
+          if (Array.isArray(list)) items.push(...list);
+        });
+      } else {
+        items = STOCK_IMAGES[currentStockCategory] || [];
+      }
+
+      ceStockGrid.innerHTML = items.map(item => `
+        <div
+          data-url="${item.url}"
+          data-title="${item.title}"
+          class="group relative rounded-xl overflow-hidden border border-slate-200 bg-white hover:border-sky-500 hover:shadow-md transition-all cursor-pointer flex flex-col"
+          title="${item.title} (${item.category})"
+        >
+          <div class="aspect-[16/10] bg-slate-100 overflow-hidden relative">
+            <img src="${item.thumbnail}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+            <span class="absolute top-1 left-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-slate-900/75 text-white backdrop-blur-xs">
+              ${item.category}
+            </span>
+          </div>
+          <div class="p-1.5 bg-white flex-1 flex flex-col justify-between">
+            <div class="text-[10px] font-medium text-slate-800 line-clamp-1 group-hover:text-sky-700">${item.title}</div>
+            <div class="text-[9px] text-sky-600 font-bold mt-0.5">Seç & Ata ↗</div>
+          </div>
+        </div>
+      `).join('');
+
+      ceStockGrid.querySelectorAll('[data-url]').forEach(card => {
+        card.addEventListener('click', () => {
+          const url = card.getAttribute('data-url');
+          if (ceCoverImage && url) {
+            ceCoverImage.value = url;
+            updateCoverPreview(url);
+            runQualityGateCheck();
+            if (ceStockGallery) ceStockGallery.classList.add('hidden');
+          }
+        });
+      });
+    }
+
+    if (ceBtnToggleGallery) {
+      ceBtnToggleGallery.addEventListener('click', () => {
+        if (!ceStockGallery) return;
+        const isHidden = ceStockGallery.classList.contains('hidden');
+        if (isHidden) {
+          ceStockGallery.classList.remove('hidden');
+          renderStockGallery(currentStockCategory);
+        } else {
+          ceStockGallery.classList.add('hidden');
+        }
+      });
+    }
+
+    if (ceBtnAutoStock) {
+      ceBtnAutoStock.addEventListener('click', () => {
+        const topic = (ceTitle?.value || ceKeywordSelect?.value || ceCustomTopic?.value || 'Site Yönetimi').trim();
+        const category = (ceCategory?.value || 'Site Yönetimi').trim();
+        const matched = getMatchedStockImage(topic, category);
+        if (matched && matched.url) {
+          if (ceCoverImage) ceCoverImage.value = matched.url;
+          updateCoverPreview(matched.url);
+          runQualityGateCheck();
+          alert(`✓ "${matched.title}" (${matched.category}) konuya en uygun görsel olarak atandı!`);
+        } else {
+          alert('Uygun stok görsel bulunamadı.');
+        }
       });
     }
 
@@ -1964,12 +2215,19 @@ const envPbUrl = import.meta.env.PUBLIC_POCKETBASE_URL || import.meta.env.POCKET
             }
           }
 
+          // Smart royalty-free cover image matching based on topic & category
+          const matchedImg = getMatchedStockImage(topic, 'Site Yönetimi');
+          const autoCoverUrl = matchedImg ? matchedImg.url : 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80';
+
           // Populate Editor
           if (ceTitle) ceTitle.value = generatedTitle;
           if (ceSlug) ceSlug.value = generatedSlug;
           if (ceCategory) ceCategory.value = 'Site Yönetimi';
           if (ceReadTime) ceReadTime.value = '4 dk okuma';
-          if (ceCoverImage) ceCoverImage.value = 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80';
+          if (ceCoverImage) {
+            ceCoverImage.value = autoCoverUrl;
+            updateCoverPreview(autoCoverUrl);
+          }
           if (ceSeoTitle) ceSeoTitle.value = `${topic} | Adana Çelebi Yönetim`;
           if (ceSeoDesc) ceSeoDesc.value = `Adana ${district} genelinde ${topic} hakkında Kat Mülkiyeti Kanunu, aidat tahsilatı ve profesyonel temizlik rehberi.`;
           if (ceBodyHtml) ceBodyHtml.value = bodyHtml.trim();
@@ -2059,6 +2317,8 @@ const envPbUrl = import.meta.env.PUBLIC_POCKETBASE_URL || import.meta.env.POCKET
     function resetEditorMode() {
       currentEditingArticleId = null;
       if (ceEditBanner) ceEditBanner.classList.add('hidden');
+      if (ceCoverImage) ceCoverImage.value = '';
+      updateCoverPreview('');
       if (ceBtnSavePb) ceBtnSavePb.innerText = "💾 PocketBase'e Yayınla 🚀";
       if (ceBtnSaveDraft) ceBtnSaveDraft.innerText = '📝 Taslak Olarak Kaydet';
     }
@@ -2070,7 +2330,10 @@ const envPbUrl = import.meta.env.PUBLIC_POCKETBASE_URL || import.meta.env.POCKET
       if (ceSlug) ceSlug.value = art.slug || '';
       if (ceCategory) ceCategory.value = art.kategori || 'Site Yönetimi';
       if (ceReadTime) ceReadTime.value = art.okumaSuresi || '4 dk okuma';
-      if (ceCoverImage) ceCoverImage.value = art.kapakGorsel || '';
+      if (ceCoverImage) {
+        ceCoverImage.value = art.kapakGorsel || '';
+        updateCoverPreview(art.kapakGorsel || '');
+      }
       if (ceSeoTitle) ceSeoTitle.value = art.seoTitle || '';
       if (ceSeoDesc) ceSeoDesc.value = art.seoDescription || '';
       if (ceBodyHtml) ceBodyHtml.value = art.ozet || '';
@@ -2208,9 +2471,23 @@ const envPbUrl = import.meta.env.PUBLIC_POCKETBASE_URL || import.meta.env.POCKET
     // Load Articles from PocketBase (Sorted by newest first via sort=-id)
     async function loadCeArticles() {
       if (!ceArticlesList) return;
+      ceArticlesList.innerHTML = `
+        <div class="p-8 text-center text-slate-400 text-xs flex items-center justify-center gap-2">
+          <svg class="animate-spin h-4 w-4 text-sky-600" viewBox="0 0 24 24" fill="none">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+          </svg>
+          <span>PocketBase makaleleri yükleniyor...</span>
+        </div>
+      `;
+
       try {
-        const res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records?page=1&perPage=50&sort=-id`);
-        if (!res.ok) throw new Error('PB articles fetch error: HTTP ' + res.status);
+        let res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records?page=1&perPage=50&sort=-id`);
+        if (!res.ok) {
+          // Fallback if sort=-id is unsupported
+          res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records?page=1&perPage=50`);
+        }
+        if (!res.ok) throw new Error('PocketBase HTTP ' + res.status);
         const data = await res.json();
 
         if (!data.items || data.items.length === 0) {
@@ -2223,24 +2500,38 @@ const envPbUrl = import.meta.env.PUBLIC_POCKETBASE_URL || import.meta.env.POCKET
         }
 
         ceArticlesList.innerHTML = data.items.map((art) => `
-          <div class="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/80 transition-colors p-3 rounded-2xl border-b border-slate-100 last:border-b-0">
-            <div class="space-y-1 max-w-2xl">
-              <div class="flex items-center gap-2 flex-wrap">
-                <span class="font-bold text-sm text-slate-900">${art.baslik}</span>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${art.aktif ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-amber-100 text-amber-800 border border-amber-200'}">
-                  ${art.aktif ? 'Yayında' : 'Taslak'}
-                </span>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-50 text-sky-800 border border-sky-200">
-                  ${art.kategori || 'Genel'}
-                </span>
-                <span class="text-[10px] text-slate-400">• ${art.tarih || 'Yeni'}</span>
-              </div>
-              <div class="text-xs text-slate-500 font-mono truncate">
-                Slug: /yazilar/${art.slug}
+          <div class="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50/80 transition-colors p-3 rounded-2xl border-b border-slate-100 last:border-b-0">
+            <div class="flex items-center gap-3 max-w-2xl min-w-0">
+              ${art.kapakGorsel ? `
+                <img
+                  src="${art.kapakGorsel}"
+                  alt="${art.baslik}"
+                  class="w-16 h-12 object-cover rounded-xl border border-slate-200 shrink-0 bg-slate-100 shadow-2xs"
+                  loading="lazy"
+                />
+              ` : `
+                <div class="w-16 h-12 rounded-xl bg-slate-100 border border-slate-200 shrink-0 flex items-center justify-center text-slate-400 text-base">
+                  📄
+                </div>
+              `}
+              <div class="space-y-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="font-bold text-sm text-slate-900 truncate">${art.baslik}</span>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold shrink-0 ${art.aktif ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-amber-100 text-amber-800 border border-amber-200'}">
+                    ${art.aktif ? 'Yayında' : 'Taslak'}
+                  </span>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-50 text-sky-800 border border-sky-200 shrink-0">
+                    ${art.kategori || 'Genel'}
+                  </span>
+                  <span class="text-[10px] text-slate-400 shrink-0">• ${art.tarih || 'Yeni'}</span>
+                </div>
+                <div class="text-xs text-slate-500 font-mono truncate">
+                  Slug: /yazilar/${art.slug}
+                </div>
               </div>
             </div>
 
-            <div class="flex items-center gap-2 shrink-0 flex-wrap">
+            <div class="flex items-center gap-2 shrink-0 flex-wrap self-end sm:self-auto">
               <a
                 href="/yazilar/oku?slug=${art.slug}"
                 target="_blank"
@@ -2301,7 +2592,7 @@ const envPbUrl = import.meta.env.PUBLIC_POCKETBASE_URL || import.meta.env.POCKET
               });
               loadCeArticles();
             } catch (e) {
-              alert('Durum güncellenirken hata oluştu.');
+              alert('Durum güncellenirken hata oluştu: ' + e.message);
             }
           });
         });
@@ -2317,22 +2608,36 @@ const envPbUrl = import.meta.env.PUBLIC_POCKETBASE_URL || import.meta.env.POCKET
                 });
                 loadCeArticles();
               } catch (e) {
-                alert('Silinirken hata oluştu.');
+                alert('Silinirken hata oluştu: ' + e.message);
               }
             }
           });
         });
 
       } catch (err) {
+        console.error('loadCeArticles error:', err);
         if (ceArticlesList) {
           ceArticlesList.innerHTML = `
-            <div class="p-6 text-center text-slate-400 text-xs">
-              PocketBase bağlantısı bekleniyor (${PB_BASE_URL}).
+            <div class="p-6 text-center text-slate-500 text-xs space-y-2">
+              <div class="text-rose-600 font-bold">⚠️ Makaleler yüklenirken hata oluştu: ${err.message || err}</div>
+              <div class="text-[11px] text-slate-400 font-mono">Hedef: ${PB_BASE_URL || window.location.origin}/api/collections/yazilar/records</div>
+              <button
+                type="button"
+                id="ce-btn-retry-load"
+                class="px-3 py-1.5 bg-sky-50 hover:bg-sky-100 text-sky-700 font-bold rounded-xl border border-sky-200 transition-all cursor-pointer text-xs"
+              >
+                🔄 Yeniden Dene
+              </button>
             </div>
           `;
+          document.getElementById('ce-btn-retry-load')?.addEventListener('click', () => {
+            loadCeArticles();
+          });
         }
       }
     }
+
+    window.loadCeArticles = loadCeArticles;
 
     if (ceBtnRefreshArticles) {
       ceBtnRefreshArticles.addEventListener('click', () => {

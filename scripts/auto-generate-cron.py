@@ -42,6 +42,59 @@ PB_PASS = os.environ.get("PB_PASS") or os.environ.get("POCKETBASE_ADMIN_PASSWORD
 OPENROUTER_KEY = os.environ.get("OPENROUTER_API_KEY") or os.environ.get("PUBLIC_OPENROUTER_API_KEY") or ""
 IMGBB_KEY = os.environ.get("IMGBB_API_KEY") or os.environ.get("PUBLIC_IMGBB_API_KEY") or ""
 
+STOCK_IMAGES = {
+    "hukuk_icra": [
+        "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "kurumsal_temizlik": [
+        "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1628177142898-93e36e4e3a50?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "insaat_temizlik": [
+        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "dis_cephe": [
+        "https://images.unsplash.com/photo-1506146332389-18140dc7b2fb?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "merdiven_apartman": [
+        "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "site_yonetimi": [
+        "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1574362848149-11496d93a7c7?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80"
+    ]
+}
+
+def get_royalty_free_image(topic, category=""):
+    t = f"{topic} {category}".lower()
+    import zlib
+    seed = abs(zlib.crc32(topic.encode("utf-8")))
+
+    if any(k in t for k in ["aidat", "icra", "kanun", "kmk", "hukuk", "dava", "borç", "muhasebe", "bütçe"]):
+        pool = STOCK_IMAGES["hukuk_icra"]
+    elif any(k in t for k in ["dış cephe", "cam", "vinç", "kompozit", "yüksek"]):
+        pool = STOCK_IMAGES["dis_cephe"]
+    elif any(k in t for k in ["inşaat", "tadilat", "harç", "boya", "anahtar teslim"]):
+        pool = STOCK_IMAGES["insaat_temizlik"]
+    elif any(k in t for k in ["ofis", "kurumsal", "plaza", "şirket", "iş yeri"]):
+        pool = STOCK_IMAGES["kurumsal_temizlik"]
+    elif any(k in t for k in ["merdiven", "asansör", "ortak alan", "apartman temizli"]):
+        pool = STOCK_IMAGES["merdiven_apartman"]
+    else:
+        pool = STOCK_IMAGES["site_yonetimi"]
+
+    return pool[seed % len(pool)]
+
 def get_pb_token():
     url = f"{PB_URL}/api/collections/_superusers/auth-with-password"
     data = json.dumps({"identity": PB_USER, "password": PB_PASS}).encode("utf-8")
@@ -129,7 +182,7 @@ def generate_article_body(keyword, district="Çukurova"):
         "aktif": True,
         "seoTitle": f"Adana {district} {keyword} | Çelebi Yönetim",
         "seoDescription": f"Adana {district} ve Seyhan genelinde {keyword} konusunda yasal mevzuat, aidat ve profesyonel temizlik çözümleri rehberi.",
-        "kapakGorsel": "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80",
+        "kapakGorsel": get_royalty_free_image(keyword, "Site Yönetimi"),
         "kaynak": "Çelebi Yönetim Otomasyon Masası",
         "views": 0
     }

@@ -23,13 +23,24 @@ with tarfile.open(temp_archive, "w:gz") as tar:
 
 sftp = ssh.open_sftp()
 sftp.put(temp_archive, "/tmp/celebiyonetim_dist_update.tar.gz")
+
+# Upload backend scripts
+scripts_dir = os.path.abspath(os.path.dirname(__file__))
+for script_name in ["timer-runner.py", "auto-generate-cron.py"]:
+    local_script = os.path.join(scripts_dir, script_name)
+    if os.path.exists(local_script):
+        sftp.put(local_script, f"/var/www/scripts/{script_name}")
+        print(f"Uploaded {script_name} to /var/www/scripts/")
+
 sftp.close()
 
 stdin, stdout, stderr = ssh.exec_command(
     "rm -rf /var/www/celebiyonetim/html/* && "
     "tar -xzf /tmp/celebiyonetim_dist_update.tar.gz -C /var/www/celebiyonetim/html/ && "
     "rm -f /tmp/celebiyonetim_dist_update.tar.gz && "
-    "chown -R www-data:www-data /var/www/celebiyonetim/html"
+    "chmod +x /var/www/scripts/*.py && "
+    "chown -R www-data:www-data /var/www/celebiyonetim/html && "
+    "systemctl reload nginx"
 )
 stdout.channel.recv_exit_status()
 print("VDS Update Complete!")

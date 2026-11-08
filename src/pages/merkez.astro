@@ -767,6 +767,10 @@ const envPbUrl = import.meta.env.PUBLIC_POCKETBASE_URL || import.meta.env.POCKET
         <!-- 2. Draft Editor & Quality Gate Live Canvas -->
         <div id="ce-editor-wrapper" class="hidden bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
           
+          <!-- Edit Mode Active Notification Banner -->
+          <div id="ce-edit-banner" class="hidden p-4 rounded-2xl bg-amber-50 border border-amber-300 text-amber-900 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+          </div>
+
           <!-- Quality Gate Strip -->
           <div class="p-5 rounded-2xl bg-slate-900 text-white flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
@@ -1049,6 +1053,8 @@ const envPbUrl = import.meta.env.PUBLIC_POCKETBASE_URL || import.meta.env.POCKET
     const ceImgbbKey = document.getElementById('ce-imgbb-key');
 
     const ceEditorWrapper = document.getElementById('ce-editor-wrapper');
+    const ceEditBanner = document.getElementById('ce-edit-banner');
+    let currentEditingArticleId = null;
     const ceTitle = document.getElementById('ce-title');
     const ceSlug = document.getElementById('ce-slug');
     const ceCategory = document.getElementById('ce-category');
@@ -2049,7 +2055,61 @@ const envPbUrl = import.meta.env.PUBLIC_POCKETBASE_URL || import.meta.env.POCKET
       });
     }
 
-    // Save Article to PocketBase
+    // Reset Editor Mode (Clear Editing State)
+    function resetEditorMode() {
+      currentEditingArticleId = null;
+      if (ceEditBanner) ceEditBanner.classList.add('hidden');
+      if (ceBtnSavePb) ceBtnSavePb.innerText = "💾 PocketBase'e Yayınla 🚀";
+      if (ceBtnSaveDraft) ceBtnSaveDraft.innerText = '📝 Taslak Olarak Kaydet';
+    }
+
+    // Start Editing an Existing Article
+    function startEditArticle(art) {
+      currentEditingArticleId = art.id;
+      if (ceTitle) ceTitle.value = art.baslik || '';
+      if (ceSlug) ceSlug.value = art.slug || '';
+      if (ceCategory) ceCategory.value = art.kategori || 'Site Yönetimi';
+      if (ceReadTime) ceReadTime.value = art.okumaSuresi || '4 dk okuma';
+      if (ceCoverImage) ceCoverImage.value = art.kapakGorsel || '';
+      if (ceSeoTitle) ceSeoTitle.value = art.seoTitle || '';
+      if (ceSeoDesc) ceSeoDesc.value = art.seoDescription || '';
+      if (ceBodyHtml) ceBodyHtml.value = art.ozet || '';
+
+      if (ceEditBanner) {
+        ceEditBanner.innerHTML = `
+          <div class="flex items-center gap-2">
+            <span class="text-lg">✏️</span>
+            <div>
+              <div class="font-extrabold text-amber-950">Makale Düzenleniyor: "${art.baslik}"</div>
+              <div class="text-[10px] text-amber-700">Veritabanı ID: ${art.id} • Slug: /yazilar/${art.slug}</div>
+            </div>
+          </div>
+          <button type="button" id="btn-cancel-edit" class="px-3 py-1.5 rounded-xl bg-amber-200 hover:bg-amber-300 text-amber-900 font-bold text-xs transition cursor-pointer shrink-0">
+            ✕ Düzenlemeyi İptal Et
+          </button>
+        `;
+        ceEditBanner.classList.remove('hidden');
+        document.getElementById('btn-cancel-edit')?.addEventListener('click', () => {
+          resetEditorMode();
+          if (ceTitle) ceTitle.value = '';
+          if (ceSlug) ceSlug.value = '';
+          if (ceBodyHtml) ceBodyHtml.value = '';
+          runQualityGateCheck();
+        });
+      }
+
+      if (ceBtnSavePb) ceBtnSavePb.innerText = '💾 Değişiklikleri Güncelle & Yayınla 🚀';
+      if (ceBtnSaveDraft) ceBtnSaveDraft.innerText = '📝 Taslak Olarak Güncelle';
+
+      if (ceEditorWrapper) {
+        ceEditorWrapper.classList.remove('hidden');
+        ceEditorWrapper.scrollIntoView({ behavior: 'smooth' });
+      }
+
+      runQualityGateCheck();
+    }
+
+    // Save Article to PocketBase (Create or Update)
     async function saveArticle(aktif = true) {
       if (!ceTitle || !ceBodyHtml || !ceSlug) return;
       const title = ceTitle.value.trim();
@@ -2081,11 +2141,20 @@ const envPbUrl = import.meta.env.PUBLIC_POCKETBASE_URL || import.meta.env.POCKET
           views: 0
         };
 
-        const res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
+        let res;
+        if (currentEditingArticleId) {
+          res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records/${currentEditingArticleId}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+        } else {
+          res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+        }
 
         if (!res.ok) {
           const errData = await res.json();
@@ -2094,26 +2163,31 @@ const envPbUrl = import.meta.env.PUBLIC_POCKETBASE_URL || import.meta.env.POCKET
 
         const saved = await res.json();
 
-        // Mark keyword as used if came from select
-        const selectedOpt = ceKeywordSelect?.selectedOptions?.[0];
-        const kwId = selectedOpt?.getAttribute('data-id');
-        if (kwId) {
-          try {
-            await fetch(`${PB_BASE_URL}/api/collections/seo_keywords/records/${kwId}`, {
-              method: 'PATCH',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ used: true, lastGenerated: new Date().toISOString() })
-            });
-            loadCeKeywords();
-          } catch (e) {}
+        // Mark keyword as used if came from select and creating new
+        if (!currentEditingArticleId) {
+          const selectedOpt = ceKeywordSelect?.selectedOptions?.[0];
+          const kwId = selectedOpt?.getAttribute('data-id');
+          if (kwId) {
+            try {
+              await fetch(`${PB_BASE_URL}/api/collections/seo_keywords/records/${kwId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ used: true, lastGenerated: new Date().toISOString() })
+              });
+              loadCeKeywords();
+            } catch (e) {}
+          }
         }
 
         if (cePublishAlert) {
-          cePublishAlert.innerHTML = `✓ Makale başarıyla PocketBase veritabanına kaydedildi! ID: <strong>${saved.id}</strong> | Durum: <strong>${aktif ? 'Yayında 🚀' : 'Taslak 📝'}</strong>`;
+          cePublishAlert.innerHTML = currentEditingArticleId
+            ? `✓ Makale başarıyla güncellendi! ID: <strong>${saved.id}</strong> | Durum: <strong>${aktif ? 'Yayında 🚀' : 'Taslak 📝'}</strong>`
+            : `✓ Makale başarıyla PocketBase veritabanına kaydedildi! ID: <strong>${saved.id}</strong> | Durum: <strong>${aktif ? 'Yayında 🚀' : 'Taslak 📝'}</strong>`;
           cePublishAlert.classList.remove('hidden');
           setTimeout(() => cePublishAlert.classList.add('hidden'), 7000);
         }
 
+        resetEditorMode();
         loadCeArticles();
 
       } catch (err) {
@@ -2131,12 +2205,12 @@ const envPbUrl = import.meta.env.PUBLIC_POCKETBASE_URL || import.meta.env.POCKET
       ceBtnSaveDraft.addEventListener('click', () => saveArticle(false));
     }
 
-    // Load Articles from PocketBase
+    // Load Articles from PocketBase (Sorted by newest first via sort=-id)
     async function loadCeArticles() {
       if (!ceArticlesList) return;
       try {
-        const res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records?page=1&perPage=50&sort=-created`);
-        if (!res.ok) throw new Error('PB articles fetch error');
+        const res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records?page=1&perPage=50&sort=-id`);
+        if (!res.ok) throw new Error('PB articles fetch error: HTTP ' + res.status);
         const data = await res.json();
 
         if (!data.items || data.items.length === 0) {
@@ -2149,7 +2223,7 @@ const envPbUrl = import.meta.env.PUBLIC_POCKETBASE_URL || import.meta.env.POCKET
         }
 
         ceArticlesList.innerHTML = data.items.map((art) => `
-          <div class="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/80 transition-colors p-3 rounded-2xl">
+          <div class="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/80 transition-colors p-3 rounded-2xl border-b border-slate-100 last:border-b-0">
             <div class="space-y-1 max-w-2xl">
               <div class="flex items-center gap-2 flex-wrap">
                 <span class="font-bold text-sm text-slate-900">${art.baslik}</span>
@@ -2166,14 +2240,23 @@ const envPbUrl = import.meta.env.PUBLIC_POCKETBASE_URL || import.meta.env.POCKET
               </div>
             </div>
 
-            <div class="flex items-center gap-2 shrink-0">
+            <div class="flex items-center gap-2 shrink-0 flex-wrap">
               <a
-                href="/yazilar/${art.slug}"
+                href="/yazilar/oku?slug=${art.slug}"
                 target="_blank"
                 class="px-3 py-1.5 text-xs font-bold text-sky-700 bg-sky-50 hover:bg-sky-100 border border-sky-200 rounded-xl transition-all"
               >
                 Görüntüle ↗
               </a>
+              <button
+                type="button"
+                data-action="edit-art"
+                data-id="${art.id}"
+                class="px-3 py-1.5 text-xs font-bold text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-300 rounded-xl transition-all cursor-pointer flex items-center gap-1 shadow-xs"
+              >
+                <span>✏️</span>
+                <span>Düzenle</span>
+              </button>
               <button
                 type="button"
                 data-action="toggle-art-status"
@@ -2196,7 +2279,16 @@ const envPbUrl = import.meta.env.PUBLIC_POCKETBASE_URL || import.meta.env.POCKET
           </div>
         `).join('');
 
-        // Bind article actions
+        // Bind Edit buttons
+        ceArticlesList.querySelectorAll('[data-action="edit-art"]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            const art = data.items.find(x => x.id === id);
+            if (art) startEditArticle(art);
+          });
+        });
+
+        // Bind article actions (toggle status)
         ceArticlesList.querySelectorAll('[data-action="toggle-art-status"]').forEach(btn => {
           btn.addEventListener('click', async () => {
             const id = btn.getAttribute('data-id');
@@ -2214,6 +2306,7 @@ const envPbUrl = import.meta.env.PUBLIC_POCKETBASE_URL || import.meta.env.POCKET
           });
         });
 
+        // Bind delete buttons
         ceArticlesList.querySelectorAll('[data-action="delete-art"]').forEach(btn => {
           btn.addEventListener('click', async () => {
             const id = btn.getAttribute('data-id');

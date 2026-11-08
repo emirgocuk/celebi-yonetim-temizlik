@@ -7,3 +7,4 @@ Write-Host "========================================================" -Foregroun
 Write-Host ""
 
 npm run dev:all
+

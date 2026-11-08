@@ -3,6 +3,11 @@ import { COMPANY_INFO } from '@/lib/fallback-data';
 import '@/styles/global.css';
 
 const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
+
+// Ortam değişkenleri (.env) - Hem standart hem PUBLIC_ önekleri desteklenir
+const envOpenRouterKey = import.meta.env.PUBLIC_OPENROUTER_API_KEY || import.meta.env.OPENROUTER_API_KEY || '';
+const envImgbbKey = import.meta.env.PUBLIC_IMGBB_API_KEY || import.meta.env.IMGBB_API_KEY || '';
+const envPbUrl = import.meta.env.PUBLIC_POCKETBASE_URL || import.meta.env.POCKETBASE_URL || '';
 ---
 
 <!doctype html>
@@ -15,6 +20,17 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
   <body class="bg-slate-100/80 text-slate-900 min-h-screen flex flex-col antialiased selection:bg-slate-900 selection:text-white">
+    <!-- Server .env Config Bridge -->
+    <div
+      id="ce-env-config"
+      data-has-openrouter={envOpenRouterKey ? 'true' : 'false'}
+      data-openrouter-key={envOpenRouterKey}
+      data-has-imgbb={envImgbbKey ? 'true' : 'false'}
+      data-imgbb-key={envImgbbKey}
+      data-pb-url={envPbUrl}
+      class="hidden"
+    ></div>
+
     <div id="merkez-app" class="min-h-screen py-6 sm:py-10">
     
     <!-- AUTH VIEW: Login Screen -->
@@ -150,7 +166,7 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
           data-tab="ceo-seo"
           class="tab-btn px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 flex items-center gap-2 shrink-0"
         >
-          <span>🚀 CEO & Otomatik Haber Motoru</span>
+          <span>🚀 CEO & Otomatik Haber Motoru (SEO)</span>
         </button>
       </div>
 
@@ -469,110 +485,497 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
 
       </div>
 
-      <!-- TAB 4 CONTENT: CEO & Otomatik Haber Oluşturucu (SEO) -->
+      <!-- TAB 4 CONTENT: CEO & Otomatik Haber Motoru (SEO & Content Engine) -->
       <div id="tab-content-ceo-seo" class="tab-pane hidden space-y-6">
         
-        <!-- Welcome & Future Ready Notice -->
+        <!-- Welcome Hero Banner -->
         <div class="p-8 sm:p-10 rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-sky-950 text-white shadow-xl relative overflow-hidden">
-          <div class="max-w-2xl">
+          <div class="max-w-3xl">
             <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold bg-sky-500/20 text-sky-300 border border-sky-400/30 mb-3">
-              CEO & Otomasyon Modülü
+              🚀 Otonom SEO & İçerik Üretim Motoru
             </span>
-            <h3 class="text-2xl sm:text-3xl font-extrabold mb-3">Otomatik Haber Oluşturucu & SEO Motoru</h3>
+            <h3 class="text-2xl sm:text-3xl font-extrabold mb-3">Adana KMK & Temizlik SEO İçerik İstasyonu</h3>
             <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
-              Bu alan, elinizdeki hazır tasarım ve otomatik haber motorunun doğrudan entegre edilebilmesi için özel olarak hazırlanmıştır. Tasarımınız geldiğinde tek tıkla buraya bağlanacaktır.
+              Kat Mülkiyeti Kanunu ve profesyonel temizlik standartlarına uygun; 220+ kelimelik, 3+ H2 başlıklı, iç linkleme ve Çelebi marka çağrılı (CTA) tam SEO uyumlu makaleleri tek tıkla üretin ve PocketBase veritabanına anında yayınlayın.
             </p>
           </div>
         </div>
 
-        <!-- 3 Feature Architecture Blueprint Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- ⏱️ OTONOM ZAMANLAYICI & YAYINLAYICI (TIMER) KARTI -->
+        <div class="bg-gradient-to-br from-white via-sky-50/40 to-slate-50 rounded-3xl p-6 sm:p-8 border border-sky-100/80 shadow-sm relative overflow-hidden">
           
-          <div class="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-200/80">
             <div>
-              <div class="w-10 h-10 rounded-xl bg-sky-50 text-sky-700 flex items-center justify-center font-bold text-lg mb-3">
-                📈
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-xl">⏱️</span>
+                <h4 class="text-base sm:text-lg font-bold text-slate-900">Otonom Yayın Zamanlayıcısı (Otomatik Timer)</h4>
+                <span id="timer-live-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  Zamanlayıcı Aktif
+                </span>
               </div>
-              <h4 class="text-base font-bold text-slate-900 mb-2">Google Trends & KMK Arama Takibi</h4>
-              <p class="text-xs text-slate-600 leading-relaxed mb-4">
-                Google arama hacmi en yüksek 50 bina yönetimi ve temizlik anahtar kelimesini otomatik tarayıp haber fikirleri listeler.
+              <p class="text-xs text-slate-500">
+                Belirlediğiniz aralıklarla PocketBase kuyruğundan anahtar kelimeleri seçip tam SEO makalesi üretir ve otomatik yayınlar.
               </p>
             </div>
-            <div class="p-2.5 rounded-xl bg-slate-50 text-[11px] font-semibold text-slate-500 border border-slate-100">
-              Durum: Entegrasyon Soketi Hazır
+
+            <!-- Toggle Switch -->
+            <div class="flex items-center gap-3 bg-white px-4 py-2 rounded-2xl border border-slate-200 shadow-xs">
+              <span class="text-xs font-bold text-slate-700">Otomatik Yayın:</span>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="timer-toggle-active" class="sr-only peer" checked>
+                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+              </label>
+              <span id="timer-status-text" class="text-xs font-bold text-emerald-700">AÇIK</span>
             </div>
           </div>
 
-          <div class="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
-            <div>
-              <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-lg mb-3">
-                ✍️
+          <!-- Timer Controls Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 py-6 border-b border-slate-200/80">
+            
+            <!-- 1. Frequency -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-200">
+              <label for="timer-select-frequency" class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                Yayın Sıklığı (Aralık)
+              </label>
+              <select id="timer-select-frequency" class="w-full text-xs font-semibold px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white outline-none focus:border-sky-500">
+                <option value="1h">⚡ Her 1 Saatte Bir (Günde 24 Makale)</option>
+                <option value="3h">🚀 Her 3 Saatte Bir (Günde 8 Makale)</option>
+                <option value="6h" selected>⭐ Her 6 Saatte Bir (Günde 4 Makale - Önerilen)</option>
+                <option value="12h">📅 Her 12 Saatte Bir (Günde 2 Makale)</option>
+                <option value="24h">🌅 Günde 1 Kez (24 Saatte Bir)</option>
+              </select>
+            </div>
+
+            <!-- 2. Target District -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-200">
+              <label for="timer-select-district" class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                Hedef İlçe Stratejisi
+              </label>
+              <select id="timer-select-district" class="w-full text-xs font-semibold px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white outline-none focus:border-sky-500">
+                <option value="auto" selected>🔄 Dönüşümlü (Çukurova ➔ Seyhan ➔ Yüreğir)</option>
+                <option value="Çukurova">🏢 Yalnızca Çukurova (Site Bölgesi)</option>
+                <option value="Seyhan">🏛️ Yalnızca Seyhan</option>
+                <option value="Yüreğir">🌱 Yalnızca Yüreğir</option>
+                <option value="Sarıçam">🏗️ Yalnızca Sarıçam</option>
+              </select>
+            </div>
+
+            <!-- 3. Next Run Countdown -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-200">
+              <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Sıradaki Otomatik Yayın</div>
+              <div id="timer-countdown" class="text-base font-extrabold text-sky-700 flex items-center gap-1.5">
+                <span class="text-sm">⏳</span>
+                <span>Hesaplanıyor...</span>
               </div>
-              <h4 class="text-base font-bold text-slate-900 mb-2">Yapay Zeka Makale Taslak Üretici</h4>
-              <p class="text-xs text-slate-600 leading-relaxed mb-4">
-                Yargıtay kararları ve Kat Mülkiyeti Kanunu mevzuatına uygun, SEO dostu özgün blog içerikleri taslağı üretir.
-              </p>
+              <div id="timer-last-run" class="text-[10px] text-slate-400 mt-1 truncate">Son: Kontrol ediliyor...</div>
             </div>
-            <div class="p-2.5 rounded-xl bg-slate-50 text-[11px] font-semibold text-slate-500 border border-slate-100">
-              Durum: Entegrasyon Soketi Hazır
+
+            <!-- 4. Total Published & Queue -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-200">
+              <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Kuyruk & İstatistik</div>
+              <div class="flex items-center justify-between">
+                <div>
+                  <span id="timer-total-count" class="text-lg font-extrabold text-slate-900">-</span>
+                  <span class="text-[10px] text-slate-500 block">Yayınlanan</span>
+                </div>
+                <div class="text-right">
+                  <span id="timer-queue-count" class="text-lg font-extrabold text-emerald-700">-</span>
+                  <span class="text-[10px] text-slate-500 block">Bekleyen Konu</span>
+                </div>
+              </div>
             </div>
+
           </div>
 
-          <div class="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
-            <div>
-              <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center font-bold text-lg mb-3">
-                🎨
-              </div>
-              <h4 class="text-base font-bold text-slate-900 mb-2">Hazır Tasarım Entegrasyon Yuvası</h4>
-              <p class="text-xs text-slate-600 leading-relaxed mb-4">
-                Elinizdeki hazır arayüz tasarımı, HTML veya iframe bileşeni olarak doğrudan bu alana giydirilecektir.
-              </p>
+          <!-- Bottom Action Strip -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-5">
+            <div class="flex items-center gap-2 text-xs text-slate-600">
+              <span class="text-emerald-500 text-sm font-bold">✓</span>
+              <span id="timer-last-article" class="truncate max-w-md">Son Yayın: Kontrol ediliyor...</span>
             </div>
-            <div class="p-2.5 rounded-xl bg-slate-50 text-[11px] font-semibold text-slate-500 border border-slate-100">
-              Durum: Tasarım Bekleniyor
+
+            <div class="flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                id="btn-save-timer-settings"
+                class="px-4 py-2 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-slate-800 transition cursor-pointer shadow-sm"
+              >
+                💾 Zamanlayıcı Ayarlarını Kaydet
+              </button>
+              <button
+                type="button"
+                id="btn-force-publish-now"
+                class="px-4 py-2 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 text-white font-bold text-xs hover:from-sky-700 hover:to-indigo-700 transition cursor-pointer shadow-sm flex items-center gap-1.5"
+              >
+                <span>⚡</span>
+                <span id="btn-force-text">Şimdi Otomatik Yayınla (Tetikle)</span>
+              </button>
             </div>
           </div>
 
         </div>
 
-        <!-- Simulated Draft Sandbox -->
+        <!-- 1. Generation Control Station -->
         <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
-          <div class="flex items-center justify-between mb-4">
-            <h4 class="text-base font-bold text-slate-900">Otomatik Haber / Makale Üretim Test Alanı (Simülasyon)</h4>
-            <span class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
-              Prototip Önizleme
-            </span>
+          <h4 class="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
+            <span>⚙️</span>
+            <span>Makale Üretim Ayarları</span>
+          </h4>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Left 2 Cols: Form -->
+            <div class="lg:col-span-2 space-y-4">
+              
+              <!-- Queue Keyword Selector or Custom Input -->
+              <div>
+                <label for="ce-keyword-select" class="block text-xs font-bold text-slate-700 mb-1">
+                  1. SEO Anahtar Kelime Kuyruğu (PocketBase seo_keywords)
+                </label>
+                <div class="flex gap-2">
+                  <select
+                    id="ce-keyword-select"
+                    class="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white focus:border-sky-600 focus:ring-2 focus:ring-sky-100 outline-none font-medium"
+                  >
+                    <option value="">-- Kuyruktan Konu Seçin veya Aşağıya Serbest Yazın --</option>
+                  </select>
+                  <button
+                    type="button"
+                    id="ce-btn-refresh-keywords"
+                    title="Kuyruğu Yenile"
+                    class="px-3 py-2 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl border border-slate-200 transition-all shrink-0 cursor-pointer"
+                  >
+                    🔄
+                  </button>
+                </div>
+              </div>
+
+              <!-- Custom Keyword & Target District -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="ce-custom-topic" class="block text-xs font-bold text-slate-700 mb-1">
+                    Veya Özel Başlık / Konu
+                  </label>
+                  <input
+                    type="text"
+                    id="ce-custom-topic"
+                    placeholder="Örn: Çukurova Rezidans Aidat Tahsilatı"
+                    class="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white focus:border-sky-600 focus:ring-2 focus:ring-sky-100 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label for="ce-target-district" class="block text-xs font-bold text-slate-700 mb-1">
+                    Hedef Bölge / İlçe *
+                  </label>
+                  <select
+                    id="ce-target-district"
+                    class="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white focus:border-sky-600 focus:ring-2 focus:ring-sky-100 outline-none font-medium"
+                  >
+                    <option value="Çukurova">Çukurova (Adana)</option>
+                    <option value="Seyhan">Seyhan (Adana)</option>
+                    <option value="Yüreğir">Yüreğir (Adana)</option>
+                    <option value="Sarıçam">Sarıçam (Adana)</option>
+                    <option value="Adana Geneli">Adana Geneli (Tüm İlçeler)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Mode Selection -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">
+                  Çalışma Modu (SEO_NEWS_MODE) *
+                </label>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <label class="flex items-center gap-2 p-3 rounded-xl border border-sky-300 bg-sky-50/50 cursor-pointer hover:bg-sky-50 transition-all text-xs font-bold text-slate-900">
+                    <input type="radio" name="ce-mode" value="hybrid" checked class="text-sky-600 focus:ring-sky-500" />
+                    <span>Hybrid (Şablon + LLM)</span>
+                  </label>
+                  <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all text-xs font-bold text-slate-900">
+                    <input type="radio" name="ce-mode" value="template" class="text-sky-600 focus:ring-sky-500" />
+                    <span>Şablon (0 Maliyet)</span>
+                  </label>
+                  <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition-all text-xs font-bold text-slate-900">
+                    <input type="radio" name="ce-mode" value="llm" class="text-sky-600 focus:ring-sky-500" />
+                    <span>Tam Yapay Zeka (LLM)</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Action Trigger Button -->
+              <div class="pt-2">
+                <button
+                  type="button"
+                  id="ce-btn-generate"
+                  class="w-full sm:w-auto px-8 py-3.5 text-sm font-bold text-white bg-slate-900 hover:bg-sky-700 rounded-xl transition-all shadow-md shadow-slate-900/10 cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <span>⚡</span>
+                  <span id="ce-btn-generate-text">Tek Tıkla SEO Makalesi Üret</span>
+                </button>
+              </div>
+
+            </div>
+
+            <!-- Right 1 Col: API Credentials (.env ve LocalStorage) -->
+            <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-4">
+              <div class="flex items-center justify-between">
+                <h5 class="text-xs font-bold text-slate-900 uppercase tracking-wider">🔑 API & Güvenlik</h5>
+                <span id="ce-env-status-badge" class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-slate-200 text-slate-700">
+                  .env Kontrol Ediliyor
+                </span>
+              </div>
+              <p class="text-[11px] text-slate-500 leading-relaxed">
+                Anahtarlar projenizdeki <code>.env</code> dosyasından otomatik yüklenir. İsterseniz buradan geçici olarak farklı bir anahtar da yazabilirsiniz.
+              </p>
+
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label for="ce-openrouter-key" class="text-[11px] font-bold text-slate-700">OpenRouter API Key (LLM)</label>
+                  <span id="badge-openrouter-env" class="hidden text-[10px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded">✓ .env Aktif</span>
+                </div>
+                <input
+                  type="password"
+                  id="ce-openrouter-key"
+                  placeholder="sk-or-v1-... (.env'den otomatik alınır)"
+                  class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white font-mono outline-none focus:border-sky-600"
+                />
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label for="ce-imgbb-key" class="text-[11px] font-bold text-slate-700">ImageBB API Key (Görsel)</label>
+                  <span id="badge-imgbb-env" class="hidden text-[10px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded">✓ .env Aktif</span>
+                </div>
+                <input
+                  type="password"
+                  id="ce-imgbb-key"
+                  placeholder="6d207e02... (.env'den otomatik alınır)"
+                  class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white font-mono outline-none focus:border-sky-600"
+                />
+              </div>
+
+              <div class="pt-2 border-t border-slate-200 text-[10px] text-emerald-700 font-semibold flex items-center gap-1.5">
+                <span>✓</span>
+                <span>.env tanımlıysa kutular boş olsa bile motor tam kapasite çalışır.</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 2. Draft Editor & Quality Gate Live Canvas -->
+        <div id="ce-editor-wrapper" class="hidden bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+          
+          <!-- Quality Gate Strip -->
+          <div class="p-5 rounded-2xl bg-slate-900 text-white flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <div class="text-[10px] font-bold uppercase tracking-wider text-sky-400 mb-1">🛡️ Kalite Kapısı (Quality Gate Raporu)</div>
+              <div id="ce-quality-status" class="text-base font-extrabold flex items-center gap-2">
+                <span class="text-emerald-400">✓ Standartlara %100 Uygun</span>
+              </div>
+            </div>
+
+            <!-- Badges -->
+            <div class="flex flex-wrap items-center gap-2 text-xs">
+              <span id="badge-words" class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">
+                📝 0 Kelime (Min 200)
+              </span>
+              <span id="badge-h2" class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">
+                📌 0 H2 Başlık (Min 3)
+              </span>
+              <span id="badge-cta" class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">
+                📞 Çelebi CTA: Var
+              </span>
+              <span id="badge-links" class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">
+                🔗 İç Linkler: Var
+              </span>
+            </div>
           </div>
 
+          <!-- Article Fields Form -->
           <div class="space-y-4">
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            
+            <!-- Title & Slug -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="ce-title" class="block text-xs font-bold text-slate-700 mb-1">Haber / Makale Başlığı *</label>
+                <input
+                  type="text"
+                  id="ce-title"
+                  class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 bg-white font-bold text-slate-900 outline-none focus:border-sky-600"
+                />
+              </div>
+
+              <div>
+                <label for="ce-slug" class="block text-xs font-bold text-slate-700 mb-1">URL Slug (Kalıcı Bağlantı) *</label>
+                <input
+                  type="text"
+                  id="ce-slug"
+                  class="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-slate-50 font-mono text-slate-700 outline-none focus:border-sky-600"
+                />
+              </div>
+            </div>
+
+            <!-- Category & Reading Time & Image Upload -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label for="ce-category" class="block text-xs font-bold text-slate-700 mb-1">Kategori *</label>
+                <select
+                  id="ce-category"
+                  class="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white font-medium outline-none focus:border-sky-600"
+                >
+                  <option value="Site Yönetimi">Site Yönetimi</option>
+                  <option value="Hukuk & KMK">Hukuk & KMK</option>
+                  <option value="Aidat & Finans">Aidat & Finans</option>
+                  <option value="Kurumsal Temizlik">Kurumsal Temizlik</option>
+                  <option value="İnşaat Temizliği">İnşaat Temizliği</option>
+                  <option value="Dış Cephe & Vinç">Dış Cephe & Vinç</option>
+                  <option value="Apartman Hijyeni">Apartman Hijyeni</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="ce-read-time" class="block text-xs font-bold text-slate-700 mb-1">Okuma Süresi</label>
+                <input
+                  type="text"
+                  id="ce-read-time"
+                  value="4 dk okuma"
+                  class="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white outline-none focus:border-sky-600"
+                />
+              </div>
+
+              <!-- ImageBB Direct Uploader (Magic bytes & 5MB validation) -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">🖼️ Kapak Görseli Yükle (ImageBB)</label>
+                <div class="flex gap-2">
+                  <input
+                    type="file"
+                    id="ce-image-file"
+                    accept="image/jpeg,image/png,image/webp"
+                    class="text-xs file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-sky-50 file:text-sky-700 hover:file:bg-sky-100 cursor-pointer w-full"
+                  />
+                  <button
+                    type="button"
+                    id="ce-btn-upload-image"
+                    class="px-3 py-2 text-xs font-bold text-white bg-sky-700 hover:bg-sky-800 rounded-xl transition-all shrink-0 cursor-pointer"
+                  >
+                    Yükle
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cover Image URL -->
+            <div>
+              <label for="ce-cover-image" class="block text-xs font-bold text-slate-700 mb-1">Kapak Görseli URL (CDN)</label>
               <input
-                type="text"
-                readonly
-                value="Konu: 2026 Apartman Aidat Artış Oranları"
-                class="px-4 py-2.5 text-xs rounded-xl bg-slate-50 border border-slate-200 font-medium text-slate-700"
+                type="url"
+                id="ce-cover-image"
+                placeholder="https://i.ibb.co/... veya https://images.unsplash.com/..."
+                class="w-full px-4 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 font-mono text-slate-700 outline-none focus:border-sky-600"
               />
-              <input
-                type="text"
-                readonly
-                value="Kategori: Site Yönetimi & KMK"
-                class="px-4 py-2.5 text-xs rounded-xl bg-slate-50 border border-slate-200 font-medium text-slate-700"
-              />
+            </div>
+
+            <!-- SEO Meta Title & Description -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="ce-seo-title" class="block text-xs font-bold text-slate-700 mb-1">
+                  Google SEO Başlık (Max 60 Karakter)
+                </label>
+                <input
+                  type="text"
+                  id="ce-seo-title"
+                  maxlength="70"
+                  class="w-full px-4 py-2 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white outline-none focus:border-sky-600"
+                />
+              </div>
+
+              <div>
+                <label for="ce-seo-desc" class="block text-xs font-bold text-slate-700 mb-1">
+                  Google Meta Açıklama (Max 155 Karakter)
+                </label>
+                <input
+                  type="text"
+                  id="ce-seo-desc"
+                  maxlength="160"
+                  class="w-full px-4 py-2 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white outline-none focus:border-sky-600"
+                />
+              </div>
+            </div>
+
+            <!-- Rich Body HTML Content -->
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <label for="ce-body-html" class="block text-xs font-bold text-slate-700">
+                  Zengin HTML Makale İçeriği (p, h2, ul, li; h1 YASAKTIR) *
+                </label>
+                <button
+                  type="button"
+                  id="ce-btn-preview-toggle"
+                  class="text-xs font-bold text-sky-700 hover:underline cursor-pointer"
+                >
+                  👁️ Önizlemeyi Göster / Gizle
+                </button>
+              </div>
+              <textarea
+                id="ce-body-html"
+                rows="14"
+                class="w-full p-4 text-xs sm:text-sm font-mono rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-sky-600 focus:ring-2 focus:ring-sky-100 outline-none leading-relaxed"
+              ></textarea>
+            </div>
+
+            <!-- Live Article Preview Box -->
+            <div id="ce-preview-box" class="hidden p-6 rounded-2xl bg-white border border-slate-300 shadow-inner prose prose-slate max-w-none text-xs sm:text-sm">
+              <!-- Rendered preview -->
+            </div>
+
+            <!-- Publish Alert -->
+            <div id="ce-publish-alert" class="hidden p-4 rounded-xl text-xs font-bold text-center bg-emerald-100 text-emerald-900 border border-emerald-300">
+              <!-- Result message -->
+            </div>
+
+            <!-- Publish to PocketBase Button -->
+            <div class="flex flex-wrap items-center gap-3 pt-4 border-t border-slate-200">
               <button
                 type="button"
-                id="btn-simulate-ai"
-                class="px-4 py-2.5 text-xs font-bold text-white bg-sky-700 hover:bg-sky-800 rounded-xl transition-all cursor-pointer shadow-sm"
+                id="ce-btn-save-pb"
+                class="px-8 py-3.5 text-sm font-bold text-white bg-emerald-700 hover:bg-emerald-800 rounded-xl transition-all shadow-md shadow-emerald-900/10 cursor-pointer flex items-center gap-2"
               >
-                Otomatik Haber Taslağı Üret ⚡
+                <span>🚀</span>
+                <span>PocketBase'e Kaydet ve Yayına Al</span>
+              </button>
+
+              <button
+                type="button"
+                id="ce-btn-save-draft"
+                class="px-6 py-3.5 text-sm font-bold text-slate-700 hover:text-slate-950 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all cursor-pointer"
+              >
+                Taslak Olarak Sakla (Aktif: Pasif)
               </button>
             </div>
 
-            <div id="ai-sim-output" class="hidden p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-2 font-mono">
-              <div class="text-emerald-700 font-bold">✓ Taslak Başarıyla Oluşturuldu (Önizleme):</div>
-              <div class="font-bold text-slate-900">"2026 Yılı Kat Malikleri Kurulu Aidat ve İşletme Projesi Hesaplama Rehberi"</div>
-              <div class="text-slate-600">Özet: TÜFE ve asgari ücret artışlarına göre site bütçesi hazırlanırken dikkat edilmesi gereken yasal maddeler...</div>
-              <div class="text-[11px] text-sky-700 italic">Elinizdeki hazır tasarım yüklendiğinde bu içerikler tek tıkla canlıya yayınlanacaktır.</div>
+          </div>
+        </div>
+
+        <!-- 3. Published Articles in PocketBase -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+            <div>
+              <h4 class="text-base font-bold text-slate-900">📚 PocketBase'deki Makaleler</h4>
+              <p class="text-xs text-slate-500 mt-0.5">Veritabanında kayıtlı ve yayında olan tüm SEO içerikleri</p>
             </div>
+            <button
+              type="button"
+              id="ce-btn-refresh-articles"
+              class="px-4 py-2 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl border border-slate-200 transition-all cursor-pointer self-start sm:self-auto"
+            >
+              Listeyi Yenile 🔄
+            </button>
+          </div>
+
+          <div id="ce-articles-list" class="divide-y divide-slate-100">
+            <!-- Rendered list of PocketBase articles -->
           </div>
         </div>
 
@@ -635,7 +1038,115 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
     const newUserAlert = document.getElementById('new-user-alert');
     const usersContainer = document.getElementById('users-list-container');
 
-    // Default Seed Inquiries so the admin panel looks populated
+    // Content Engine Elements
+    const ceKeywordSelect = document.getElementById('ce-keyword-select');
+    const ceBtnRefreshKeywords = document.getElementById('ce-btn-refresh-keywords');
+    const ceCustomTopic = document.getElementById('ce-custom-topic');
+    const ceTargetDistrict = document.getElementById('ce-target-district');
+    const ceBtnGenerate = document.getElementById('ce-btn-generate');
+    const ceBtnGenerateText = document.getElementById('ce-btn-generate-text');
+    const ceOpenRouterKey = document.getElementById('ce-openrouter-key');
+    const ceImgbbKey = document.getElementById('ce-imgbb-key');
+
+    const ceEditorWrapper = document.getElementById('ce-editor-wrapper');
+    const ceTitle = document.getElementById('ce-title');
+    const ceSlug = document.getElementById('ce-slug');
+    const ceCategory = document.getElementById('ce-category');
+    const ceReadTime = document.getElementById('ce-read-time');
+    const ceCoverImage = document.getElementById('ce-cover-image');
+    const ceImageFile = document.getElementById('ce-image-file');
+    const ceBtnUploadImage = document.getElementById('ce-btn-upload-image');
+    const ceSeoTitle = document.getElementById('ce-seo-title');
+    const ceSeoDesc = document.getElementById('ce-seo-desc');
+    const ceBodyHtml = document.getElementById('ce-body-html');
+    const cePreviewBox = document.getElementById('ce-preview-box');
+    const ceBtnPreviewToggle = document.getElementById('ce-btn-preview-toggle');
+    const cePublishAlert = document.getElementById('ce-publish-alert');
+    const ceBtnSavePb = document.getElementById('ce-btn-save-pb');
+    const ceBtnSaveDraft = document.getElementById('ce-btn-save-draft');
+    const ceArticlesList = document.getElementById('ce-articles-list');
+    const ceBtnRefreshArticles = document.getElementById('ce-btn-refresh-articles');
+
+    const badgeWords = document.getElementById('badge-words');
+    const badgeH2 = document.getElementById('badge-h2');
+    const badgeCta = document.getElementById('badge-cta');
+    const badgeLinks = document.getElementById('badge-links');
+
+    // PocketBase URL resolution (relative / api or direct IP)
+    const PB_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? 'http://127.0.0.1:8090'
+      : window.location.origin;
+
+    // Environment & API Key Management (.env first, localStorage fallback, manual override)
+    const envConfigEl = document.getElementById('ce-env-config');
+    const envOpenRouterKey = envConfigEl?.dataset?.openrouterKey || '';
+    const envImgbbKey = envConfigEl?.dataset?.imgbbKey || '';
+    const hasEnvOpenRouter = envConfigEl?.dataset?.hasOpenrouter === 'true';
+    const hasEnvImgbb = envConfigEl?.dataset?.hasImgbb === 'true';
+
+    const badgeOpenRouterEnv = document.getElementById('badge-openrouter-env');
+    const badgeImgbbEnv = document.getElementById('badge-imgbb-env');
+    const ceEnvStatusBadge = document.getElementById('ce-env-status-badge');
+
+    if (hasEnvOpenRouter && badgeOpenRouterEnv) {
+      badgeOpenRouterEnv.classList.remove('hidden');
+    }
+    if (hasEnvImgbb && badgeImgbbEnv) {
+      badgeImgbbEnv.classList.remove('hidden');
+    }
+    if (ceEnvStatusBadge) {
+      if (hasEnvOpenRouter && hasEnvImgbb) {
+        ceEnvStatusBadge.className = 'text-[10px] px-2 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-800';
+        ceEnvStatusBadge.innerText = '🟢 .env Tam Aktif';
+      } else if (hasEnvOpenRouter || hasEnvImgbb) {
+        ceEnvStatusBadge.className = 'text-[10px] px-2 py-0.5 rounded-full font-bold bg-amber-100 text-amber-800';
+        ceEnvStatusBadge.innerText = '🟡 .env Kısmen Aktif';
+      } else {
+        ceEnvStatusBadge.className = 'text-[10px] px-2 py-0.5 rounded-full font-bold bg-slate-200 text-slate-700';
+        ceEnvStatusBadge.innerText = '⚪ .env Boş (Manuel Giriş)';
+      }
+    }
+
+    function getActiveOpenRouterKey() {
+      const manual = ceOpenRouterKey?.value?.trim();
+      if (manual) return manual;
+      const stored = localStorage.getItem('celebi_openrouter_key');
+      if (stored) return stored;
+      return envOpenRouterKey;
+    }
+
+    function getActiveImgbbKey() {
+      const manual = ceImgbbKey?.value?.trim();
+      if (manual) return manual;
+      const stored = localStorage.getItem('celebi_imgbb_key');
+      if (stored) return stored;
+      return envImgbbKey;
+    }
+
+    // Load stored API keys or display .env placeholder
+    if (ceOpenRouterKey) {
+      const savedOrKey = localStorage.getItem('celebi_openrouter_key') || '';
+      ceOpenRouterKey.value = savedOrKey;
+      if (hasEnvOpenRouter && !savedOrKey) {
+        ceOpenRouterKey.placeholder = `🟢 .env aktif (${envOpenRouterKey.slice(0, 8)}...)`;
+      }
+      ceOpenRouterKey.addEventListener('change', () => {
+        localStorage.setItem('celebi_openrouter_key', ceOpenRouterKey.value.trim());
+      });
+    }
+
+    if (ceImgbbKey) {
+      const savedImgKey = localStorage.getItem('celebi_imgbb_key') || '';
+      ceImgbbKey.value = savedImgKey;
+      if (hasEnvImgbb && !savedImgKey) {
+        ceImgbbKey.placeholder = `🟢 .env aktif (${envImgbbKey.slice(0, 6)}...)`;
+      }
+      ceImgbbKey.addEventListener('change', () => {
+        localStorage.setItem('celebi_imgbb_key', ceImgbbKey.value.trim());
+      });
+    }
+
+    // Default Seed Inquiries
     const defaultSeedInquiries = [
       {
         id: 'seed-1',
@@ -667,16 +1178,6 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
         created: '3 gün önce',
         status: 'Teklif Verildi',
       },
-      {
-        id: 'seed-4',
-        fullName: 'Mehmet Kaya (Müteahhit)',
-        phone: '0505 666 55 44',
-        serviceType: 'insaat-sonrasi',
-        buildingUnits: '18 Daire Konut Projesi',
-        message: 'Daire teslimi öncesi derz, harç ve pencere bantlarının çizilmeden temizlenmesi anahtar teslim.',
-        created: '5 gün önce',
-        status: 'İncelendi',
-      },
     ];
 
     // Default Settings
@@ -690,7 +1191,6 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
       mapsEmbedUrl: 'https://maps.google.com/maps?q=Mahfes%C4%B1%C4%9Fmaz%20Mah.%2078033%20Sk.%20No%203%20%C3%87ukurova%20Adana&t=&z=16&ie=UTF8&iwloc=&output=embed',
     };
 
-    // Get all authorized users
     function getStoredUsers() {
       try {
         const raw = localStorage.getItem('celebi_team_users');
@@ -711,7 +1211,6 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
         authScreen.classList.add('hidden');
         dashboardScreen.classList.remove('hidden');
 
-        // Display current user
         try {
           const userRaw = localStorage.getItem('celebi_current_user');
           if (userRaw && userBadge) {
@@ -723,6 +1222,9 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
         loadSettings();
         loadInquiries();
         renderUsersList();
+        loadCeKeywords();
+        loadCeArticles();
+        loadTimerSettings();
       } else {
         authScreen.classList.remove('hidden');
         dashboardScreen.classList.add('hidden');
@@ -736,7 +1238,6 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
         const email = emailInput.value.trim().toLowerCase();
         const password = passwordInput.value.trim();
 
-        // 1. Check Primary Super Admin
         if (email === PRIMARY_ADMIN.email.toLowerCase() && password === PRIMARY_ADMIN.password) {
           localStorage.setItem('celebi_admin_auth', 'true');
           localStorage.setItem('celebi_current_user', JSON.stringify(PRIMARY_ADMIN));
@@ -745,7 +1246,6 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
           return;
         }
 
-        // 2. Check Custom Created Users
         const users = getStoredUsers();
         const matched = users.find(u => u.email.toLowerCase() === email && u.password === password);
 
@@ -757,7 +1257,6 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
           return;
         }
 
-        // Invalid credentials
         loginError.classList.remove('hidden');
       });
     }
@@ -797,7 +1296,6 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
       const users = getStoredUsers();
 
       let html = `
-        <!-- Primary Super Admin (Immutable) -->
         <div class="p-4 rounded-2xl bg-slate-900 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
           <div class="space-y-1">
             <div class="flex items-center gap-2">
@@ -846,7 +1344,6 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
 
       usersContainer.innerHTML = html;
 
-      // Bind delete handlers
       usersContainer.querySelectorAll('[data-action="delete-user"]').forEach(btn => {
         btn.addEventListener('click', () => {
           const idx = parseInt(btn.getAttribute('data-index'), 10);
@@ -860,7 +1357,6 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
       });
     }
 
-    // Handle New User Form Submission
     if (newUserForm) {
       newUserForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -872,8 +1368,6 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
         if (!name || !email || !password) return;
 
         const currentUsers = getStoredUsers();
-        
-        // Check duplicate
         if (email.toLowerCase() === PRIMARY_ADMIN.email.toLowerCase() || currentUsers.some(u => u.email.toLowerCase() === email.toLowerCase())) {
           alert('Bu e-posta adresiyle kayıtlı bir kullanıcı zaten mevcut!');
           return;
@@ -891,11 +1385,9 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
         currentUsers.push(newUser);
         saveStoredUsers(currentUsers);
 
-        // Reset form & notify
         newUserForm.reset();
         newUserAlert.classList.remove('hidden');
         setTimeout(() => newUserAlert.classList.add('hidden'), 5000);
-
         renderUsersList();
       });
     }
@@ -920,14 +1412,12 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
       }
     }
 
-    // Live update map preview on URL input
     if (cfgMapsUrl && mapPreview) {
       cfgMapsUrl.addEventListener('input', () => {
         mapPreview.src = cfgMapsUrl.value;
       });
     }
 
-    // Save Settings
     if (settingsForm) {
       settingsForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -943,10 +1433,7 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
 
         localStorage.setItem('celebi_company_settings', JSON.stringify(newConfig));
         settingsAlert.classList.remove('hidden');
-
-        setTimeout(() => {
-          settingsAlert.classList.add('hidden');
-        }, 5000);
+        setTimeout(() => settingsAlert.classList.add('hidden'), 5000);
       });
     }
 
@@ -965,7 +1452,6 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
         inquiries = defaultSeedInquiries;
       }
 
-      // Update counters
       const totalCount = inquiries.length;
       const pendingCount = inquiries.filter((i) => i.status === 'Yeni').length;
 
@@ -973,14 +1459,9 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
       if (statPending) statPending.innerText = pendingCount;
       if (tabBadge) tabBadge.innerText = pendingCount;
 
-      // Render list
       if (!inquiriesContainer) return;
       if (inquiries.length === 0) {
-        inquiriesContainer.innerHTML = `
-          <div class="p-8 text-center text-slate-400 text-xs">
-            Henüz gelen bir teklif talebi bulunmuyor.
-          </div>
-        `;
+        inquiriesContainer.innerHTML = `<div class="p-8 text-center text-slate-400 text-xs">Henüz gelen bir teklif talebi bulunmuyor.</div>`;
         return;
       }
 
@@ -992,7 +1473,6 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
             'Teklif Verildi': 'bg-slate-100 text-slate-800 border-slate-300',
           };
           const badgeClass = statusColors[item.status] || 'bg-slate-100 text-slate-800';
-
           const cleanPhone = (item.phone || '').replace(/[^0-9]/g, '');
           const waPhone = cleanPhone.startsWith('90') ? cleanPhone : '90' + cleanPhone.replace(/^0/, '');
           const waText = encodeURIComponent(`Merhaba ${item.fullName}, Çelebi Yönetim ve Temizlik olarak web sitemiz üzerinden ilettiğiniz ${item.serviceType || 'hizmet'} teklif talebiniz için yazıyoruz.`);
@@ -1018,51 +1498,22 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
                 ${item.message ? `<p class="text-xs text-slate-600 italic bg-white p-2.5 rounded-xl border border-slate-200/80">"${item.message}"</p>` : ''}
               </div>
 
-              <!-- Quick Response Actions -->
               <div class="flex flex-wrap items-center gap-2 shrink-0">
-                <a
-                  href="https://wa.me/${waPhone}?text=${waText}"
-                  target="_blank"
-                  class="px-3 py-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-xl transition-all"
-                >
-                  WhatsApp'tan Yaz
-                </a>
-                <a
-                  href="tel:${item.phone}"
-                  class="px-3 py-1.5 text-xs font-bold text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all"
-                >
-                  Ara
-                </a>
-                <button
-                  type="button"
-                  data-action="toggle-status"
-                  data-index="${idx}"
-                  class="px-3 py-1.5 text-xs font-bold text-sky-700 bg-sky-50 hover:bg-sky-100 border border-sky-200 rounded-xl transition-all cursor-pointer"
-                >
-                  Durum Değiştir
-                </button>
-                <button
-                  type="button"
-                  data-action="delete"
-                  data-index="${idx}"
-                  class="p-1.5 text-slate-400 hover:text-red-600 rounded-lg transition-colors cursor-pointer"
-                  title="Sil"
-                >
-                  ✕
-                </button>
+                <a href="https://wa.me/${waPhone}?text=${waText}" target="_blank" class="px-3 py-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-xl transition-all">WhatsApp'tan Yaz</a>
+                <a href="tel:${item.phone}" class="px-3 py-1.5 text-xs font-bold text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all">Ara</a>
+                <button type="button" data-action="toggle-status" data-index="${idx}" class="px-3 py-1.5 text-xs font-bold text-sky-700 bg-sky-50 hover:bg-sky-100 border border-sky-200 rounded-xl transition-all cursor-pointer">Durum Değiştir</button>
+                <button type="button" data-action="delete" data-index="${idx}" class="p-1.5 text-slate-400 hover:text-red-600 rounded-lg transition-colors cursor-pointer" title="Sil">✕</button>
               </div>
             </div>
           `;
         })
         .join('');
 
-      // Wire inquiry action buttons
       inquiriesContainer.querySelectorAll('[data-action="toggle-status"]').forEach((btn) => {
         btn.addEventListener('click', () => {
           const index = parseInt(btn.getAttribute('data-index'), 10);
           const current = inquiries[index].status || 'Yeni';
-          const next = current === 'Yeni' ? 'İncelendi' : current === 'İncelendi' ? 'Teklif Verildi' : 'Yeni';
-          inquiries[index].status = next;
+          inquiries[index].status = current === 'Yeni' ? 'İncelendi' : current === 'İncelendi' ? 'Teklif Verildi' : 'Yeni';
           localStorage.setItem('celebi_quote_inquiries', JSON.stringify(inquiries));
           loadInquiries();
         });
@@ -1080,7 +1531,6 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
       });
     }
 
-    // Clear all inquiries
     if (clearInquiriesBtn) {
       clearInquiriesBtn.addEventListener('click', () => {
         if (confirm('Tüm teklif kayıtlarını temizlemek istediğinize emin misiniz?')) {
@@ -1090,18 +1540,710 @@ const title = 'Yönetim Merkezi | Çelebi Yönetim ve Temizlik';
       });
     }
 
-    // AI Simulation test button
-    const simAiBtn = document.getElementById('btn-simulate-ai');
-    const simAiOutput = document.getElementById('ai-sim-output');
-    if (simAiBtn && simAiOutput) {
-      simAiBtn.addEventListener('click', () => {
-        simAiBtn.disabled = true;
-        simAiBtn.innerText = 'Makale Üretiliyor...';
-        setTimeout(() => {
-          simAiOutput.classList.remove('hidden');
-          simAiBtn.disabled = false;
-          simAiBtn.innerText = 'Otomatik Haber Taslağı Üret ⚡';
-        }, 800);
+    // ==========================================
+    // CONTENT ENGINE (CEO & OTOMATIK HABER MOTORU)
+    // ==========================================
+
+    // ==========================================
+    // ⏱️ OTONOM ZAMANLAYICI & TIMER YÖNETİMİ
+    // ==========================================
+    let timerRecordId = null;
+    let timerData = null;
+
+    const timerToggleActive = document.getElementById('timer-toggle-active');
+    const timerStatusText = document.getElementById('timer-status-text');
+    const timerLiveBadge = document.getElementById('timer-live-badge');
+    const timerSelectFrequency = document.getElementById('timer-select-frequency');
+    const timerSelectDistrict = document.getElementById('timer-select-district');
+    const timerCountdown = document.getElementById('timer-countdown');
+    const timerLastRun = document.getElementById('timer-last-run');
+    const timerTotalCount = document.getElementById('timer-total-count');
+    const timerQueueCount = document.getElementById('timer-queue-count');
+    const timerLastArticle = document.getElementById('timer-last-article');
+    const btnSaveTimerSettings = document.getElementById('btn-save-timer-settings');
+    const btnForcePublishNow = document.getElementById('btn-force-publish-now');
+    const btnForceText = document.getElementById('btn-force-text');
+
+    async function loadTimerSettings() {
+      try {
+        const res = await fetch(`${PB_BASE_URL}/api/collections/otomatik_yayin_ayarlari/records`);
+        if (!res.ok) throw new Error('Timer fetch error');
+        const data = await res.json();
+        if (data.items && data.items.length > 0) {
+          timerData = data.items[0];
+          timerRecordId = timerData.id;
+          renderTimerUI(timerData);
+        }
+      } catch (err) {
+        console.warn('Timer settings could not be fetched:', err);
+      }
+      loadQueueStats();
+    }
+
+    async function loadQueueStats() {
+      try {
+        const qRes = await fetch(`${PB_BASE_URL}/api/collections/seo_keywords/records?page=1&perPage=1&filter=used%3Dfalse`);
+        if (qRes.ok) {
+          const qData = await qRes.json();
+          if (timerQueueCount) timerQueueCount.innerText = qData.totalItems ?? 0;
+        }
+      } catch (e) {}
+    }
+
+    function renderTimerUI(data) {
+      if (!data) return;
+
+      const isActive = data.aktif === true;
+      if (timerToggleActive) timerToggleActive.checked = isActive;
+      if (timerStatusText) {
+        timerStatusText.innerText = isActive ? 'AÇIK' : 'KAPALI';
+        timerStatusText.className = isActive ? 'text-xs font-bold text-emerald-700' : 'text-xs font-bold text-slate-400';
+      }
+      if (timerLiveBadge) {
+        timerLiveBadge.className = isActive
+          ? 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center gap-1'
+          : 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-500 border border-slate-200 flex items-center gap-1';
+        timerLiveBadge.innerHTML = isActive
+          ? '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Zamanlayıcı Aktif'
+          : '<span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Durduruldu';
+      }
+
+      if (timerSelectFrequency && data.siklik) {
+        timerSelectFrequency.value = data.siklik;
+      }
+
+      if (timerSelectDistrict && data.hedefIlce) {
+        timerSelectDistrict.value = data.hedefIlce;
+      }
+
+      if (timerTotalCount) timerTotalCount.innerText = data.toplamUretilen ?? 0;
+      if (timerLastArticle && data.sonBaslik) {
+        timerLastArticle.innerText = `Son Yayın: "${data.sonBaslik}"`;
+      }
+      if (timerLastRun && data.sonCalisma) {
+        timerLastRun.innerText = `Son: ${data.sonCalisma}`;
+      }
+
+      updateCountdownDisplay();
+    }
+
+    function updateCountdownDisplay() {
+      if (!timerData || !timerCountdown) return;
+      if (!timerData.aktif) {
+        timerCountdown.innerHTML = '<span class="text-xs text-slate-400 font-bold">Durduruldu (Kapalı)</span>';
+        return;
+      }
+
+      const lastStr = timerData.sonCalisma;
+      if (!lastStr) {
+        timerCountdown.innerHTML = '<span class="text-xs text-emerald-600 font-bold">İlk çalışma bekleniyor...</span>';
+        return;
+      }
+
+      const intervals = {
+        '1h': 3600,
+        '3h': 10800,
+        '6h': 21600,
+        '12h': 43200,
+        '24h': 86400
+      };
+      const reqSec = intervals[timerData.siklik] || 21600;
+
+      const lastDt = new Date(lastStr.replace(' ', 'T'));
+      const nextDt = new Date(lastDt.getTime() + reqSec * 1000);
+      const now = new Date();
+      const diffSec = Math.floor((nextDt.getTime() - now.getTime()) / 1000);
+
+      if (diffSec <= 0) {
+        timerCountdown.innerHTML = '<span class="text-xs text-emerald-600 font-bold animate-pulse">⚡ Sıradaki periyot hazır</span>';
+      } else {
+        const hours = Math.floor(diffSec / 3600);
+        const mins = Math.floor((diffSec % 3600) / 60);
+        const secs = diffSec % 60;
+        timerCountdown.innerHTML = `<span class="text-sm">⏳</span> <span>${hours > 0 ? hours + 's ' : ''}${mins}dk ${secs}sn</span>`;
+      }
+    }
+
+    if (timerToggleActive) {
+      timerToggleActive.addEventListener('change', () => {
+        if (timerStatusText) {
+          timerStatusText.innerText = timerToggleActive.checked ? 'AÇIK' : 'KAPALI';
+          timerStatusText.className = timerToggleActive.checked ? 'text-xs font-bold text-emerald-700' : 'text-xs font-bold text-slate-400';
+        }
+      });
+    }
+
+    if (btnSaveTimerSettings) {
+      btnSaveTimerSettings.addEventListener('click', async () => {
+        if (!timerRecordId) {
+          alert('Zamanlayıcı kaydı bulunamadı!');
+          return;
+        }
+
+        btnSaveTimerSettings.disabled = true;
+        btnSaveTimerSettings.innerText = 'Kaydediliyor...';
+
+        try {
+          const payload = {
+            aktif: timerToggleActive ? timerToggleActive.checked : true,
+            siklik: timerSelectFrequency ? timerSelectFrequency.value : '6h',
+            hedefIlce: timerSelectDistrict ? timerSelectDistrict.value : 'auto'
+          };
+
+          const res = await fetch(`${PB_BASE_URL}/api/collections/otomatik_yayin_ayarlari/records/${timerRecordId}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          if (!res.ok) throw new Error('Kaydedilemedi');
+          timerData = await res.json();
+          renderTimerUI(timerData);
+          alert('✓ Otomatik yayın zamanlayıcı ayarları başarıyla güncellendi!');
+        } catch (err) {
+          alert('Ayarlar kaydedilirken hata oluştu: ' + err.message);
+        } finally {
+          btnSaveTimerSettings.disabled = false;
+          btnSaveTimerSettings.innerText = '💾 Zamanlayıcı Ayarlarını Kaydet';
+        }
+      });
+    }
+
+    if (btnForcePublishNow) {
+      btnForcePublishNow.addEventListener('click', async () => {
+        if (!confirm('Hemen bir sonraki konuyu otomatik üretip PocketBase\'e yayınlamak istiyor musunuz?')) return;
+
+        btnForcePublishNow.disabled = true;
+        if (btnForceText) btnForceText.innerText = 'Yayınlanıyor... Lütfen Bekleyin ⚡';
+
+        try {
+          if (timerRecordId) {
+            await fetch(`${PB_BASE_URL}/api/collections/otomatik_yayin_ayarlari/records/${timerRecordId}`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ tetikle: true })
+            });
+          }
+
+          alert('✓ Tetikleme sinyali sunucuya iletildi! Sistem sıradaki makaleyi üretiyor, birkaç saniye içinde "Yazılar" listenizde görünecektir.');
+          setTimeout(() => {
+            loadTimerSettings();
+            loadCeArticles();
+            loadCeKeywords();
+          }, 3000);
+        } catch (err) {
+          alert('Tetikleme hatası: ' + err.message);
+        } finally {
+          btnForcePublishNow.disabled = false;
+          if (btnForceText) btnForceText.innerText = 'Şimdi Otomatik Yayınla (Tetikle)';
+        }
+      });
+    }
+
+    setInterval(updateCountdownDisplay, 1000);
+    setInterval(loadTimerSettings, 30000);
+
+    function slugify(text) {
+      const trMap = { 'ç':'c', 'Ç':'c', 'ğ':'g', 'Ğ':'g', 'ı':'i', 'İ':'i', 'ö':'o', 'Ö':'o', 'ş':'s', 'Ş':'s', 'ü':'u', 'Ü':'u' };
+      return text.split('').map(c => trMap[c] || c).join('').toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').replace(/-+/g, '-');
+    }
+
+    // Load Keywords from PocketBase seo_keywords
+    async function loadCeKeywords() {
+      if (!ceKeywordSelect) return;
+      try {
+        const res = await fetch(`${PB_BASE_URL}/api/collections/seo_keywords/records?page=1&perPage=50&sort=-priority`);
+        if (!res.ok) throw new Error('PB error');
+        const data = await res.json();
+        if (data.items && data.items.length > 0) {
+          ceKeywordSelect.innerHTML = `
+            <option value="">-- Kuyruktan Konu Seçin (${data.items.length} Konu Mevcut) --</option>
+            ${data.items.map(k => `
+              <option value="${k.keyword}" data-district="${k.targetDistrict || 'Çukurova'}" data-category="${k.category || 'Site Yönetimi'}" data-id="${k.id}">
+                ${k.used ? '✓ (Kullanıldı)' : '⚡ (Hazır)'} ${k.keyword} [${k.targetDistrict || 'Adana'}]
+              </option>
+            `).join('')}
+          `;
+          return;
+        }
+      } catch (err) {}
+
+      // Fallback local list
+      ceKeywordSelect.innerHTML = `
+        <option value="">-- Kuyruktan Konu Seçin --</option>
+        <option value="Adana Site Yönetimi Şirketleri ve Fiyatları">Adana Site Yönetimi Şirketleri ve Fiyatları</option>
+        <option value="Apartman Aidatını Ödemeyen Komşuya İcra Takibi Nasıl Yapılır?">Apartman Aidatını Ödemeyen Komşuya İcra Takibi</option>
+        <option value="Kat Mülkiyeti Kanununa Göre Yönetici Seçimi ve Genel Kurul Süreci">Kat Mülkiyeti Kanununa Göre Yönetici Seçimi</option>
+        <option value="Adana Çukurova Profesyonel Ofis ve İş Yeri Temizliği">Adana Çukurova Profesyonel Ofis Temizliği</option>
+        <option value="İnşaat ve Tadilat Sonrası Anahtar Teslim Temizlik">İnşaat ve Tadilat Sonrası Anahtar Teslim Temizlik</option>
+      `;
+    }
+
+    if (ceBtnRefreshKeywords) {
+      ceBtnRefreshKeywords.addEventListener('click', () => {
+        loadCeKeywords();
+      });
+    }
+
+    if (ceKeywordSelect) {
+      ceKeywordSelect.addEventListener('change', () => {
+        const val = ceKeywordSelect.value;
+        if (val && ceCustomTopic) {
+          ceCustomTopic.value = val;
+          const opt = ceKeywordSelect.selectedOptions[0];
+          if (opt && opt.getAttribute('data-district') && ceTargetDistrict) {
+            ceTargetDistrict.value = opt.getAttribute('data-district');
+          }
+        }
+      });
+    }
+
+    // Quality Gate Live Check
+    function runQualityGateCheck() {
+      const html = ceBodyHtml ? ceBodyHtml.value : '';
+      const text = html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+      const words = text ? text.split(' ').filter(w => w.length > 0).length : 0;
+      const h2Count = (html.match(/<h2[^>]*>.*?<\/h2>/gi) || []).length;
+      
+      const lower = html.toLowerCase();
+      const hasCta = (lower.includes('çelebi') || lower.includes('celebi')) && 
+                     (lower.includes('322') || lower.includes('535') || lower.includes('533') || lower.includes('whatsapp') || lower.includes('teklif'));
+      const hasLinks = html.includes('celebi-internal-links');
+
+      if (badgeWords) {
+        badgeWords.innerText = `📝 ${words} Kelime ${words >= 200 ? '✓' : '(Min 200)'}`;
+        badgeWords.className = words >= 200
+          ? 'px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold'
+          : 'px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold';
+      }
+
+      if (badgeH2) {
+        badgeH2.innerText = `📌 ${h2Count} H2 Başlık ${h2Count >= 3 ? '✓' : '(Min 3)'}`;
+        badgeH2.className = h2Count >= 3
+          ? 'px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold'
+          : 'px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold';
+      }
+
+      if (badgeCta) {
+        badgeCta.innerText = hasCta ? '📞 Çelebi CTA: Var ✓' : '📞 Çelebi CTA: Eksik ⚠️';
+        badgeCta.className = hasCta
+          ? 'px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold'
+          : 'px-2.5 py-1 rounded-lg bg-red-500/20 text-red-300 border border-red-500/30 font-bold';
+      }
+
+      if (badgeLinks) {
+        badgeLinks.innerText = hasLinks ? '🔗 İç Linkler: Var ✓' : '🔗 İç Linkler: Yok';
+        badgeLinks.className = hasLinks
+          ? 'px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold'
+          : 'px-2.5 py-1 rounded-lg bg-slate-500/20 text-slate-300 border border-slate-500/30 font-bold';
+      }
+
+      if (cePreviewBox) {
+        cePreviewBox.innerHTML = html;
+      }
+    }
+
+    if (ceBodyHtml) {
+      ceBodyHtml.addEventListener('input', runQualityGateCheck);
+    }
+
+    // Toggle Preview
+    if (ceBtnPreviewToggle && cePreviewBox) {
+      ceBtnPreviewToggle.addEventListener('click', () => {
+        cePreviewBox.classList.toggle('hidden');
+      });
+    }
+
+    // Generator Trigger
+    if (ceBtnGenerate) {
+      ceBtnGenerate.addEventListener('click', async () => {
+        const topic = (ceCustomTopic ? ceCustomTopic.value.trim() : '') || (ceKeywordSelect ? ceKeywordSelect.value : '');
+        if (!topic) {
+          alert('Lütfen bir anahtar kelime seçin veya özel konu girin!');
+          return;
+        }
+
+        const district = ceTargetDistrict ? ceTargetDistrict.value : 'Çukurova';
+        const modeEl = document.querySelector('input[name="ce-mode"]:checked');
+        const mode = modeEl ? modeEl.value : 'hybrid';
+        const apiKey = getActiveOpenRouterKey();
+
+        ceBtnGenerate.disabled = true;
+        if (ceBtnGenerateText) ceBtnGenerateText.innerText = 'Makale Üretiliyor... Lütfen Bekleyin ⚡';
+
+        try {
+          const generatedTitle = `Adana ${district} Genelinde ${topic}: Yasal Mevzuat ve Uygulama Rehberi`;
+          const generatedSlug = `${slugify(generatedTitle)}-${Date.now().toString().slice(-4)}`;
+          
+          let bodyHtml = `
+<p>Adana'nın hızla büyüyen konut ve ticaret merkezi ${district} bölgesinde, apartman ve site yönetimlerinin huzur içinde yürütülmesi 634 Sayılı Kat Mülkiyeti Kanunu (KMK) esaslarına tam uyum gerektirir. Bireysel yöneticilikte yaşanan tahsilat tıkanıklıkları ve komşuluk ihtilafları kurumsal bir yönetim yaklaşımıyla tamamen çözülebilmektedir.</p>
+
+<h2>Kat Mülkiyeti Kanunu Çerçevesinde Şeffaf Yönetim Esasları</h2>
+<p>Yönetici tarafından hazırlanan yıllık işletme projesi, tüm kat maliklerine süresi içinde tebliğ edilmeli ve kesinleştirilmelidir. KMK Madde 20 gereğince, vaktinde ödenmeyen aidat borçlarına aylık yüzde beş (%5) gecikme tazminatı işletilir ve yasal icra takip süreçleri başlatılabilir.</p>
+<ul>
+  <li><strong>Şeffaf Gelir-Gider Tabloları:</strong> Bina adına açılan resmi banka hesapları üzerinden yapılan her harcamanın anlık dökümü.</li>
+  <li><strong>Noter Tasdikli Karar Defterleri:</strong> Her takvim yılı başında ve sonunda zorunlu açılış/kapanış noter onayları.</li>
+  <li><strong>Banka Onaylı Aidat Tahsilatı:</strong> Elden nakit para toplama risklerini ortadan kaldıran sanal POS ve havale altyapısı.</li>
+</ul>
+
+<h2>Ortak Alanların Hijyeni ve SGK Güvenceli Temizlik Standartları</h2>
+<p>Apartman merdivenleri, asansörler ve kapalı otopark alanlarının temizliğinde sigortasız personel çalıştırmak bina yönetimini ve kat maliklerini ağır idari para cezalarıyla karşı karşıya bırakır. Çelebi Yönetim bünyesinde istihdam edilen tüm temizlik personeli SGK'lı, iş güvenliği eğitimli ve adli sicil kontrolünden geçmiştir.</p>
+
+<h2>Çukurova İkliminde Periyodik Teknik Bakım ve Tesis Yönetimi</h2>
+<p>Adana'nın yüksek yaz sıcaklıkları ve sert kireçli su yapısı nedeniyle hidrofor sistemleri, asansör makine daireleri ve su depoları periyodik dezenfeksiyondan geçirilmelidir. Akredite teknik servislerle yürütülen bakım sözleşmeleri, arıza risklerini en aza indirir.</p>
+
+<h2>Çelebi Yönetim ile Binalarınız Güvence Altında</h2>
+<p>Apartman veya sitenizde aidat uyuşmazlıklarına son vermek, tertemiz ortak alanlara kavuşmak ve yasal riskleri sıfırlamak için Çelebi Yönetim ve Temizlik olarak Adana Mahfesığmaz merkez ofisimizden tüm ilçelere hizmet sunuyoruz. Ücretsiz işletme projesi analizi ve keşif için bize <strong>0 (322) 235 15 88</strong> santral hattımızdan veya <strong>0 (535) 873 03 24</strong> WhatsApp numaramızdan 7/24 ulaşabilirsiniz.</p>
+
+<div id="celebi-internal-links" class="mt-8 pt-6 border-t border-slate-200/80 bg-slate-50/60 p-4 rounded-2xl">
+  <p class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">İlgili Hizmet ve Rehber Sayfalarımız:</p>
+  <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-sky-700 font-semibold">
+    <li><a href="/site-yonetimi">🏢 Adana Profesyonel Site ve Apartman Yönetimi</a></li>
+    <li><a href="/temizlik">✨ Kurumsal Ofis, İnşaat ve Merdiven Temizliği</a></li>
+    <li><a href="/yazilar">📚 Kat Mülkiyeti Kanunu ve Sektörel Makaleler</a></li>
+    <li><a href="/iletisim">📍 Çukurova / Mahfesığmaz Ofisimiz ve İletişim</a></li>
+  </ul>
+</div>
+`;
+
+          // If Hybrid/LLM mode and API Key provided, attempt OpenRouter polish
+          if ((mode === 'hybrid' || mode === 'llm') && apiKey) {
+            try {
+              const openRouterRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Bearer ${apiKey}`,
+                  'Content-Type': 'application/json',
+                  'HTTP-Referer': 'https://celebiyonetim.com.tr',
+                  'X-Title': 'Celebi Yonetim Content Engine'
+                },
+                body: JSON.stringify({
+                  model: 'nvidia/nemotron-3.5-lightning:free',
+                  messages: [
+                    {
+                      role: 'system',
+                      content: 'Sen Adana Çelebi Yönetim ve Temizlik firmasının içerik uzmanısın. Kat Mülkiyeti Kanunu ve kurumsal temizlik üzerine akıcı, 250+ kelimelik, 3+ H2 başlıklı, son paragrafında Çelebi Yönetim (0 322 235 15 88 / WhatsApp 0 535 873 03 24) çağrılı HTML çıktısı üret. Asla <h1> kullanma.'
+                    },
+                    {
+                      role: 'user',
+                      content: `Konu: ${topic} (${district}). Lütfen profesyonel bir blog makalesi gövdesi üret.`
+                    }
+                  ],
+                  temperature: 0.7,
+                  max_tokens: 1200
+                })
+              });
+
+              if (openRouterRes.ok) {
+                const data = await openRouterRes.json();
+                const aiText = data.choices?.[0]?.message?.content;
+                if (aiText && aiText.includes('<p>') && aiText.includes('<h2>')) {
+                  bodyHtml = aiText;
+                  if (!bodyHtml.includes('celebi-internal-links')) {
+                    bodyHtml += `
+<div id="celebi-internal-links" class="mt-8 pt-6 border-t border-slate-200/80 bg-slate-50/60 p-4 rounded-2xl">
+  <p class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">İlgili Hizmet ve Rehber Sayfalarımız:</p>
+  <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-sky-700 font-semibold">
+    <li><a href="/site-yonetimi">🏢 Adana Profesyonel Site ve Apartman Yönetimi</a></li>
+    <li><a href="/temizlik">✨ Kurumsal Ofis, İnşaat ve Merdiven Temizliği</a></li>
+    <li><a href="/yazilar">📚 Kat Mülkiyeti Kanunu ve Sektörel Makaleler</a></li>
+    <li><a href="/iletisim">📍 Çukurova / Mahfesığmaz Ofisimiz ve İletişim</a></li>
+  </ul>
+</div>`;
+                  }
+                }
+              }
+            } catch (llmErr) {
+              console.warn('LLM polish failed, fell back to template:', llmErr);
+            }
+          }
+
+          // Populate Editor
+          if (ceTitle) ceTitle.value = generatedTitle;
+          if (ceSlug) ceSlug.value = generatedSlug;
+          if (ceCategory) ceCategory.value = 'Site Yönetimi';
+          if (ceReadTime) ceReadTime.value = '4 dk okuma';
+          if (ceCoverImage) ceCoverImage.value = 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80';
+          if (ceSeoTitle) ceSeoTitle.value = `${topic} | Adana Çelebi Yönetim`;
+          if (ceSeoDesc) ceSeoDesc.value = `Adana ${district} genelinde ${topic} hakkında Kat Mülkiyeti Kanunu, aidat tahsilatı ve profesyonel temizlik rehberi.`;
+          if (ceBodyHtml) ceBodyHtml.value = bodyHtml.trim();
+
+          if (ceEditorWrapper) {
+            ceEditorWrapper.classList.remove('hidden');
+            ceEditorWrapper.scrollIntoView({ behavior: 'smooth' });
+          }
+
+          runQualityGateCheck();
+
+        } catch (err) {
+          alert('Makale üretilirken bir hata oluştu: ' + err.message);
+        } finally {
+          ceBtnGenerate.disabled = false;
+          if (ceBtnGenerateText) ceBtnGenerateText.innerText = 'Tek Tıkla SEO Makalesi Üret ⚡';
+        }
+      });
+    }
+
+    // ImageBB Upload with Magic Bytes & 5MB Limit
+    if (ceBtnUploadImage && ceImageFile) {
+      ceBtnUploadImage.addEventListener('click', async () => {
+        const file = ceImageFile.files?.[0];
+        if (!file) {
+          alert('Lütfen önce bir görsel dosyası seçin!');
+          return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+          alert('Dosya boyutu 5 MB sınırını aşıyor!');
+          return;
+        }
+
+        const apiKey = getActiveImgbbKey();
+        if (!apiKey) {
+          alert('ImageBB API anahtarı bulunamadı! Lütfen projenizdeki .env dosyasına IMGBB_API_KEY ekleyin veya sağdaki kutucuktan girin.');
+          return;
+        }
+
+        // Magic Bytes Validation
+        const buffer = await file.arrayBuffer();
+        const b = new Uint8Array(buffer.slice(0, 4));
+        const isJpg = b[0] === 0xFF && b[1] === 0xD8 && b[2] === 0xFF;
+        const isPng = b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4E && b[3] === 0x47;
+        const isWebp = b[0] === 0x52 && b[1] === 0x49 && b[2] === 0x46 && b[3] === 0x46;
+
+        if (!isJpg && !isPng && !isWebp) {
+          alert('Güvenlik Uyarısı: Sadece gerçek JPG, PNG veya WEBP görsel dosyaları yüklenebilir!');
+          return;
+        }
+
+        ceBtnUploadImage.disabled = true;
+        ceBtnUploadImage.innerText = 'Yükleniyor...';
+
+        try {
+          const formData = new FormData();
+          formData.append('image', file);
+
+          const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+            method: 'POST',
+            body: formData
+          });
+
+          if (!res.ok) throw new Error('ImageBB yükleme başarısız!');
+          const data = await res.json();
+          const cdnUrl = data?.data?.url;
+
+          if (cdnUrl) {
+            if (ceCoverImage) ceCoverImage.value = cdnUrl;
+            if (ceBodyHtml) {
+              ceBodyHtml.value = `<img src="${cdnUrl}" alt="${ceTitle ? ceTitle.value : 'Görsel'}" class="my-6 rounded-2xl w-full object-cover max-h-96" />\n` + ceBodyHtml.value;
+              runQualityGateCheck();
+            }
+            alert('✓ Görsel ImageBB CDN sunucularına başarıyla yüklendi ve makaleye eklendi!');
+          }
+        } catch (err) {
+          alert('Görsel yüklenirken hata: ' + err.message);
+        } finally {
+          ceBtnUploadImage.disabled = false;
+          ceBtnUploadImage.innerText = 'Yükle';
+        }
+      });
+    }
+
+    // Save Article to PocketBase
+    async function saveArticle(aktif = true) {
+      if (!ceTitle || !ceBodyHtml || !ceSlug) return;
+      const title = ceTitle.value.trim();
+      const body = ceBodyHtml.value.trim();
+      const slug = ceSlug.value.trim();
+
+      if (!title || !body || !slug) {
+        alert('Lütfen başlık, slug ve makale gövdesini eksiksiz doldurun!');
+        return;
+      }
+
+      if (ceBtnSavePb) ceBtnSavePb.disabled = true;
+      if (ceBtnSaveDraft) ceBtnSaveDraft.disabled = true;
+
+      try {
+        const payload = {
+          baslik: title,
+          slug: slug,
+          ozet: body,
+          kategori: ceCategory ? ceCategory.value : 'Site Yönetimi',
+          kategoriRenk: 'blue',
+          tarih: new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }),
+          okumaSuresi: ceReadTime ? ceReadTime.value : '4 dk okuma',
+          aktif: aktif,
+          seoTitle: ceSeoTitle ? ceSeoTitle.value : title,
+          seoDescription: ceSeoDesc ? ceSeoDesc.value : title,
+          kapakGorsel: ceCoverImage ? ceCoverImage.value : '',
+          kaynak: 'Çelebi Yönetim & Temizlik Otomasyon Masası',
+          views: 0
+        };
+
+        const res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          const errData = await res.json();
+          throw new Error(JSON.stringify(errData));
+        }
+
+        const saved = await res.json();
+
+        // Mark keyword as used if came from select
+        const selectedOpt = ceKeywordSelect?.selectedOptions?.[0];
+        const kwId = selectedOpt?.getAttribute('data-id');
+        if (kwId) {
+          try {
+            await fetch(`${PB_BASE_URL}/api/collections/seo_keywords/records/${kwId}`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ used: true, lastGenerated: new Date().toISOString() })
+            });
+            loadCeKeywords();
+          } catch (e) {}
+        }
+
+        if (cePublishAlert) {
+          cePublishAlert.innerHTML = `✓ Makale başarıyla PocketBase veritabanına kaydedildi! ID: <strong>${saved.id}</strong> | Durum: <strong>${aktif ? 'Yayında 🚀' : 'Taslak 📝'}</strong>`;
+          cePublishAlert.classList.remove('hidden');
+          setTimeout(() => cePublishAlert.classList.add('hidden'), 7000);
+        }
+
+        loadCeArticles();
+
+      } catch (err) {
+        alert('PocketBase kayıt hatası: ' + err.message);
+      } finally {
+        if (ceBtnSavePb) ceBtnSavePb.disabled = false;
+        if (ceBtnSaveDraft) ceBtnSaveDraft.disabled = false;
+      }
+    }
+
+    if (ceBtnSavePb) {
+      ceBtnSavePb.addEventListener('click', () => saveArticle(true));
+    }
+    if (ceBtnSaveDraft) {
+      ceBtnSaveDraft.addEventListener('click', () => saveArticle(false));
+    }
+
+    // Load Articles from PocketBase
+    async function loadCeArticles() {
+      if (!ceArticlesList) return;
+      try {
+        const res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records?page=1&perPage=50&sort=-created`);
+        if (!res.ok) throw new Error('PB articles fetch error');
+        const data = await res.json();
+
+        if (!data.items || data.items.length === 0) {
+          ceArticlesList.innerHTML = `
+            <div class="p-8 text-center text-slate-400 text-xs">
+              Henüz PocketBase'de yayınlanmış bir makale bulunmuyor. Yukarıdaki panelden ilk SEO makalenizi tek tıkla üretebilirsiniz!
+            </div>
+          `;
+          return;
+        }
+
+        ceArticlesList.innerHTML = data.items.map((art) => `
+          <div class="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/80 transition-colors p-3 rounded-2xl">
+            <div class="space-y-1 max-w-2xl">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-bold text-sm text-slate-900">${art.baslik}</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${art.aktif ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-amber-100 text-amber-800 border border-amber-200'}">
+                  ${art.aktif ? 'Yayında' : 'Taslak'}
+                </span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-50 text-sky-800 border border-sky-200">
+                  ${art.kategori || 'Genel'}
+                </span>
+                <span class="text-[10px] text-slate-400">• ${art.tarih || 'Yeni'}</span>
+              </div>
+              <div class="text-xs text-slate-500 font-mono truncate">
+                Slug: /yazilar/${art.slug}
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 shrink-0">
+              <a
+                href="/yazilar/${art.slug}"
+                target="_blank"
+                class="px-3 py-1.5 text-xs font-bold text-sky-700 bg-sky-50 hover:bg-sky-100 border border-sky-200 rounded-xl transition-all"
+              >
+                Görüntüle ↗
+              </a>
+              <button
+                type="button"
+                data-action="toggle-art-status"
+                data-id="${art.id}"
+                data-status="${art.aktif}"
+                class="px-3 py-1.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl border border-slate-200 transition-all cursor-pointer"
+              >
+                ${art.aktif ? 'Taslağa Al' : 'Yayınla'}
+              </button>
+              <button
+                type="button"
+                data-action="delete-art"
+                data-id="${art.id}"
+                class="p-1.5 text-slate-400 hover:text-red-600 rounded-lg transition-colors cursor-pointer"
+                title="Sil"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        `).join('');
+
+        // Bind article actions
+        ceArticlesList.querySelectorAll('[data-action="toggle-art-status"]').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const id = btn.getAttribute('data-id');
+            const currentStatus = btn.getAttribute('data-status') === 'true';
+            try {
+              await fetch(`${PB_BASE_URL}/api/collections/yazilar/records/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ aktif: !currentStatus })
+              });
+              loadCeArticles();
+            } catch (e) {
+              alert('Durum güncellenirken hata oluştu.');
+            }
+          });
+        });
+
+        ceArticlesList.querySelectorAll('[data-action="delete-art"]').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const id = btn.getAttribute('data-id');
+            if (confirm('Bu makaleyi PocketBase veritabanından kalıcı olarak silmek istediğinize emin misiniz?')) {
+              try {
+                await fetch(`${PB_BASE_URL}/api/collections/yazilar/records/${id}`, {
+                  method: 'DELETE'
+                });
+                loadCeArticles();
+              } catch (e) {
+                alert('Silinirken hata oluştu.');
+              }
+            }
+          });
+        });
+
+      } catch (err) {
+        if (ceArticlesList) {
+          ceArticlesList.innerHTML = `
+            <div class="p-6 text-center text-slate-400 text-xs">
+              PocketBase bağlantısı bekleniyor (${PB_BASE_URL}).
+            </div>
+          `;
+        }
+      }
+    }
+
+    if (ceBtnRefreshArticles) {
+      ceBtnRefreshArticles.addEventListener('click', () => {
+        loadCeArticles();
       });
     }
 

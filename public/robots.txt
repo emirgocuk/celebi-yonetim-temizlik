@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /merkez
+Disallow: /api/
+Disallow: /_/
 
-Sitemap: https://www.celebiyonetim.com.tr/sitemap.xml
+Sitemap: https://celebiyonetim.com.tr/sitemap.xml

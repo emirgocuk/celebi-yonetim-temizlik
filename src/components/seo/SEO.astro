@@ -19,23 +19,23 @@ const {
   noindex = false,
 } = Astro.props;
 
-const siteUrl = Astro.site ? Astro.site.origin : 'https://www.celebiyonetim.com.tr';
+const siteUrl = (Astro.site ? Astro.site.origin : 'https://celebiyonetim.com.tr').replace('www.', '');
 const fullCanonical = new URL(canonical, siteUrl).href;
 const fullOgImage = new URL(ogImage, siteUrl).href;
 
-// Google LocalBusiness & Service JSON-LD Schema (Adana Local SEO)
+// Google LocalBusiness, CleaningService & ProfessionalService JSON-LD Schema (Adana Local SEO)
 const schemaData = {
   '@context': 'https://schema.org',
   '@graph': [
     {
-      '@type': ['LocalBusiness', 'ProfessionalService'],
+      '@type': ['LocalBusiness', 'ProfessionalService', 'CleaningService'],
       '@id': `${siteUrl}/#organization`,
       name: COMPANY_INFO.name,
       url: siteUrl,
       description: COMPANY_INFO.description,
       telephone: COMPANY_INFO.phone,
       email: COMPANY_INFO.email,
-      priceRange: '$$',
+      priceRange: '₺₺',
       address: {
         '@type': 'PostalAddress',
         streetAddress: 'Mahfesığmaz Mah. 78033 Sk. No: 3 Zemin Kat',
@@ -64,6 +64,44 @@ const schemaData = {
         { '@type': 'AdministrativeArea', name: 'Yüreğir' },
         { '@type': 'AdministrativeArea', name: 'Sarıçam' },
       ],
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: 'Adana Site Yönetimi ve Profesyonel Temizlik Hizmetleri',
+        itemListElement: [
+          {
+            '@type': 'Offer',
+            itemOffered: {
+              '@type': 'Service',
+              name: 'Adana Apartman ve Site Yönetimi Hizmeti',
+              description: 'Kat Mülkiyeti Kanunu standartlarında işletme projesi, aidat tahsilatı ve yasal icra yönetimi.',
+            },
+          },
+          {
+            '@type': 'Offer',
+            itemOffered: {
+              '@type': 'Service',
+              name: 'Adana Apartman Merdiven ve Ortak Alan Temizliği',
+              description: 'SGK güvenceli personel ile haftalık periyodik merdiven, asansör ve giriş holü temizliği.',
+            },
+          },
+          {
+            '@type': 'Offer',
+            itemOffered: {
+              '@type': 'Service',
+              name: 'Adana İnşaat ve Tadilat Sonrası Anahtar Teslim Temizlik',
+              description: 'Kaba ve ince inşaat kalıntıları, harç ve boya lekelerinin endüstriyel vakumla temizlenmesi.',
+            },
+          },
+          {
+            '@type': 'Offer',
+            itemOffered: {
+              '@type': 'Service',
+              name: 'Adana Kurumsal Ofis ve İş Yeri Temizliği',
+              description: 'Şirketler, plazalar ve klinikler için mesai dışı periyodik profesyonel ofis hijyeni.',
+            },
+          },
+        ],
+      },
       sameAs: [],
     },
     {

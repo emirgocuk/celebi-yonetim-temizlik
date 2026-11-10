@@ -155,30 +155,52 @@ const articleSchema = {
 
       </div>
 
-      <!-- In-Article Lead Generation Callout -->
-      <div class="my-12 p-8 rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-sky-950 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
-        <div>
-          <div class="text-xs font-bold text-sky-400 uppercase tracking-wider mb-2">Çelebi Danışmanlık Hattı</div>
-          <h3 class="text-xl font-bold mb-2">Bu Konuda Profesyonel Destek Almak İster misiniz?</h3>
-          <p class="text-xs text-slate-300 max-w-md">
-            Apartmanınız, siteniz veya ticari işletmeniz için mevzuata tam uyumlu yönetim ve temizlik teklifimizi 15 dakika içinde hazırlıyoruz.
-          </p>
-        </div>
-        <div class="flex flex-col sm:flex-row gap-3 shrink-0">
-          <a
-            href="/#iletisim"
-            class="px-6 py-3 text-xs font-bold text-slate-900 bg-white hover:bg-sky-100 rounded-xl transition-all duration-150 subtle-tap shadow-md text-center"
-          >
-            Fiyat Teklifi İsteyin
-          </a>
-          <a
-            href={`https://wa.me/${COMPANY_INFO.whatsapp}?text=${encodeURIComponent(`Merhaba, "${article.title}" makalenizi okudum ve danışmak istiyorum.`)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="px-6 py-3 text-xs font-bold text-emerald-300 bg-emerald-950/60 border border-emerald-500/40 rounded-xl transition-all duration-150 subtle-tap text-center"
-          >
-            WhatsApp'tan Danışın
-          </a>
+      <!-- High-Converting In-Article Lead Generation Callout -->
+      <div class="my-12 p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-sky-950 text-white shadow-2xl border border-sky-900/60 relative overflow-hidden">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+          <div class="space-y-2 max-w-xl">
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                Adana Geneli Ücretsiz Keşif
+              </span>
+              <span class="text-xs text-sky-400 font-semibold">• Anında Çağrı Desteği</span>
+            </div>
+            <h3 class="text-xl sm:text-2xl font-black text-white leading-tight">
+              Apartmanınız veya İş Yeriniz İçin Fiyat Teklifi Alın
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              Mevzuata tam uyumlu site yönetimi, aidat tahsilatı veya SGK'lı periyodik temizlik için uzmanımız aynı gün keşif yapsın.
+            </p>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-3 shrink-0 w-full lg:w-auto">
+            <!-- Hemen Ara Butonu -->
+            <a
+              href={`tel:${COMPANY_INFO.phone.replace(/[^0-9+]/g, '')}`}
+              class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-6 py-3.5 text-xs sm:text-sm font-black text-slate-950 bg-white hover:bg-sky-50 active:scale-95 rounded-2xl transition-all shadow-lg text-center cursor-pointer"
+              title="Çelebi Yönetim Santralini Arayın"
+            >
+              <svg class="w-4 h-4 text-sky-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+              <span>{COMPANY_INFO.phone}</span>
+            </a>
+
+            <!-- WhatsApp Butonu -->
+            <a
+              href={`https://wa.me/${COMPANY_INFO.whatsapp}?text=${encodeURIComponent(`Merhaba Çelebi Yönetim, "${article.title}" yazınızı okudum. Hizmetleriniz için ücretsiz keşif ve fiyat teklifi almak istiyorum.`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-6 py-3.5 text-xs sm:text-sm font-black text-white bg-emerald-600 hover:bg-emerald-500 active:scale-95 rounded-2xl transition-all shadow-lg shadow-emerald-900/30 text-center cursor-pointer"
+              title="WhatsApp İle Danışın"
+            >
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12.031 2C6.495 2 2 6.492 2 12.029c0 1.956.562 3.864 1.625 5.512L2.008 22l4.613-1.603c1.579.947 3.393 1.45 5.41 1.45 5.536 0 10.031-4.492 10.031-10.029C22.062 6.492 17.567 2 12.031 2zm5.836 14.195c-.244.686-1.42 1.309-1.956 1.392-.516.08-1.188.115-3.834-.979-3.238-1.339-5.321-4.639-5.48-4.854-.16-.214-1.308-1.741-1.308-3.32 0-1.58.825-2.357 1.118-2.678.293-.32.641-.4.855-.4.214 0 .428.002.616.012.2.01.468-.076.732.557.273.655.932 2.274 1.014 2.44.082.165.137.36.027.579-.11.218-.165.355-.328.552-.164.197-.346.438-.493.59-.164.168-.336.352-.145.679.191.327.848 1.398 1.818 2.262 1.248 1.112 2.3 1.456 2.628 1.62.327.164.519.137.71-.082.192-.219.82-1.002 1.039-1.344.219-.343.438-.287.738-.177.301.11 1.912.902 2.24 1.066.328.164.547.246.629.382.082.137.082.795-.162 1.481z" />
+              </svg>
+              <span>WhatsApp Teklif</span>
+            </a>
+          </div>
         </div>
       </div>
 

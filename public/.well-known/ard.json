@@ -6,7 +6,7 @@
     {
       "identifier": "urn:air:celebiyonetim.com.tr:services:management-and-cleaning",
       "displayName": "Çelebi Yönetim ve Temizlik Hizmetleri",
-      "type": "text/html",
+      "type": "application/agent-card+json",
       "url": "https://celebiyonetim.com.tr",
       "description": "Adana genelinde 634 sayılı Kat Mülkiyeti Kanunu'na tam uyumlu profesyonel site ve bina yönetimi ile SGK güvenceli kurumsal temizlik hizmetleri teklif ve iletişim arayüzü.",
       "representativeQueries": [
@@ -30,9 +30,9 @@
     {
       "identifier": "urn:air:celebiyonetim.com.tr:tools:quote-inquiry",
       "displayName": "Çelebi Hizmet Teklif ve Keşif Talebi",
-      "type": "text/html",
+      "type": "application/ai-catalog+json",
       "url": "https://celebiyonetim.com.tr/iletisim",
-      "description": "Site yönetimi, ofis temizliği ve inşaat sonrası temizlik için daire sayısı ve mülk lokasyonuna göre ücretsiz yerinde keşif randevusu oluşturma formu.",
+      "description": "Site yönetimi, ofis temizliği ve inşaat sonrası temizlik için daire sayısı ve mülk lokasyonuna göre ücretsiz yerinde keşif randevusu oluşturma aracı.",
       "representativeQueries": [
         "Adana site temizliği için ücretsiz keşif randevusu al",
         "Apartman yönetimi devri fiyat teklifi formu doldur",

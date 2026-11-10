@@ -276,3 +276,4 @@ Talebiniz niteliğine göre en geç 30 (otuz) gün içerisinde ücretsiz olarak 
     ],
   },
 ];
+

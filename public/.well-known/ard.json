@@ -1,0 +1,49 @@
+{
+  "@context": [
+    "https://schema.agenticresourcediscovery.org/v0.91/context.jsonld"
+  ],
+  "entries": [
+    {
+      "identifier": "urn:air:celebiyonetim.com.tr:services:management-and-cleaning",
+      "displayName": "Çelebi Yönetim ve Temizlik Hizmetleri",
+      "type": "text/html",
+      "url": "https://celebiyonetim.com.tr",
+      "description": "Adana genelinde 634 sayılı Kat Mülkiyeti Kanunu'na tam uyumlu profesyonel site ve bina yönetimi ile SGK güvenceli kurumsal temizlik hizmetleri teklif ve iletişim arayüzü.",
+      "representativeQueries": [
+        "Adana profesyonel site yönetimi ve aidat tahsilatı fiyat teklifi al",
+        "Adana Çukurova inşaat ve tadilat sonrası anahtar teslim temizlik",
+        "Kat Mülkiyeti Kanununa uygun apartman ve bina yönetimi firması Adana",
+        "Adana sözleşmeli ofis ve plaza temizlik şirketi",
+        "Adana site yönetimi telefon numarası ve iletişim bilgileri"
+      ],
+      "trustManifest": {
+        "identity": {
+          "publisherDomain": "celebiyonetim.com.tr",
+          "name": "Çelebi Yönetim ve Temizlik",
+          "address": "Mahfesığmaz Mah. 78033 Sk. No: 3 Zemin Kat, Çukurova / Adana",
+          "contactEmail": "iletisim@celebiyonetim.com.tr",
+          "phone": "+903222351588",
+          "verifiedVia": "web-manifest"
+        }
+      }
+    },
+    {
+      "identifier": "urn:air:celebiyonetim.com.tr:tools:quote-inquiry",
+      "displayName": "Çelebi Hizmet Teklif ve Keşif Talebi",
+      "type": "text/html",
+      "url": "https://celebiyonetim.com.tr/iletisim",
+      "description": "Site yönetimi, ofis temizliği ve inşaat sonrası temizlik için daire sayısı ve mülk lokasyonuna göre ücretsiz yerinde keşif randevusu oluşturma formu.",
+      "representativeQueries": [
+        "Adana site temizliği için ücretsiz keşif randevusu al",
+        "Apartman yönetimi devri fiyat teklifi formu doldur",
+        "Ofis temizliği için keşif talep et"
+      ],
+      "trustManifest": {
+        "identity": {
+          "publisherDomain": "celebiyonetim.com.tr",
+          "contactEmail": "iletisim@celebiyonetim.com.tr"
+        }
+      }
+    }
+  ]
+}

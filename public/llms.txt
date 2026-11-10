@@ -1,0 +1,21 @@
+# Çelebi Yönetim ve Temizlik
+
+> Adana Çukurova ve Seyhan genelinde 634 sayılı Kat Mülkiyeti Kanunu (KMK) tam uyumlu profesyonel site ve apartman yönetimi ile SGK güvenceli kurumsal temizlik hizmetleri.
+
+Çelebi Yönetim ve Temizlik; Adana merkezli profesyonel tesis, apartman ve mülk yönetimi şirketidir. Şeffaf online kasa muhasebesi, banka entegrasyonlu aidat tahsilatı, KMK hukuki danışmanlığı, asansör ve yangın tesisatı periyodik bakımı ile sözleşmeli ofis, plaza, inşaat sonrası anahtar teslim temizlik çözümleri sunar.
+
+## Temel Hizmetler
+- [Site ve Apartman Yönetimi](https://celebiyonetim.com.tr/#site-yonetimi): Kat Mülkiyeti Kanunu'na tam uyumlu işletme projesi, şeffaf kasa panosu, aidat tahsilatı ve bina görevlisi SGK bordrolama hizmetleri.
+- [Kurumsal Temizlik Hizmetleri](https://celebiyonetim.com.tr/#temizlik): Tamamı SGK güvenceli kadro ile sözleşmeli ofis, plaza, apartman merdiven hijyeni, inşaat/tadilat sonrası kaba-ince temizlik ve vinçli dış cephe cam yıkama.
+- [Sektörel Rehber ve Makaleler](https://celebiyonetim.com.tr/yazilar): KMK yönetici seçimi, aidat gecikme faizi ve icra takibi, kurumsal hijyen kodları hakkında uzman içerikleri.
+
+## İletişim ve Şirket Künyesi
+- [İletişim ve Keşif Talebi](https://celebiyonetim.com.tr/iletisim): Adana Çukurova merkez ofis lokasyonu, santral numarası 0 (322) 235 15 88 ve WhatsApp iletişim hattı.
+- [Site Haritası XML](https://celebiyonetim.com.tr/sitemap.xml): Arama motorları ve yapay zeka ajanları için tam indeks haritası.
+
+## Yasal Sözleşmeler ve KVKK
+- [6698 Sayılı KVKK Aydınlatma Metni](https://celebiyonetim.com.tr/yasal/kvkk-aydinlatma-metni): Kişisel verilerin korunması kanunu aydınlatma ve başvuru hakları.
+- [Gizlilik ve Veri Güvenliği Politikası](https://celebiyonetim.com.tr/yasal/gizlilik-politikasi): 256-bit SSL şifreleme ve kurumsal gizlilik taahhüdü.
+- [Çerez (Cookie) Politikası](https://celebiyonetim.com.tr/yasal/cerez-politikasi): Çerez türleri, kullanım amaçları ve tarayıcı bazlı çerez yönetimi.
+- [Kullanım Koşulları](https://celebiyonetim.com.tr/yasal/kullanim-kosullari): 5846 sayılı FSEK telif hakları koruması ve yasal sorumluluk sınırları.
+- [Hizmet ve Teklif Koşulları](https://celebiyonetim.com.tr/yasal/hizmet-ve-teklif-kosullari): Teklif geçerliliği, SGK taahhüdü ve hizmet ifa esasları.

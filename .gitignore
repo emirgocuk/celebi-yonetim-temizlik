@@ -15,6 +15,7 @@ bin/
 
 # Temporary / Scratch files
 scratch/
+lighthouse-report*.json
 
 # OS / Editor Files
 .DS_Store

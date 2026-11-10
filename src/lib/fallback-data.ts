@@ -140,9 +140,9 @@ export const STATS_DATA = [
 export const REVIEWS_DATA: ReviewItem[] = [
   {
     id: 'rev-1',
-    author: 'Mehmet Yılmaz',
+    author: 'Me**** Yı****',
     role: 'Site Denetim Kurulu Başkanı',
-    buildingName: 'Toroslar Park Konutları (Çukurova, Adana)',
+    buildingName: 'To**** Park Konutları (Çukurova, Adana)',
     serviceType: 'Site Yönetimi & Ortak Alan Hijyeni',
     comment: 'Eski yönetim döneminde aidatını ödemeyenler yüzünden jeneratör yakıtı bile alamıyorduk. Çelebi Yönetim devraldıktan sonra 2 ay içinde tüm geçmiş borçlar tahsil edildi. Her ay kuruşu kuruşuna gelir-gider tablosu panoya asılıyor.',
     rating: 5,
@@ -150,9 +150,9 @@ export const REVIEWS_DATA: ReviewItem[] = [
   },
   {
     id: 'rev-2',
-    author: 'Av. Elif Karadağ',
+    author: 'Av. El** Ka*****',
     role: 'Yönetici Ortak',
-    buildingName: 'Ziyapaşa Hukuk & Danışmanlık (Seyhan, Adana)',
+    buildingName: 'Zi**** Hukuk & Danışmanlık (Seyhan, Adana)',
     serviceType: 'Sözleşmeli Ofis Temizliği',
     comment: 'Hukuk büromuz için en önemli konu gizlilik ve güvendi. Gönderdikleri personel son derece saygılı, evrak düzenine dokunmadan masaları tertemiz yapıyor. Çapraz bez kodlama sistemleri Adana şartlarında gerçekten çok profesyonel.',
     rating: 5,
@@ -160,9 +160,9 @@ export const REVIEWS_DATA: ReviewItem[] = [
   },
   {
     id: 'rev-3',
-    author: 'Serkan Öztürk',
-    role: 'Proje Müdürü',
-    buildingName: 'Güzelyalı Rezidans (Çukurova, Adana)',
+    author: 'Se**** Öz****',
+    role: 'Proje & Şantiye Müdürü',
+    buildingName: 'Gü**** Rezidans Projesi (Çukurova, Adana)',
     serviceType: 'İnşaat Sonrası Daire Temizliği',
     comment: '36 dairelik yeni projemizin anahtar tesliminde anlaştık. Derz aralarındaki kireci ve pencere bantlarını camlara tek bir çizik atmadan söktüler. Daire sahiplerine pırıl pırıl teslim ettik.',
     rating: 5,

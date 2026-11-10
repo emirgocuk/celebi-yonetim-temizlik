@@ -2129,7 +2129,33 @@ const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
         if (ceBtnGenerateText) ceBtnGenerateText.innerText = 'Makale Üretiliyor... Lütfen Bekleyin ⚡';
 
         try {
-          const generatedTitle = `Adana ${district} Genelinde ${topic}: Yasal Mevzuat ve Uygulama Rehberi`;
+          // Normalize district prefix and clean redundant repetitions
+          const distClean = (district || 'Çukurova').trim();
+          let prefix = `Adana ${distClean} Genelinde`;
+          if (distClean === 'Adana Geneli' || distClean === 'Genel' || distClean === 'auto' || distClean === 'Adana') {
+            prefix = 'Adana Genelinde';
+          } else if (distClean.toLowerCase().startsWith('adana ')) {
+            prefix = `${distClean} Genelinde`;
+          }
+
+          let cleanTopic = topic.trim();
+          if (distClean !== 'Adana Geneli' && distClean !== 'Genel' && distClean !== 'auto') {
+            cleanTopic = cleanTopic.replace(new RegExp(`^(Adana\\s+)?${distClean}\\s*`, 'i'), '');
+          }
+          cleanTopic = cleanTopic.replace(/^Adana\s+(Geneli\s+)?/i, '');
+          cleanTopic = cleanTopic.replace(/^Genelinde\s*/i, '');
+          cleanTopic = cleanTopic ? (cleanTopic.charAt(0).toUpperCase() + cleanTopic.slice(1)) : topic;
+
+          const isCleaning = /temizlik|merdiven|tadilat|inşaat|hijyen|ofis/i.test(cleanTopic);
+          const suffix = isCleaning ? 'Uygulama ve Hizmet Rehberi' : 'Yasal Mevzuat ve Uygulama Rehberi';
+
+          let generatedTitle = (cleanTopic.includes(':') || cleanTopic.includes('?'))
+            ? `${prefix} ${cleanTopic}`
+            : `${prefix} ${cleanTopic}: ${suffix}`;
+
+          generatedTitle = generatedTitle.replace(/\bAdana\s+Adana\b/gi, 'Adana');
+          generatedTitle = generatedTitle.replace(/\bAdana\s+Geneli\s+Genelinde\b/gi, 'Adana Genelinde');
+
           const generatedSlug = `${slugify(generatedTitle)}-${Date.now().toString().slice(-4)}`;
           
           let bodyHtml = `
@@ -2216,20 +2242,21 @@ const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
           }
 
           // Smart royalty-free cover image matching based on topic & category
-          const matchedImg = getMatchedStockImage(topic, 'Site Yönetimi');
+          const autoCat = isCleaning ? 'Temizlik' : 'Site Yönetimi';
+          const matchedImg = getMatchedStockImage(topic, autoCat);
           const autoCoverUrl = matchedImg ? matchedImg.url : 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80';
 
           // Populate Editor
           if (ceTitle) ceTitle.value = generatedTitle;
           if (ceSlug) ceSlug.value = generatedSlug;
-          if (ceCategory) ceCategory.value = 'Site Yönetimi';
+          if (ceCategory) ceCategory.value = autoCat;
           if (ceReadTime) ceReadTime.value = '4 dk okuma';
           if (ceCoverImage) {
             ceCoverImage.value = autoCoverUrl;
             updateCoverPreview(autoCoverUrl);
           }
-          if (ceSeoTitle) ceSeoTitle.value = `${topic} | Adana Çelebi Yönetim`;
-          if (ceSeoDesc) ceSeoDesc.value = `Adana ${district} genelinde ${topic} hakkında Kat Mülkiyeti Kanunu, aidat tahsilatı ve profesyonel temizlik rehberi.`;
+          if (ceSeoTitle) ceSeoTitle.value = `${generatedTitle} | Çelebi Yönetim`;
+          if (ceSeoDesc) ceSeoDesc.value = `${generatedTitle} konusunda kat mülkiyeti, aidat tahsilatı ve profesyonel temizlik rehberi.`;
           if (ceBodyHtml) ceBodyHtml.value = bodyHtml.trim();
 
           if (ceEditorWrapper) {

@@ -139,7 +139,42 @@ def generate_article_body(keyword, district="Çukurova"):
     now = datetime.now()
     date_str = f"{now.day} {months[now.month-1]} {now.year}"
 
-    title = f"Adana {district} Genelinde {keyword}: Yasal Mevzuat ve Uygulama Rehberi"
+    # Intelligent Title & Prefix Normalization
+    dist = district.strip() if district else "Çukurova"
+    if dist in ["Adana Geneli", "Adana", "Genel", "auto", ""]:
+        prefix = "Adana Genelinde"
+    elif dist.lower().startswith("adana "):
+        prefix = f"{dist} Genelinde"
+    else:
+        prefix = f"Adana {dist} Genelinde"
+
+    import re
+    clean_kw = keyword.strip()
+    if dist not in ["Adana Geneli", "Adana", "Genel", "auto", ""]:
+        clean_kw = re.sub(rf"^(Adana\s+)?{re.escape(dist)}\s*", "", clean_kw, flags=re.IGNORECASE)
+    clean_kw = re.sub(r"^Adana\s+(Geneli\s+)?", "", clean_kw, flags=re.IGNORECASE)
+    clean_kw = re.sub(r"^Genelinde\s*", "", clean_kw, flags=re.IGNORECASE)
+    clean_kw = clean_kw[0].upper() + clean_kw[1:] if clean_kw else keyword
+
+    # Dynamic Category & Suffix Detection
+    kw_lower = clean_kw.lower()
+    if any(k in kw_lower for k in ["temizlik", "merdiven", "tadilat", "inşaat", "hijyen", "ofis"]):
+        category = "Temizlik"
+        category_color = "emerald"
+        suffix = "Uygulama ve Hizmet Rehberi"
+    else:
+        category = "Site Yönetimi"
+        category_color = "blue"
+        suffix = "Yasal Mevzuat ve Uygulama Rehberi"
+
+    if ":" in clean_kw or "?" in clean_kw:
+        title = f"{prefix} {clean_kw}"
+    else:
+        title = f"{prefix} {clean_kw}: {suffix}"
+
+    title = re.sub(r"\bAdana\s+Adana\b", "Adana", title, flags=re.IGNORECASE)
+    title = re.sub(r"\bAdana\s+Geneli\s+Genelinde\b", "Adana Genelinde", title, flags=re.IGNORECASE)
+
     slug = f"{slugify(title)}-{int(time.time())}"
 
     body = f"""<p>Adana'da konut ve iş yeri projelerinin hızla arttığı {district} bölgesinde toplu yaşam alanlarında huzur ve düzen sağlamak, 634 Sayılı Kat Mülkiyeti Kanunu (KMK) standartlarına harfiyen uyulmasını zorunlu kılmaktadır. Bireysel yönetim girişimlerinin sıklıkla tıkandığı aidat tahsilatları, merdiven temizliği sözleşmeleri ve genel kurul süreçleri kurumsal bir yaklaşımla çözülmelidir.</p>
@@ -175,14 +210,14 @@ def generate_article_body(keyword, district="Çukurova"):
         "baslik": title,
         "slug": slug,
         "ozet": body,
-        "kategori": "Site Yönetimi",
-        "kategoriRenk": "blue",
+        "kategori": category,
+        "kategoriRenk": category_color,
         "tarih": date_str,
         "okumaSuresi": "4 dk okuma",
         "aktif": True,
-        "seoTitle": f"Adana {district} {keyword} | Çelebi Yönetim",
-        "seoDescription": f"Adana {district} ve Seyhan genelinde {keyword} konusunda yasal mevzuat, aidat ve profesyonel temizlik çözümleri rehberi.",
-        "kapakGorsel": get_royalty_free_image(keyword, "Site Yönetimi"),
+        "seoTitle": f"{title} | Çelebi Yönetim",
+        "seoDescription": f"{title} konusunda kat mülkiyeti, aidat tahsilatı ve profesyonel temizlik çözümleri rehberi.",
+        "kapakGorsel": get_royalty_free_image(keyword, category),
         "kaynak": "Çelebi Yönetim Otomasyon Masası",
         "views": 0
     }

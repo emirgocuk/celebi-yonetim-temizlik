@@ -5,6 +5,11 @@ const staticPages = [
   '',
   'iletisim',
   'yazilar',
+  'yasal/kvkk-aydinlatma-metni',
+  'yasal/gizlilik-politikasi',
+  'yasal/cerez-politikasi',
+  'yasal/kullanim-kosullari',
+  'yasal/hizmet-ve-teklif-kosullari',
 ];
 
 export const GET: APIRoute = async ({ site }) => {

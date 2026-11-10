@@ -1,14 +1,15 @@
 ---
 import { COMPANY_INFO } from '@/lib/fallback-data';
+import { LEGAL_DOCUMENTS } from '@/lib/legal-data';
 
 const currentYear = new Date().getFullYear();
 ---
 
 <footer class="bg-slate-950 text-slate-300 pt-16 pb-12 border-t border-slate-800">
   <div class="max-w-7xl mx-auto px-4 sm:px-6">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-slate-800">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 pb-12 border-b border-slate-800">
       
-      <!-- Brand & Mission Column -->
+      <!-- Brand & Mission Column (2 Columns) -->
       <div class="lg:col-span-2 flex flex-col gap-4">
         <div class="flex items-center gap-3">
           <div class="flex items-center justify-center w-10 h-10 rounded-full bg-white text-slate-950 font-bold shadow-sm">
@@ -17,15 +18,18 @@ const currentYear = new Date().getFullYear();
           <span class="text-xl font-bold tracking-tight text-white">Çelebi Yönetim & Temizlik</span>
         </div>
         <p class="text-sm text-slate-400 max-w-sm leading-relaxed">
-          Adana Çukurova ve Seyhan başta olmak üzere; Kat Mülkiyeti Kanunu'na tam uyumlu şeffaf site yönetimi ve SGK güvenceli kadromuzla kurumsal temizlik çözümleri sunuyoruz.
+          Adana Çukurova ve Seyhan başta olmak üzere; 634 sayılı Kat Mülkiyeti Kanunu'na tam uyumlu şeffaf site yönetimi ve SGK güvenceli kadromuzla kurumsal temizlik çözümleri sunuyoruz.
         </p>
-        <div class="flex items-center gap-3 pt-2">
-          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-950/60 text-emerald-300 border border-emerald-800/60">
+        <div class="flex flex-wrap items-center gap-2 pt-2">
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-950/60 text-emerald-300 border border-emerald-800/60">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
             Adana Geneli 7/24 Aktif
           </span>
-          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-slate-900 text-slate-300 border border-slate-800">
+          <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-900 text-slate-300 border border-slate-800">
             SGK'lı Kadro
+          </span>
+          <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-sky-950/60 text-sky-300 border border-sky-800/60">
+            KVKK Uyumlu
           </span>
         </div>
       </div>
@@ -54,12 +58,27 @@ const currentYear = new Date().getFullYear();
         </ul>
       </div>
 
+      <!-- Yasal & Mevzuat Sözleşmeleri -->
+      <div class="flex flex-col gap-3">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-amber-400">Yasal & Mevzuat</h3>
+        <ul class="flex flex-col gap-2.5 text-xs text-slate-400">
+          {LEGAL_DOCUMENTS.map((doc) => (
+            <li>
+              <a href={`/yasal/${doc.slug}`} class="hover:text-white transition-colors flex items-center gap-1.5">
+                <span class="w-1 h-1 rounded-full bg-slate-600"></span>
+                <span>{doc.shortTitle}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
       <!-- Sektörel Rehber & İletişim -->
       <div class="flex flex-col gap-3">
         <h3 class="text-xs font-bold uppercase tracking-wider text-white">Adana İletişim</h3>
         <ul class="flex flex-col gap-2 text-xs text-slate-400">
           <li>
-            <span class="text-slate-500 block text-[10px] uppercase font-bold">Sabit Hat:</span>
+            <span class="text-slate-500 block text-[10px] uppercase font-bold">Sabit Santral:</span>
             <a href={`tel:${COMPANY_INFO.landlinePhone}`} class="hover:text-white font-bold text-slate-300">{COMPANY_INFO.landlineFormatted}</a>
           </li>
           <li>
@@ -78,12 +97,40 @@ const currentYear = new Date().getFullYear();
 
     </div>
 
+    <!-- Legal Compliance & Warning Notice Bar -->
+    <div class="py-6 border-b border-slate-800/80 text-[11px] text-slate-500 leading-relaxed">
+      <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+        <div class="max-w-4xl">
+          <strong class="text-slate-400 font-semibold">Yasal Bilgilendirme & KVKK Uyarısı:</strong> Sitemizde yer alan tüm metinler, makaleler ve içerikler 5846 sayılı Fikir ve Sanat Eserleri Kanunu kapsamında tescilli olup izinsiz kopyalanamaz. Sitemizi ziyaret eden ve iletişim formlarını kullanan tüm kullanıcılar <a href="/yasal/kullanim-kosullari" class="text-sky-400 hover:underline">Kullanım Koşulları</a>, <a href="/yasal/gizlilik-politikasi" class="text-sky-400 hover:underline">Gizlilik Politikası</a>, <a href="/yasal/cerez-politikasi" class="text-sky-400 hover:underline">Çerez Politikası</a> ve <a href="/yasal/kvkk-aydinlatma-metni" class="text-sky-400 hover:underline">KVKK Aydınlatma Metni</a>'ni kabul etmiş sayılır. Kişisel verileriniz 6698 sayılı Kanun kapsamında Veri Sorumlusu sıfatıyla korunmaktadır.
+        </div>
+        <div class="shrink-0 flex items-center gap-2">
+          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-[10px] text-slate-400 font-medium">
+            <svg class="w-3 h-3 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+            KVKK Uyumlu
+          </span>
+          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-[10px] text-slate-400 font-medium">
+            <svg class="w-3 h-3 text-sky-400" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 1.944A11.954 11.954 0 012.166 5C2.056 5.649 2 6.319 2 7c0 5.225 3.34 9.67 8 11.317C14.66 16.67 18 12.225 18 7c0-.682-.057-1.35-.166-2.001A11.954 11.954 0 0110 1.944zM11 14a1 1 0 11-2 0 1 1 0 012 0zm0-7a1 1 0 10-2 0v3a1 1 0 102 0V7z" clip-rule="evenodd"/>
+            </svg>
+            256-Bit SSL
+          </span>
+        </div>
+      </div>
+    </div>
+
     <!-- Bottom Bar -->
-    <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-      <p>© {currentYear} {COMPANY_INFO.name}. Tüm hakları saklıdır.</p>
-      <div class="flex items-center gap-6">
-        <a href="/yazilar" class="hover:text-white transition-colors">Sektörel Makaleler</a>
-        <a href="/sitemap.xml" class="hover:text-white transition-colors">Site Haritası (XML)</a>
+    <div class="pt-6 flex flex-col lg:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      <p>© {currentYear} {COMPANY_INFO.name}. Tüm hakları saklıdır. Adana / Türkiye</p>
+      <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+        <a href="/yasal/kvkk-aydinlatma-metni" class="hover:text-white transition-colors">KVKK Aydınlatma</a>
+        <a href="/yasal/gizlilik-politikasi" class="hover:text-white transition-colors">Gizlilik & Güvenlik</a>
+        <a href="/yasal/cerez-politikasi" class="hover:text-white transition-colors">Çerez Politikası</a>
+        <a href="/yasal/kullanim-kosullari" class="hover:text-white transition-colors">Kullanım Koşulları</a>
+        <a href="/yasal/hizmet-ve-teklif-kosullari" class="hover:text-white transition-colors">Hizmet Şartları</a>
+        <a href="/yazilar" class="hover:text-white transition-colors">Makaleler</a>
+        <a href="/sitemap.xml" class="hover:text-white transition-colors">Sitemap (XML)</a>
       </div>
     </div>
   </div>

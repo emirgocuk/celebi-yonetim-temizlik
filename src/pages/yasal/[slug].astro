@@ -1,0 +1,201 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { LEGAL_DOCUMENTS, type LegalDocument } from '@/lib/legal-data';
+import { COMPANY_INFO } from '@/lib/fallback-data';
+
+export async function getStaticPaths() {
+  return LEGAL_DOCUMENTS.map((doc) => ({
+    params: { slug: doc.slug },
+    props: { doc },
+  }));
+}
+
+interface Props {
+  doc: LegalDocument;
+}
+
+const { doc } = Astro.props;
+
+// Convert markdown bolding/bullets to HTML simply
+function formatLegalContent(raw: string): string {
+  let html = raw
+    // Markdown bold
+    .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-slate-900">$1</strong>')
+    // Table rows
+    .replace(/^\| (.+) \|$/gm, (match) => {
+      const cells = match
+        .split('|')
+        .map((c) => c.trim())
+        .filter(Boolean);
+      if (cells.some((c) => c.startsWith('---'))) return '';
+      return `<tr class="border-b border-slate-200">${cells.map((c) => `<td class="py-2.5 px-3 text-xs sm:text-sm text-slate-700">${c}</td>`).join('')}</tr>`;
+    })
+    // Bullet items
+    .replace(/^\* (.*$)/gm, '<li class="flex items-start gap-2 mb-2"><span class="w-1.5 h-1.5 rounded-full bg-sky-600 mt-2 shrink-0"></span><span>$1</span></li>')
+    // Numbered items
+    .replace(/^(\d+)\. (.*$)/gm, '<li class="flex items-start gap-2 mb-2"><span class="font-bold text-sky-700 shrink-0">$1.</span><span>$2</span></li>')
+    // Paragraphs
+    .split('\n\n')
+    .map((para) => {
+      para = para.trim();
+      if (!para) return '';
+      if (para.includes('<li class=')) return `<ul class="my-3 space-y-1 text-slate-700 text-sm leading-relaxed">${para}</ul>`;
+      if (para.includes('<tr class=')) return `<div class="overflow-x-auto my-4"><table class="w-full text-left border-collapse border border-slate-200 rounded-lg overflow-hidden">${para}</table></div>`;
+      return `<p class="text-sm sm:text-base text-slate-700 leading-relaxed mb-4">${para}</p>`;
+    })
+    .join('');
+
+  return html;
+}
+---
+
+<BaseLayout
+  title={`${doc.shortTitle} | Çelebi Yönetim & Temizlik`}
+  description={doc.description}
+  canonical={`https://celebiyonetim.com.tr/yasal/${doc.slug}`}
+>
+  <div class="bg-gradient-to-b from-slate-50 via-white to-slate-50 min-h-screen pt-28 pb-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-xs text-slate-500 mb-8" aria-label="Breadcrumb">
+        <a href="/" class="hover:text-sky-700 transition-colors">Ana Sayfa</a>
+        <span>/</span>
+        <a href="/yasal/kvkk-aydinlatma-metni" class="hover:text-sky-700 transition-colors">Yasal & Mevzuat</a>
+        <span>/</span>
+        <span class="text-slate-800 font-semibold">{doc.shortTitle}</span>
+      </nav>
+
+      <!-- Page Header -->
+      <header class="max-w-4xl mb-12">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-sky-50 text-sky-800 border border-sky-200 mb-4">
+          <svg class="w-3.5 h-3.5 text-sky-600" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 1.944A11.954 11.954 0 012.166 5C2.056 5.649 2 6.319 2 7c0 5.225 3.34 9.67 8 11.317C14.66 16.67 18 12.225 18 7c0-.682-.057-1.35-.166-2.001A11.954 11.954 0 0110 1.944zM11 14a1 1 0 11-2 0 1 1 0 012 0zm0-7a1 1 0 10-2 0v3a1 1 0 102 0V7z" clip-rule="evenodd"/>
+          </svg>
+          <span>{doc.badge}</span>
+        </div>
+        <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight mb-4">
+          {doc.title}
+        </h1>
+        <p class="text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
+          {doc.description}
+        </p>
+        <div class="flex flex-wrap items-center gap-4 text-xs text-slate-500 pt-4 border-t border-slate-200 mt-6">
+          <span><strong>Son Güncelleme:</strong> {doc.lastUpdated}</span>
+          <span>•</span>
+          <span><strong>Yürürlük Tarihi:</strong> {doc.effectiveDate}</span>
+          <span>•</span>
+          <span class="text-emerald-700 font-semibold inline-flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            Resmi Yürürlükte
+          </span>
+        </div>
+      </header>
+
+      <!-- Main Layout: Sidebar Navigation + Content Body -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        
+        <!-- Sidebar Navigation (Sticky on Desktop) -->
+        <aside class="lg:col-span-4">
+          <div class="sticky top-28 bg-white p-6 rounded-2xl border border-slate-200/90 shadow-sm space-y-6">
+            <div class="border-b border-slate-100 pb-3">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Yasal Sözleşmeler</h3>
+              <p class="text-xs text-slate-500 mt-1">İlgili yasal metni seçerek inceleyebilirsiniz.</p>
+            </div>
+            
+            <nav class="space-y-1.5" aria-label="Legal documents navigation">
+              {LEGAL_DOCUMENTS.map((item) => {
+                const isActive = item.slug === doc.slug;
+                return (
+                  <a
+                    href={`/yasal/${item.slug}`}
+                    class={`flex items-center justify-between p-3 rounded-xl text-xs sm:text-sm font-medium transition-all ${
+                      isActive
+                        ? 'bg-sky-50 text-sky-900 border border-sky-200 font-bold shadow-sm'
+                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                    }`}
+                  >
+                    <span>{item.shortTitle}</span>
+                    {isActive && (
+                      <span class="w-2 h-2 rounded-full bg-sky-600"></span>
+                    )}
+                  </a>
+                );
+              })}
+            </nav>
+
+            <!-- Quick Contact Legal Inquiries Card -->
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 text-xs text-slate-600 space-y-2">
+              <div class="font-bold text-slate-900 flex items-center gap-1.5">
+                <svg class="w-4 h-4 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                </svg>
+                Yasal & KVKK İletişim
+              </div>
+              <p class="text-slate-500 text-[11px] leading-relaxed">
+                KVKK başvuruları ve yasal hak talepleriniz için resmi e-posta adresimiz üzerinden iletişime geçebilirsiniz.
+              </p>
+              <a
+                href={`mailto:${COMPANY_INFO.email}?subject=KVKK%20ve%20Yasal%20Basvuru`}
+                class="inline-block font-semibold text-sky-700 hover:text-sky-900 hover:underline pt-1"
+              >
+                {COMPANY_INFO.email}
+              </a>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Main Document Body -->
+        <article class="lg:col-span-8 bg-white p-6 sm:p-10 rounded-3xl border border-slate-200/90 shadow-sm space-y-10">
+          
+          {doc.sections.map((section) => (
+            <section id={section.id} class="scroll-mt-28 border-b border-slate-100 last:border-b-0 pb-8 last:pb-0">
+              <h2 class="text-lg sm:text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                <span class="w-1.5 h-5 bg-sky-600 rounded-full inline-block"></span>
+                {section.title}
+              </h2>
+              <div
+                class="legal-prose prose prose-slate max-w-none prose-sm sm:prose-base"
+                set:html={formatLegalContent(section.content)}
+              />
+            </section>
+          ))}
+
+          <!-- Official Corporate Identification Notice (Künye) -->
+          <div class="mt-12 p-6 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-600 space-y-3">
+            <h4 class="font-bold text-slate-900 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+              <svg class="w-4 h-4 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+              </svg>
+              Resmi Veri Sorumlusu & Şirket Bilgileri (Künye)
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-slate-600">
+              <div>
+                <span class="text-slate-400 block text-[10px] uppercase font-semibold">Şirket / Marka</span>
+                <span class="font-medium text-slate-800">{COMPANY_INFO.name}</span>
+              </div>
+              <div>
+                <span class="text-slate-400 block text-[10px] uppercase font-semibold">Merkez Adres</span>
+                <span class="font-medium text-slate-800">{COMPANY_INFO.address}</span>
+              </div>
+              <div>
+                <span class="text-slate-400 block text-[10px] uppercase font-semibold">Resmi Telefon</span>
+                <span class="font-medium text-slate-800">{COMPANY_INFO.landlineFormatted}</span>
+              </div>
+              <div>
+                <span class="text-slate-400 block text-[10px] uppercase font-semibold">Resmi E-Posta</span>
+                <span class="font-medium text-slate-800">{COMPANY_INFO.email}</span>
+              </div>
+            </div>
+            <p class="text-[11px] text-slate-500 pt-2 border-t border-slate-200">
+              İşbu metin, 6698 sayılı Kişisel Verilerin Korunması Kanunu, 6563 sayılı Elektronik Ticaretin Düzenlenmesi Hakkında Kanun ve 5846 sayılı Fikir ve Sanat Eserleri Kanunu hükümleri kapsamında bağlayıcıdır.
+            </p>
+          </div>
+
+        </article>
+
+      </div>
+
+    </div>
+  </div>
+</BaseLayout>

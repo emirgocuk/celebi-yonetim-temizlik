@@ -1,0 +1,75 @@
+---
+---
+
+<div
+  id="cookie-consent-banner"
+  class="fixed bottom-20 sm:bottom-6 left-4 right-4 sm:left-auto sm:right-6 sm:max-w-md z-40 transition-all duration-300 transform translate-y-32 opacity-0 pointer-events-none"
+  role="dialog"
+  aria-live="polite"
+  aria-label="Çerez ve Gizlilik Bildirimi"
+>
+  <div class="bg-slate-900/95 backdrop-blur-md text-white p-5 rounded-2xl border border-slate-700/80 shadow-2xl flex flex-col gap-3">
+    <div class="flex items-start justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <span class="text-xl">🍪</span>
+        <h4 class="text-xs font-bold uppercase tracking-wider text-amber-400">Çerez ve Gizlilik Tercihleri</h4>
+      </div>
+      <button
+        id="cookie-consent-close"
+        class="text-slate-400 hover:text-white p-1 text-sm rounded-lg hover:bg-slate-800 transition-colors"
+        aria-label="Kapat"
+      >
+        ✕
+      </button>
+    </div>
+
+    <p class="text-xs text-slate-300 leading-relaxed font-normal">
+      Sitemizde 6698 sayılı KVKK mevzuatına uygun olarak güvenli gezinme ve temel işlevler için zorunlu ve analitik çerezler kullanılmaktadır.
+      Detaylı bilgi için <a href="/yasal/cerez-politikasi" class="text-sky-400 underline hover:text-sky-300">Çerez Politikamızı</a> ve <a href="/yasal/kvkk-aydinlatma-metni" class="text-sky-400 underline hover:text-sky-300">KVKK Metnimizi</a> inceleyebilirsiniz.
+    </p>
+
+    <div class="flex items-center gap-2 pt-1">
+      <button
+        id="cookie-consent-accept"
+        class="flex-1 py-2 px-3 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold transition-all shadow-sm active:scale-95 text-center cursor-pointer"
+      >
+        Kabul Ediyorum
+      </button>
+      <a
+        href="/yasal/cerez-politikasi"
+        class="py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition-colors text-center cursor-pointer"
+      >
+        Ayarlar
+      </a>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (() => {
+    try {
+      const banner = document.getElementById('cookie-consent-banner');
+      const acceptBtn = document.getElementById('cookie-consent-accept');
+      const closeBtn = document.getElementById('cookie-consent-close');
+      if (!banner) return;
+
+      const consent = localStorage.getItem('celebi_cookie_consent');
+      if (!consent) {
+        // Show after 1.2s delay for subtle animation
+        setTimeout(() => {
+          banner.classList.remove('translate-y-32', 'opacity-0', 'pointer-events-none');
+        }, 1200);
+      }
+
+      const dismiss = () => {
+        banner.classList.add('translate-y-32', 'opacity-0', 'pointer-events-none');
+        localStorage.setItem('celebi_cookie_consent', 'accepted');
+      };
+
+      if (acceptBtn) acceptBtn.addEventListener('click', dismiss);
+      if (closeBtn) closeBtn.addEventListener('click', dismiss);
+    } catch (e) {
+      // LocalStorage access restricted in some private modes
+    }
+  })();
+</script>

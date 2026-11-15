@@ -26,7 +26,7 @@ sftp.put(temp_archive, "/tmp/celebiyonetim_dist_update.tar.gz")
 
 # Upload backend scripts
 scripts_dir = os.path.abspath(os.path.dirname(__file__))
-for script_name in ["timer-runner.py", "auto-generate-cron.py"]:
+for script_name in ["timer-runner.py", "auto-generate-cron.py", "fetch-gsc-keywords.py"]:
     local_script = os.path.join(scripts_dir, script_name)
     if os.path.exists(local_script):
         sftp.put(local_script, f"/var/www/scripts/{script_name}")

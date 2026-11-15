@@ -34,3 +34,4 @@ print(f"• FCP: {fcp}")
 print(f"• LCP: {lcp}")
 print(f"• CLS: {cls}")
 print(f"• TBT: {tbt}")
+

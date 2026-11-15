@@ -122,16 +122,17 @@ const featuredArticles = ARTICLES_DATA.slice(0, 3);
     const container = document.getElementById('home-articles-container');
     if (!container) return;
 
-    // Checks if article was published today (disappears tomorrow)
-    function isArticleNew(dateStr) {
-      if (!dateStr) return false;
+    // Parse Turkish or ISO date string to millisecond timestamp for sorting
+    function parseArticleDate(dateStr) {
+      if (!dateStr) return 0;
       const str = String(dateStr).trim();
-      if (str.toLowerCase() === 'bugün' || str.toLowerCase() === 'yeni') return true;
+      if (str.toLowerCase() === 'bugün' || str.toLowerCase() === 'yeni') return Date.now();
 
-      const now = new Date();
       const trMonths = {
         'ocak': 0, 'şubat': 1, 'mart': 2, 'nisan': 3, 'mayıs': 4, 'haziran': 5,
-        'temmuz': 6, 'ağustos': 7, 'eylül': 8, 'ekim': 9, 'kasım': 10, 'aralık': 11
+        'temmuz': 6, 'ağustos': 7, 'eylül': 8, 'ekim': 9, 'kasım': 10, 'aralık': 11,
+        'january': 0, 'february': 1, 'march': 2, 'april': 3, 'may': 4, 'june': 5,
+        'july': 6, 'august': 7, 'september': 8, 'october': 9, 'november': 10, 'december': 11
       };
 
       const m = str.match(/^(\d{1,2})\s+([a-zA-ZçÇğĞıİöÖşŞüÜ]+)\s+(\d{4})/i);
@@ -141,16 +142,28 @@ const featuredArticles = ARTICLES_DATA.slice(0, 3);
         const year = parseInt(m[3], 10);
 
         if (monthKey in trMonths) {
-          const artDate = new Date(year, trMonths[monthKey], day);
-          const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-          return artDate.getTime() === todayDate.getTime();
+          return new Date(year, trMonths[monthKey], day).getTime();
         }
       }
 
       const parsed = Date.parse(str);
-      if (!isNaN(parsed)) {
-        const diffHours = (now.getTime() - parsed) / (1000 * 60 * 60);
-        return diffHours >= 0 && diffHours < 24;
+      if (!isNaN(parsed)) return parsed;
+
+      return 0;
+    }
+
+    // Checks if article was published today (disappears tomorrow)
+    function isArticleNew(dateStr) {
+      if (!dateStr) return false;
+      const str = String(dateStr).trim();
+      if (str.toLowerCase() === 'bugün' || str.toLowerCase() === 'yeni') return true;
+
+      const artTimestamp = parseArticleDate(dateStr);
+      if (artTimestamp > 0) {
+        const now = new Date();
+        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+        const diffHours = (Date.now() - artTimestamp) / (1000 * 60 * 60);
+        return artTimestamp >= todayStart || (diffHours >= 0 && diffHours < 24);
       }
 
       return false;
@@ -161,30 +174,22 @@ const featuredArticles = ARTICLES_DATA.slice(0, 3);
       : '';
 
     try {
-      let res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records?sort=-id&perPage=3`);
-      if (!res.ok) {
-        res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records?perPage=3`);
-      }
+      let res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records?perPage=30`);
       if (res.ok) {
         const data = await res.json();
         const pbArticles = data.items || [];
         if (pbArticles.length > 0) {
-          const existingSlugs = new Set();
-          container.querySelectorAll('a[href*="/yazilar/"]').forEach((link) => {
-            const match = link.getAttribute('href').match(/slug=([^&]+)/) || link.getAttribute('href').match(/\/yazilar\/([^/?#]+)/);
-            if (match) existingSlugs.add(match[1]);
-          });
+          // Sort PB articles by date descending
+          pbArticles.sort((a, b) => parseArticleDate(b.tarih) - parseArticleDate(a.tarih));
+          const top3 = pbArticles.slice(0, 3);
 
-          const newCards = [];
-          for (const item of pbArticles) {
-            if (existingSlugs.has(item.slug)) continue;
-
+          const newCards = top3.map((item) => {
             const tmp = document.createElement('div');
             tmp.innerHTML = item.ozet || '';
             const plainText = (tmp.querySelector('p')?.innerText || tmp.innerText || item.baslik).slice(0, 180) + '...';
             const isNew = isArticleNew(item.tarih);
 
-            const cardHtml = `
+            return `
               <article class="home-article-card rounded-3xl bg-white border border-sky-200 p-6 sm:p-8 shadow-sm hover:shadow-md transition-all duration-200 group ring-1 ring-sky-100">
                 <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
                   <div class="flex items-center gap-2.5">
@@ -223,18 +228,9 @@ const featuredArticles = ARTICLES_DATA.slice(0, 3);
                 </div>
               </article>
             `;
-            newCards.push(cardHtml);
-          }
-
-          if (newCards.length > 0) {
-            container.insertAdjacentHTML('afterbegin', newCards.join(''));
-          }
-
-          // Landing page'de tam olarak 3 makale gösterilsin
-          const allCards = container.querySelectorAll('.home-article-card');
-          allCards.forEach((card, idx) => {
-            if (idx >= 3) card.remove();
           });
+
+          container.innerHTML = newCards.join('');
         }
       }
     } catch (e) {

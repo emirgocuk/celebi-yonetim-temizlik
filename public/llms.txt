@@ -19,3 +19,4 @@
 - [Çerez (Cookie) Politikası](https://celebiyonetim.com.tr/yasal/cerez-politikasi): Çerez türleri, kullanım amaçları ve tarayıcı bazlı çerez yönetimi.
 - [Kullanım Koşulları](https://celebiyonetim.com.tr/yasal/kullanim-kosullari): 5846 sayılı FSEK telif hakları koruması ve yasal sorumluluk sınırları.
 - [Hizmet ve Teklif Koşulları](https://celebiyonetim.com.tr/yasal/hizmet-ve-teklif-kosullari): Teklif geçerliliği, SGK taahhüdü ve hizmet ifa esasları.
+

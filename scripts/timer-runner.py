@@ -247,13 +247,17 @@ def generate_article_content(topic, district):
         except Exception as e:
             print(f"[INFO] OpenRouter polish skipped: {e}, using template engine.")
 
+    tr_months = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"]
+    now = datetime.now()
+    tarih_str = f"{now.day} {tr_months[now.month-1]} {now.year}"
+
     return {
         "baslik": title,
         "slug": slug,
         "ozet": body_html,
         "kategori": category,
         "kategoriRenk": cat_color,
-        "tarih": datetime.now().strftime("%d %B %Y"),
+        "tarih": tarih_str,
         "okumaSuresi": "4 dk okuma",
         "aktif": True,
         "seoTitle": f"{title[:55]} | Çelebi",
@@ -270,7 +274,24 @@ def save_article_to_pb(token, article_data):
     with urllib.request.urlopen(req, timeout=10) as r:
         return json.loads(r.read().decode())
 
+def ensure_fresh_keywords(token):
+    try:
+        url = f"{PB_URL}/api/collections/seo_keywords/records?filter=(used=false)&perPage=10"
+        req = urllib.request.Request(url, headers={"Authorization": token})
+        with urllib.request.urlopen(req, timeout=5) as r:
+            res = json.loads(r.read().decode())
+            unused_count = res.get("totalItems", 0)
+            if unused_count < 10:
+                print(f"[INFO] Kullanılmamış anahtar kelime sayısı az ({unused_count}), GSC ve Adana Trend taraması başlatılıyor...")
+                script_path = os.path.join(os.path.dirname(__file__), "fetch-gsc-keywords.py")
+                if os.path.exists(script_path):
+                    import subprocess
+                    subprocess.run([sys.executable, script_path], timeout=60)
+    except Exception as e:
+        print(f"[WARN] Keyword check warning: {e}")
+
 def run_single_publish(token, settings, district=None):
+    ensure_fresh_keywords(token)
     kw_item = get_next_keyword(token)
     if kw_item:
         topic = kw_item.get("keyword")

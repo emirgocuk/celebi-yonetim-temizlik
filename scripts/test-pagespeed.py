@@ -45,3 +45,4 @@ def run_test(strategy='mobile'):
 
 if __name__ == '__main__':
     run_test('mobile')
+

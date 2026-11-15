@@ -2516,8 +2516,23 @@ const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
         }
         if (!res.ok) throw new Error('PocketBase HTTP ' + res.status);
         const data = await res.json();
+        const trMonths = {
+          'ocak': 0, 'şubat': 1, 'mart': 2, 'nisan': 3, 'mayıs': 4, 'haziran': 5,
+          'temmuz': 6, 'ağustos': 7, 'eylül': 8, 'ekim': 9, 'kasım': 10, 'aralık': 11,
+          'january': 0, 'february': 1, 'march': 2, 'april': 3, 'may': 4, 'june': 5,
+          'july': 6, 'august': 7, 'september': 8, 'october': 9, 'november': 10, 'december': 11
+        };
+        const parseDate = (d) => {
+          if (!d) return 0;
+          const m = String(d).match(/^(\d{1,2})\s+([a-zA-ZçÇğĞıİöÖşŞüÜ]+)\s+(\d{4})/i);
+          if (m && m[2].toLowerCase() in trMonths) {
+            return new Date(parseInt(m[3]), trMonths[m[2].toLowerCase()], parseInt(m[1])).getTime();
+          }
+          return Date.parse(d) || 0;
+        };
+        const items = (data.items || []).sort((a, b) => parseDate(b.tarih) - parseDate(a.tarih));
 
-        if (!data.items || data.items.length === 0) {
+        if (!items || items.length === 0) {
           ceArticlesList.innerHTML = `
             <div class="p-8 text-center text-slate-400 text-xs">
               Henüz PocketBase'de yayınlanmış bir makale bulunmuyor. Yukarıdaki panelden ilk SEO makalenizi tek tıkla üretebilirsiniz!
@@ -2526,7 +2541,7 @@ const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
           return;
         }
 
-        ceArticlesList.innerHTML = data.items.map((art) => `
+        ceArticlesList.innerHTML = items.map((art) => `
           <div class="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50/80 transition-colors p-3 rounded-2xl border-b border-slate-100 last:border-b-0">
             <div class="flex items-center gap-3 max-w-2xl min-w-0">
               ${art.kapakGorsel ? `

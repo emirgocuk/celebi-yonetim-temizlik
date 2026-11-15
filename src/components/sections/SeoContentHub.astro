@@ -1,8 +1,40 @@
 ---
-import { ARTICLES_DATA } from '@/lib/articles-data';
+import { ARTICLES_DATA, parseDateToTime } from '@/lib/articles-data';
 
 // Top articles displayed on the homepage (max 3 articles)
-const featuredArticles = ARTICLES_DATA.slice(0, 3);
+let featuredArticles = ARTICLES_DATA.slice(0, 3);
+try {
+  const pbRes = await fetch('https://celebiyonetim.com.tr/api/collections/yazilar/records?perPage=30', {
+    headers: { 'User-Agent': 'Mozilla/5.0' }
+  });
+  if (pbRes.ok) {
+    const data = await pbRes.json();
+    const pbItems = data.items || [];
+    if (pbItems.length > 0) {
+      pbItems.sort((a: any, b: any) => parseDateToTime(b.tarih) - parseDateToTime(a.tarih));
+      featuredArticles = pbItems.slice(0, 3).map((item: any) => {
+        const plainText = (item.ozet || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 180) + '...';
+        return {
+          slug: item.slug,
+          title: item.baslik,
+          category: item.kategori || 'Site Yönetimi',
+          tag: item.kategori || 'Rehber',
+          tagColor: 'bg-sky-50 text-sky-800 border-sky-300',
+          readTime: item.okumaSuresi || '4 dk okuma',
+          publishDate: item.tarih || 'Güncel',
+          isoDate: '',
+          summary: plainText,
+          image: item.kapakGorsel || '',
+          author: { name: item.kaynak || 'Çelebi Hukuk Servisi', role: '' },
+          keyTakeaways: ['634 Sayılı KMK Mevzuatı ile Tam Uyumlu', 'Adana Yerel Site Yönetimi Standartları'],
+          content: { lead: '', sections: [] }
+        };
+      });
+    }
+  }
+} catch (e) {
+  // Silent fallback
+}
 ---
 
 <section id="yazilar" class="scroll-mt-24 py-20 sm:py-28 bg-gradient-to-b from-white via-slate-50 to-white border-t border-slate-200">
@@ -128,22 +160,25 @@ const featuredArticles = ARTICLES_DATA.slice(0, 3);
       const str = String(dateStr).trim();
       if (str.toLowerCase() === 'bugün' || str.toLowerCase() === 'yeni') return Date.now();
 
-      const trMonths = {
-        'ocak': 0, 'şubat': 1, 'mart': 2, 'nisan': 3, 'mayıs': 4, 'haziran': 5,
-        'temmuz': 6, 'ağustos': 7, 'eylül': 8, 'ekim': 9, 'kasım': 10, 'aralık': 11,
+      const normalized = str
+        .replace(/İ/g, 'i').replace(/I/g, 'i').replace(/ı/g, 'i')
+        .replace(/Ş/g, 's').replace(/ş/g, 's')
+        .replace(/Ğ/g, 'g').replace(/ğ/g, 'g')
+        .replace(/Ü/g, 'u').replace(/ü/g, 'u')
+        .replace(/Ö/g, 'o').replace(/ö/g, 'o')
+        .replace(/Ç/g, 'c').replace(/ç/g, 'c')
+        .toLowerCase();
+
+      const months = {
+        'ocak': 0, 'subat': 1, 'mart': 2, 'nisan': 3, 'mayis': 4, 'haziran': 5,
+        'temmuz': 6, 'agustos': 7, 'eylul': 8, 'ekim': 9, 'kasim': 10, 'aralik': 11,
         'january': 0, 'february': 1, 'march': 2, 'april': 3, 'may': 4, 'june': 5,
         'july': 6, 'august': 7, 'september': 8, 'october': 9, 'november': 10, 'december': 11
       };
 
-      const m = str.match(/^(\d{1,2})\s+([a-zA-ZçÇğĞıİöÖşŞüÜ]+)\s+(\d{4})/i);
-      if (m) {
-        const day = parseInt(m[1], 10);
-        const monthKey = m[2].toLowerCase();
-        const year = parseInt(m[3], 10);
-
-        if (monthKey in trMonths) {
-          return new Date(year, trMonths[monthKey], day).getTime();
-        }
+      const m = normalized.match(/^(\d{1,2})\s+([a-z]+)\s+(\d{4})/i);
+      if (m && m[2] in months) {
+        return new Date(parseInt(m[3], 10), months[m[2]], parseInt(m[1], 10)).getTime();
       }
 
       const parsed = Date.parse(str);

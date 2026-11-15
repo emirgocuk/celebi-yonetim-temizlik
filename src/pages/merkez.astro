@@ -2516,19 +2516,36 @@ const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
         }
         if (!res.ok) throw new Error('PocketBase HTTP ' + res.status);
         const data = await res.json();
-        const trMonths = {
-          'ocak': 0, 'şubat': 1, 'mart': 2, 'nisan': 3, 'mayıs': 4, 'haziran': 5,
-          'temmuz': 6, 'ağustos': 7, 'eylül': 8, 'ekim': 9, 'kasım': 10, 'aralık': 11,
-          'january': 0, 'february': 1, 'march': 2, 'april': 3, 'may': 4, 'june': 5,
-          'july': 6, 'august': 7, 'september': 8, 'october': 9, 'november': 10, 'december': 11
-        };
         const parseDate = (d) => {
           if (!d) return 0;
-          const m = String(d).match(/^(\d{1,2})\s+([a-zA-ZçÇğĞıİöÖşŞüÜ]+)\s+(\d{4})/i);
-          if (m && m[2].toLowerCase() in trMonths) {
-            return new Date(parseInt(m[3]), trMonths[m[2].toLowerCase()], parseInt(m[1])).getTime();
+          const str = String(d).trim();
+          if (str.toLowerCase() === 'bugün' || str.toLowerCase() === 'yeni') return Date.now();
+
+          const normalized = str
+            .replace(/İ/g, 'i').replace(/I/g, 'i').replace(/ı/g, 'i')
+            .replace(/Ş/g, 's').replace(/ş/g, 's')
+            .replace(/Ğ/g, 'g').replace(/ğ/g, 'g')
+            .replace(/Ü/g, 'u').replace(/ü/g, 'u')
+            .replace(/Ö/g, 'o').replace(/ö/g, 'o')
+            .replace(/Ç/g, 'c').replace(/ç/g, 'c')
+            .toLowerCase();
+
+          const months = {
+            'ocak': 0, 'subat': 1, 'mart': 2, 'nisan': 3, 'mayis': 4, 'haziran': 5,
+            'temmuz': 6, 'agustos': 7, 'eylul': 8, 'ekim': 9, 'kasim': 10, 'aralik': 11,
+            'january': 0, 'february': 1, 'march': 2, 'april': 3, 'may': 4, 'june': 5,
+            'july': 6, 'august': 7, 'september': 8, 'october': 9, 'november': 10, 'december': 11
+          };
+
+          const m = normalized.match(/^(\d{1,2})\s+([a-z]+)\s+(\d{4})/i);
+          if (m && m[2] in months) {
+            return new Date(parseInt(m[3], 10), months[m[2]], parseInt(m[1], 10)).getTime();
           }
-          return Date.parse(d) || 0;
+
+          const parsed = Date.parse(str);
+          if (!isNaN(parsed)) return parsed;
+
+          return 0;
         };
         const items = (data.items || []).sort((a, b) => parseDate(b.tarih) - parseDate(a.tarih));
 

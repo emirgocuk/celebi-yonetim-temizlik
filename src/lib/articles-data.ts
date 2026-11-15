@@ -30,21 +30,25 @@ export function parseDateToTime(dateStr: string): number {
   const str = String(dateStr).trim();
   if (str.toLowerCase() === 'bugün' || str.toLowerCase() === 'yeni') return Date.now();
 
-  const trMonths: Record<string, number> = {
-    'ocak': 0, 'şubat': 1, 'mart': 2, 'nisan': 3, 'mayıs': 4, 'haziran': 5,
-    'temmuz': 6, 'ağustos': 7, 'eylül': 8, 'ekim': 9, 'kasım': 10, 'aralık': 11,
+  const normalized = str
+    .replace(/İ/g, 'i').replace(/I/g, 'i').replace(/ı/g, 'i')
+    .replace(/Ş/g, 's').replace(/ş/g, 's')
+    .replace(/Ğ/g, 'g').replace(/ğ/g, 'g')
+    .replace(/Ü/g, 'u').replace(/ü/g, 'u')
+    .replace(/Ö/g, 'o').replace(/ö/g, 'o')
+    .replace(/Ç/g, 'c').replace(/ç/g, 'c')
+    .toLowerCase();
+
+  const months: Record<string, number> = {
+    'ocak': 0, 'subat': 1, 'mart': 2, 'nisan': 3, 'mayis': 4, 'haziran': 5,
+    'temmuz': 6, 'agustos': 7, 'eylul': 8, 'ekim': 9, 'kasim': 10, 'aralik': 11,
     'january': 0, 'february': 1, 'march': 2, 'april': 3, 'may': 4, 'june': 5,
     'july': 6, 'august': 7, 'september': 8, 'october': 9, 'november': 10, 'december': 11
   };
 
-  const m = str.match(/^(\d{1,2})\s+([a-zA-ZçÇğĞıİöÖşŞüÜ]+)\s+(\d{4})/i);
-  if (m) {
-    const day = parseInt(m[1], 10);
-    const monthKey = m[2].toLowerCase();
-    const year = parseInt(m[3], 10);
-    if (monthKey in trMonths) {
-      return new Date(year, trMonths[monthKey], day).getTime();
-    }
+  const m = normalized.match(/^(\d{1,2})\s+([a-z]+)\s+(\d{4})/i);
+  if (m && m[2] in months) {
+    return new Date(parseInt(m[3], 10), months[m[2]], parseInt(m[1], 10)).getTime();
   }
 
   const parsed = Date.parse(str);

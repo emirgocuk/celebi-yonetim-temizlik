@@ -165,7 +165,7 @@ const staticArticlesJson = JSON.stringify(allArticles);
                 </div>
                 
                 <h2 class="text-lg font-bold text-slate-900 mb-3 leading-snug group-hover:text-sky-700 transition-colors">
-                  <a href={`/yazilar/oku?slug=${article.slug}`}>
+                  <a href={`/yazilar/${article.slug}`}>
                     {article.title}
                   </a>
                 </h2>
@@ -190,7 +190,7 @@ const staticArticlesJson = JSON.stringify(allArticles);
             <div class="p-6 pt-0 border-t border-slate-100 mt-4 flex items-center justify-between">
               <span class="text-[11px] text-slate-500">{typeof article.author === 'object' && article.author !== null ? (article.author as any).name : article.author}</span>
               <a
-                href={`/yazilar/oku?slug=${article.slug}`}
+                href={`/yazilar/${article.slug}`}
                 class="inline-flex items-center gap-1 text-xs font-bold text-sky-700 hover:text-sky-900 transition-colors"
               >
                 <span>Yazıyı Oku</span>
@@ -306,12 +306,18 @@ const staticArticlesJson = JSON.stringify(allArticles);
 
     // Static articles loaded from server bridge
     let allArticlesList = [];
+    const buildTimeSlugs = new Set();
     try {
       if (staticDataEl && staticDataEl.dataset.articles) {
         allArticlesList = JSON.parse(staticDataEl.dataset.articles);
+        allArticlesList.forEach(a => { if (a.slug) buildTimeSlugs.add(a.slug); });
       }
     } catch (e) {
       console.warn('Static articles parse error', e);
+    }
+
+    function articleUrl(slug) {
+      return buildTimeSlugs.has(slug) ? `/yazilar/${slug}` : `/yazilar/oku?slug=${slug}`;
     }
 
     const ITEMS_PER_PAGE = 9;
@@ -384,7 +390,7 @@ const staticArticlesJson = JSON.stringify(allArticles);
               </div>
               
               <h2 class="text-lg font-bold text-slate-900 mb-3 leading-snug group-hover:text-sky-700 transition-colors">
-                <a href="/yazilar/oku?slug=${item.slug}">
+                <a href="${articleUrl(item.slug)}">
                   ${item.title}
                 </a>
               </h2>
@@ -409,7 +415,7 @@ const staticArticlesJson = JSON.stringify(allArticles);
           <div class="p-6 pt-0 border-t border-slate-100 mt-4 flex items-center justify-between">
             <span class="text-[11px] text-slate-500">${item.author}</span>
             <a
-              href="/yazilar/oku?slug=${item.slug}"
+              href="${articleUrl(item.slug)}"
               class="inline-flex items-center gap-1 text-xs font-bold text-sky-700 hover:text-sky-900 transition-colors"
             >
               <span>Yazıyı Oku</span>

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import QuickCallbackBar from '@/components/sections/QuickCallbackBar.astro';
 import StatsCounter from '@/components/sections/StatsCounter.astro';
 import SiteYonetimiSection from '@/components/sections/SiteYonetimiSection.astro';
 import WhyUs from '@/components/sections/WhyUs.astro';
@@ -128,6 +129,13 @@ const structuredData = {
           >
             <span>WhatsApp'tan Danışın</span>
           </a>
+
+          <a
+            href="/site-yonetimi-fiyat-hesapla"
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 text-sm font-bold text-[#004AAD] bg-sky-50 hover:bg-sky-100 border border-sky-200 rounded-2xl shadow-sm transition-all duration-150 subtle-tap"
+          >
+            <span>30 Saniyede Maliyet Hesapla</span>
+          </a>
         </div>
       </div>
 
@@ -145,6 +153,8 @@ const structuredData = {
       </div>
     </div>
   </section>
+
+  <QuickCallbackBar contextLabel="Adana Site Yönetimi Sayfası" />
 
   <StatsCounter />
   <SiteYonetimiSection />

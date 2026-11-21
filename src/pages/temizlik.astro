@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import QuickCallbackBar from '@/components/sections/QuickCallbackBar.astro';
 import TemizlikSection from '@/components/sections/TemizlikSection.astro';
 import WhyUs from '@/components/sections/WhyUs.astro';
 import Reviews from '@/components/sections/Reviews.astro';
@@ -112,6 +113,13 @@ const structuredData = {
       </div>
     </div>
   </section>
+
+  <QuickCallbackBar
+    contextLabel="Adana Temizlik Sayfası"
+    serviceType="Ofis & Ticari Alan Temizliği"
+    heading="Hızlı Temizlik Teklifi — Sizi 5 Dakikada Arayalım"
+    subtext="Metrekare veya mekan bilginizi paylaşmak için numaranızı bırakın, temizlik operasyon şefimiz hemen arasın."
+  />
 
   <TemizlikSection />
   <WhyUs />

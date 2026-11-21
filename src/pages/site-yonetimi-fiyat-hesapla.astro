@@ -1,0 +1,612 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import QuoteForm from '@/components/sections/QuoteForm.astro';
+import { COMPANY_INFO } from '@/lib/fallback-data';
+
+const title = '2026 Adana Site Yönetimi Maliyet & Aidat Gecikme Hesaplayıcı | Çelebi Yönetim';
+const description =
+  'Adana apartman ve siteniz için 30 saniyede tahmini daire başı yönetim maliyeti, kapıcı SGK kıyaslaması ve KMK Madde 20 aylık %5 aidat gecikme tazminatı hesaplayın.';
+
+const faqs = [
+  {
+    question: 'Hesaplayıcıdaki yönetim ücretleri kesin fiyat mıdır?',
+    answer:
+      'Gösterilen tutarlar Adana 2026 piyasa koşullarına göre çıkarılmış şeffaf referans aralığıdır. Asansör adedi, blok düzeni ve ortak alan m² bilgisini ücretsiz keşifte inceledikten sonra kesin sabit teklif sunulur.',
+  },
+  {
+    question: 'Apartman görevlisi (kapıcı) çalıştırmaya göre nasıl tasarruf sağlanır?',
+    answer:
+      'Tek bir SGK’lı kapıcı istihdamında maaş, SGK primi, kıdem tazminatı fonu, izin ikamesi ve İSG sorumlulukları apartman bütçesini zorlar. Profesyonel yönetim ve haftalık sözleşmeli temizlik modeliyle bu sabit yükü ciddi oranda düşürebilirsiniz.',
+  },
+  {
+    question: 'KMK Madde 20 aylık %5 gecikme tazminatı nasıl hesaplanır?',
+    answer:
+      '634 sayılı Kat Mülkiyeti Kanunu Madde 20 uyarınca her ay ödenmeyen aidat borcu için aylık %5 gecikme tazminatı uygulanır. Hesaplayıcı, art arda ödenmeyen her ayın birikimli %5 tazminatını gün/ay esasına göre özetler.',
+  },
+  {
+    question: 'Sonucu apartman WhatsApp grubumuzda paylaşabilir miyim?',
+    answer:
+      'Evet. Hesaplama sonucunun altındaki "Apartman WhatsApp Grubunda Paylaş" butonuna basarak mevcut verilerle hazırlanmış özeti tek tıkla kat malikleri grubunuza gönderebilirsiniz.',
+  },
+];
+
+const siteUrl = 'https://celebiyonetim.com.tr';
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebApplication',
+      name: 'Adana Site Yönetimi Maliyet ve KMK Aidat Gecikme Hesaplayıcı',
+      url: `${siteUrl}/site-yonetimi-fiyat-hesapla`,
+      applicationCategory: 'BusinessApplication',
+      operatingSystem: 'All',
+      description,
+      provider: { '@id': `${siteUrl}/#organization` },
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: faqs.map((f) => ({
+        '@type': 'Question',
+        name: f.question,
+        acceptedAnswer: { '@type': 'Answer', text: f.answer },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout title={title} description={description}>
+  <section class="pt-8 pb-12 sm:pt-14 sm:pb-16 bg-gradient-to-b from-sky-50/70 via-white to-slate-50 border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <nav class="flex items-center gap-2 text-xs text-slate-500 mb-6" aria-label="Sayfa Yolu">
+        <a href="/" class="hover:text-sky-700 transition-colors">Ana Sayfa</a>
+        <span>/</span>
+        <a href="/site-yonetimi" class="hover:text-sky-700 transition-colors">Site Yönetimi</a>
+        <span>/</span>
+        <span class="text-slate-900 font-bold">Maliyet &amp; Aidat Hesaplayıcı</span>
+      </nav>
+
+      <div class="max-w-3xl mb-10">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-white text-[#004AAD] border border-sky-200 mb-4 shadow-sm">
+          <span>30 Saniyede Ücretsiz Hesaplama • Adana 2026</span>
+        </div>
+        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 leading-[1.1] mb-4">
+          Site Yönetim Maliyeti &amp; KMK Gecikme Tazminatı Hesaplayıcı
+        </h1>
+        <p class="text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
+          Daire sayınızı seçerek apartmanınız için tahmini aylık yönetim bütçesini görün, kapıcı SGK maliyetiyle kıyaslayın ve sonucu apartman WhatsApp grubunuzda paylaşın.
+        </p>
+      </div>
+
+      <!-- Mode Switcher Tabs -->
+      <div class="inline-flex p-1.5 rounded-2xl bg-slate-200/70 border border-slate-300/70 mb-8 gap-1.5 flex-wrap">
+        <button
+          type="button"
+          data-calc-tab="management"
+          class="calc-tab-btn px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 text-white shadow-sm cursor-pointer transition-all"
+        >
+          🏢 Site Yönetim &amp; Kapıcı Kıyaslama
+        </button>
+        <button
+          type="button"
+          data-calc-tab="kmk"
+          class="calc-tab-btn px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-white/80 text-slate-700 hover:text-slate-950 cursor-pointer transition-all"
+        >
+          ⚖️ KMK %5 Aidat Gecikme Hesapla
+        </button>
+      </div>
+
+      <!-- TAB 1: SITE MANAGEMENT COST CALCULATOR -->
+      <div id="calc-pane-management" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <!-- Left Controls -->
+        <div class="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+          <div>
+            <div class="flex items-center justify-between gap-4 mb-2">
+              <label for="calc-units-range" class="text-sm font-bold text-slate-900">
+                Bağımsız Bölüm (Daire) Sayısı
+              </label>
+              <div class="flex items-center gap-2">
+                <input
+                  type="number"
+                  id="calc-units-num"
+                  min="8"
+                  max="300"
+                  value="32"
+                  class="w-20 px-3 py-1.5 text-sm font-extrabold text-center rounded-xl border border-slate-300 focus:border-[#004AAD] outline-none tabular-nums"
+                />
+                <span class="text-xs font-bold text-slate-500">Daire</span>
+              </div>
+            </div>
+            <input
+              type="range"
+              id="calc-units-range"
+              min="8"
+              max="300"
+              value="32"
+              class="w-full accent-[#004AAD] cursor-pointer"
+            />
+            <div class="flex justify-between text-[11px] text-slate-400 font-medium mt-1">
+              <span>8 Daire (Butik Apartman)</span>
+              <span>80 Daire</span>
+              <span>300 Daire (Çok Bloklu Site)</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="calc-district" class="block text-xs font-bold text-slate-700 mb-1.5">Adana İlçesi</label>
+              <select
+                id="calc-district"
+                class="w-full px-4 py-3 text-sm font-semibold rounded-xl border border-slate-200 bg-white focus:border-[#004AAD] outline-none"
+              >
+                <option value="Çukurova" selected>Çukurova</option>
+                <option value="Seyhan">Seyhan</option>
+                <option value="Sarıçam">Sarıçam</option>
+                <option value="Yüreğir">Yüreğir</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="calc-package" class="block text-xs font-bold text-slate-700 mb-1.5">Hizmet Paketi</label>
+              <select
+                id="calc-package"
+                class="w-full px-4 py-3 text-sm font-semibold rounded-xl border border-slate-200 bg-white focus:border-[#004AAD] outline-none"
+              >
+                <option value="mali">Sadece Mali &amp; KMK Yönetimi</option>
+                <option value="yonetim_temizlik" selected>Yönetim + Haftalık Merdiven Temizliği</option>
+                <option value="tam_kapsam">Tam Kapsamlı Tesis, Teknik &amp; Hijyen</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <div class="text-xs font-bold text-slate-700 mb-2.5">Ek İhtiyaçlar (Opsiyonel)</div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <label class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 bg-slate-50 cursor-pointer hover:border-sky-300 text-xs font-semibold text-slate-800">
+                <input type="checkbox" id="opt-elevator" checked class="accent-[#004AAD] w-4 h-4" />
+                <span>Asansör Bakım Takibi</span>
+              </label>
+              <label class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 bg-slate-50 cursor-pointer hover:border-sky-300 text-xs font-semibold text-slate-800">
+                <input type="checkbox" id="opt-pool" class="accent-[#004AAD] w-4 h-4" />
+                <span>Havuz / Geniş Peyzaj</span>
+              </label>
+              <label class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 bg-slate-50 cursor-pointer hover:border-sky-300 text-xs font-semibold text-slate-800">
+                <input type="checkbox" id="opt-icra" checked class="accent-[#004AAD] w-4 h-4" />
+                <span>Aidat İcra Desteği</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-sky-50/70 border border-sky-200 text-xs text-sky-900 leading-relaxed">
+            <strong>Bilgilendirme:</strong> Hesaplanan tutarlar Adana 2026 referans aralığıdır. Kesin bütçe ve ücretsiz genel kurul işletme projesi taslağı için keşif sonrası sabit fiyat verilir.
+          </div>
+        </div>
+
+        <!-- Right Live Results Card -->
+        <div class="lg:col-span-5 bg-slate-950 text-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-800 space-y-6">
+          <div>
+            <div class="text-xs font-bold text-sky-400 uppercase tracking-wider mb-1">
+              Tahmini 2026 Referans Aralığı
+            </div>
+            <div id="res-per-unit" class="text-3xl sm:text-4xl font-black text-white tabular-nums">
+              190 – 250 ₺
+            </div>
+            <div class="text-xs text-slate-400 mt-1">
+              Daire başı aylık ortalama hizmet bedeli (<span id="res-total-site" class="text-slate-200 font-semibold">6.080 – 8.000 ₺ / ay toplam</span>)
+            </div>
+          </div>
+
+          <!-- Caretaker Comparison -->
+          <div class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2.5 text-xs">
+            <div class="flex items-center justify-between text-slate-300">
+              <span>1 SGK'lı Kapıcı Maliyeti (Maaş + SGK + Kıdem):</span>
+              <span class="font-bold text-red-300 tabular-nums">~38.500 ₺ / ay</span>
+            </div>
+            <div class="flex items-center justify-between text-slate-300">
+              <span>Çelebi Kurumsal Yönetim Paketi:</span>
+              <span id="res-celebi-mid" class="font-bold text-emerald-300 tabular-nums">~7.040 ₺ / ay</span>
+            </div>
+            <div class="pt-2 border-t border-white/10 flex items-center justify-between">
+              <span class="font-bold text-emerald-400">Tahmini Aylık Bütçe Avantajı:</span>
+              <span id="res-savings" class="text-sm font-black text-emerald-400 tabular-nums">~31.460 ₺ / ay</span>
+            </div>
+          </div>
+
+          <!-- 5-Min Quick Callback inside Result -->
+          <form id="calc-callback-form" class="space-y-2.5 pt-2 border-t border-white/10">
+            <label for="calc-phone" class="block text-xs font-bold text-slate-200">
+              Bu hesaplama için kesin teklifi 5 dakikada arayarak paylaşalım:
+            </label>
+            <div class="flex flex-col sm:flex-row gap-2">
+              <input
+                type="tel"
+                id="calc-phone"
+                required
+                placeholder="05XX XXX XX XX"
+                class="flex-1 px-4 py-3 text-sm font-semibold rounded-xl bg-white text-slate-900 placeholder:text-slate-400 outline-none"
+              />
+              <button
+                type="submit"
+                class="px-4 py-3 rounded-xl text-xs font-extrabold text-slate-950 bg-emerald-400 hover:bg-emerald-300 cursor-pointer whitespace-nowrap"
+              >
+                5 Dk'da Arayın →
+              </button>
+            </div>
+            <div id="calc-cb-feedback" class="hidden text-xs font-semibold p-2.5 rounded-xl"></div>
+          </form>
+
+          <!-- Direct Action Buttons -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <a
+              id="calc-wa-quote"
+              href={`https://wa.me/${COMPANY_INFO.whatsapp}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 transition-colors text-center"
+            >
+              <span>WhatsApp Kesin Teklif</span>
+            </a>
+
+            <a
+              id="calc-wa-share"
+              href="https://wa.me/"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-skip-wa-track="true"
+              class="flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs font-bold text-sky-200 bg-white/10 hover:bg-white/15 border border-white/15 transition-colors text-center"
+            >
+              <span>Apartman Grubunda Paylaş ↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: KMK MADDE 20 LATE PENALTY CALCULATOR -->
+      <div id="calc-pane-kmk" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div class="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+          <div>
+            <h2 class="text-lg sm:text-xl font-bold text-slate-900 mb-1">
+              634 Sayılı KMK Madde 20 Aylık %5 Gecikme Tazminatı Hesabı
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-600">
+              Ödenmeyen her ayın aidatı için ayrı ayrı aylık %5 kanuni gecikme tazminatı işler. Birikmiş yasal alacağı anında görün.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label for="kmk-aidat" class="block text-xs font-bold text-slate-700 mb-1.5">Aylık Aidat (₺)</label>
+              <input
+                type="number"
+                id="kmk-aidat"
+                min="100"
+                step="50"
+                value="1500"
+                class="w-full px-4 py-3 text-sm font-bold rounded-xl border border-slate-200 focus:border-[#004AAD] outline-none tabular-nums"
+              />
+            </div>
+
+            <div>
+              <label for="kmk-months" class="block text-xs font-bold text-slate-700 mb-1.5">Geciken Ay Sayısı</label>
+              <input
+                type="number"
+                id="kmk-months"
+                min="1"
+                max="36"
+                value="4"
+                class="w-full px-4 py-3 text-sm font-bold rounded-xl border border-slate-200 focus:border-[#004AAD] outline-none tabular-nums"
+              />
+            </div>
+
+            <div>
+              <label for="kmk-units" class="block text-xs font-bold text-slate-700 mb-1.5">Geciken Daire Sayısı</label>
+              <input
+                type="number"
+                id="kmk-units"
+                min="1"
+                max="100"
+                value="1"
+                class="w-full px-4 py-3 text-sm font-bold rounded-xl border border-slate-200 focus:border-[#004AAD] outline-none tabular-nums"
+              />
+            </div>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-950 leading-relaxed">
+            <strong>Yasal Dayanak (KMK m.20):</strong> Gider ve avans payını ödemeyen kat maliki hakkında diğer kat maliklerinden her biri veya yönetici, yönetim planına, kanuna ve genel hükümlere göre dava açabilir, icra takibi yapabilir ve aylık %5 gecikme tazminatı talep edebilir.
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 bg-slate-950 text-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-800 space-y-5">
+          <div>
+            <div class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-1">
+              Tahsil Edilebilir Toplam Tutar
+            </div>
+            <div id="kmk-total-due" class="text-3xl sm:text-4xl font-black text-white tabular-nums">
+              6.750 ₺
+            </div>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2 text-xs">
+            <div class="flex justify-between text-slate-300">
+              <span>Ana Para Aidat Borcu:</span>
+              <span id="kmk-principal" class="font-bold text-white tabular-nums">6.000 ₺</span>
+            </div>
+            <div class="flex justify-between text-slate-300">
+              <span>KMK %5 Gecikme Tazminatı:</span>
+              <span id="kmk-penalty" class="font-bold text-amber-300 tabular-nums">750 ₺</span>
+            </div>
+          </div>
+
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Komşunuzla yüz göz olmadan noter ihtarı ve ilamsız icra takibini hukuk ekibimiz devralsın.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <a
+              href={`tel:${COMPANY_INFO.landlinePhone}`}
+              class="flex items-center justify-center py-3 px-4 rounded-xl text-xs font-bold text-slate-950 bg-white hover:bg-sky-50 text-center"
+            >
+              Hemen Ara: {COMPANY_INFO.landlineFormatted}
+            </a>
+            <a
+              id="kmk-wa-btn"
+              href={`https://wa.me/${COMPANY_INFO.whatsapp}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center justify-center py-3 px-4 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 text-center"
+            >
+              İcra Desteği İste
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Concise FAQs -->
+  <section class="py-16 bg-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
+      <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mb-6">
+        Hesaplama ve Fiyatlandırma Hakkında Sık Sorulanlar
+      </h2>
+      <div class="space-y-4">
+        {faqs.map((faq) => (
+          <details class="group rounded-2xl border border-slate-200 p-6 [&_summary::-webkit-details-marker]:hidden bg-slate-50">
+            <summary class="flex cursor-pointer items-center justify-between gap-4 text-left font-bold text-slate-900 text-base">
+              <span>{faq.question}</span>
+              <span class="shrink-0 transition-transform duration-200 group-open:-rotate-180 text-slate-500">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </span>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed pt-2 border-t border-slate-200">
+              {faq.answer}
+            </p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <QuoteForm
+    defaultService="site-yonetimi"
+    badge="Maliyet Hesaplayıcı Kesin Teklif"
+    heading="Siteniz için ücretsiz kesin işletme bütçesi çıkaralım."
+    subtitle="Daire sayınızı ve beklentilerinizi paylaşın; aynı gün genel kurul toplantınıza hazır şeffaf teklif sunalım."
+    sourceLabel="Maliyet Hesaplayıcı Sayfası"
+  />
+
+  <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+</BaseLayout>
+
+<script is:inline define:vars={{ waNum: COMPANY_INFO.whatsapp }}>
+  (() => {
+    const tabBtns = document.querySelectorAll('.calc-tab-btn');
+    const paneMgmt = document.getElementById('calc-pane-management');
+    const paneKmk = document.getElementById('calc-pane-kmk');
+
+    tabBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const target = btn.getAttribute('data-calc-tab');
+        tabBtns.forEach((b) => {
+          b.className = 'calc-tab-btn px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-white/80 text-slate-700 hover:text-slate-950 cursor-pointer transition-all';
+        });
+        btn.className = 'calc-tab-btn px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 text-white shadow-sm cursor-pointer transition-all';
+        if (target === 'kmk') {
+          paneMgmt?.classList.add('hidden');
+          paneKmk?.classList.remove('hidden');
+        } else {
+          paneKmk?.classList.add('hidden');
+          paneMgmt?.classList.remove('hidden');
+        }
+      });
+    });
+
+    // Management Calculator
+    const rangeEl = document.getElementById('calc-units-range');
+    const numEl = document.getElementById('calc-units-num');
+    const distEl = document.getElementById('calc-district');
+    const pkgEl = document.getElementById('calc-package');
+    const optElev = document.getElementById('opt-elevator');
+    const optPool = document.getElementById('opt-pool');
+    const optIcra = document.getElementById('opt-icra');
+
+    const resPerUnit = document.getElementById('res-per-unit');
+    const resTotalSite = document.getElementById('res-total-site');
+    const resMid = document.getElementById('res-celebi-mid');
+    const resSavings = document.getElementById('res-savings');
+    const waQuote = document.getElementById('calc-wa-quote');
+    const waShare = document.getElementById('calc-wa-share');
+
+    let lastCalcSummary = '';
+    let lastUnits = 32;
+    let lastDistrict = 'Çukurova';
+
+    function updateMgmtCalc() {
+      const units = Math.min(300, Math.max(8, parseInt(numEl?.value || '32', 10) || 32));
+      const district = distEl?.value || 'Çukurova';
+      const pkg = pkgEl?.value || 'yonetim_temizlik';
+      lastUnits = units;
+      lastDistrict = district;
+
+      // Base monthly operational cost + per-unit scaling
+      let fixedBase = 2900;
+      let unitRate = 110;
+      let pkgLabel = 'Yönetim + Haftalık Merdiven Temizliği';
+      if (pkg === 'mali') {
+        fixedBase = 2100;
+        unitRate = 75;
+        pkgLabel = 'Sadece Mali & KMK Yönetimi';
+      } else if (pkg === 'tam_kapsam') {
+        fixedBase = 4200;
+        unitRate = 165;
+        pkgLabel = 'Tam Kapsamlı Tesis, Teknik & Hijyen';
+      }
+
+      if (optElev?.checked) fixedBase += 450;
+      if (optPool?.checked) { fixedBase += 1400; unitRate += 20; }
+      if (optIcra?.checked) fixedBase += 350;
+
+      // Economy of scale discount on large sites
+      const scaleFactor = units >= 100 ? 0.85 : units >= 50 ? 0.92 : 1.0;
+      const midTotal = Math.round(((fixedBase + units * unitRate) * scaleFactor) / 50) * 50;
+      const midPerUnit = Math.round(midTotal / units);
+      const minPerUnit = Math.max(85, Math.round((midPerUnit * 0.88) / 5) * 5);
+      const maxPerUnit = Math.round((midPerUnit * 1.12) / 5) * 5;
+      const minTotal = minPerUnit * units;
+      const maxTotal = maxPerUnit * units;
+
+      const fmt = (n) => n.toLocaleString('tr-TR');
+      if (resPerUnit) resPerUnit.innerText = `${fmt(minPerUnit)} – ${fmt(maxPerUnit)} ₺`;
+      if (resTotalSite) resTotalSite.innerText = `${fmt(minTotal)} – ${fmt(maxTotal)} ₺ / ay toplam`;
+      if (resMid) resMid.innerText = `~${fmt(midTotal)} ₺ / ay`;
+
+      const caretakerCost = 38500;
+      const diff = caretakerCost - midTotal;
+      if (resSavings) {
+        resSavings.innerText = diff > 0 ? `~${fmt(diff)} ₺ / ay tasarruf` : 'Tam kurumsal güvence';
+      }
+
+      lastCalcSummary = `${pkgLabel} | ${units} Daire (${district}) | Tahmini ${fmt(minPerUnit)}-${fmt(maxPerUnit)} TL/daire`;
+
+      if (waQuote) {
+        const msg = `Merhaba Çelebi Yönetim, web sitenizdeki hesaplayıcıdan ulaşıyorum.\n• İlçe: ${district}\n• Daire Sayısı: ${units}\n• Paket: ${pkgLabel}\n• Tahmini Aralık: ${fmt(minPerUnit)}-${fmt(maxPerUnit)} ₺/daire\nKesin teklif ve ücretsiz keşif rica ediyorum.`;
+        waQuote.href = `https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`;
+      }
+
+      if (waShare) {
+        const shareUrl = 'https://celebiyonetim.com.tr/site-yonetimi-fiyat-hesapla?utm_source=whatsapp_share&utm_medium=referral&utm_campaign=maliyet_hesaplayici';
+        const shareMsg = `Komşular merhaba, ${units} daireli binamız için (${district}) profesyonel yönetim + ortak alan temizliği maliyetini hesapladım: daire başı tahmini ${fmt(minPerUnit)}–${fmt(maxPerUnit)} ₺ arası çıkıyor (SGK'lı kapıcı maliyetine göre çok daha avantajlı). Detayı buradan inceleyebilirsiniz: ${shareUrl}`;
+        waShare.href = `https://wa.me/?text=${encodeURIComponent(shareMsg)}`;
+      }
+    }
+
+    rangeEl?.addEventListener('input', () => {
+      if (numEl) numEl.value = rangeEl.value;
+      updateMgmtCalc();
+    });
+    numEl?.addEventListener('input', () => {
+      if (rangeEl) rangeEl.value = numEl.value;
+      updateMgmtCalc();
+    });
+    [distEl, pkgEl, optElev, optPool, optIcra].forEach((el) => el?.addEventListener('change', updateMgmtCalc));
+    updateMgmtCalc();
+
+    // Callback Form inside Calculator Result Card
+    const calcForm = document.getElementById('calc-callback-form');
+    const calcPhone = document.getElementById('calc-phone');
+    const calcFb = document.getElementById('calc-cb-feedback');
+    const pbBase =
+      window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://127.0.0.1:8090'
+        : '';
+
+    calcForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const phone = (calcPhone?.value || '').trim();
+      if (phone.replace(/[^0-9]/g, '').length < 10) {
+        if (calcFb) {
+          calcFb.className = 'text-xs font-semibold p-2.5 rounded-xl bg-red-500/20 text-red-100 border border-red-400/40 block';
+          calcFb.innerText = 'Lütfen geçerli bir telefon numarası giriniz.';
+        }
+        return;
+      }
+
+      const attr = (typeof window.celebiGetAttribution === 'function' ? window.celebiGetAttribution() : {}) || {};
+      const pbPayload = {
+        fullName: 'Hesaplayıcı Hızlı Arama',
+        phone,
+        serviceType: 'Site & Apartman Yönetimi',
+        buildingUnits: `${lastUnits} Daire (${lastDistrict})`,
+        message: lastCalcSummary,
+        status: 'Yeni',
+        channel: 'Maliyet Hesaplayıcı (5 Dk Arama)',
+        landingPage: attr.landingPage || window.location.pathname,
+        utmSource: attr.utmSource || '',
+        utmMedium: attr.utmMedium || '',
+        utmCampaign: attr.utmCampaign || '',
+        utmTerm: attr.utmTerm || '',
+        gclid: attr.gclid || '',
+        fbclid: attr.fbclid || '',
+        referrer: attr.referrer || '',
+      };
+
+      try {
+        fetch(`${pbBase}/api/collections/teklif_talepleri/records`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(pbPayload),
+          keepalive: true,
+        }).catch(() => {});
+      } catch (_) {}
+
+      if (typeof window.celebiTrack === 'function') {
+        window.celebiTrack('generate_lead', {
+          service_type: 'Site & Apartman Yönetimi',
+          method: 'calculator_callback',
+          units: lastUnits,
+        });
+      }
+
+      if (calcFb) {
+        calcFb.className = 'text-xs font-semibold p-2.5 rounded-xl bg-emerald-500/20 text-emerald-100 border border-emerald-400/40 block';
+        calcFb.innerText = '✓ Hesaplama bilgilerinizle birlikte numaranız iletildi! 5 dakika içinde arıyoruz.';
+      }
+      calcForm.reset();
+    });
+
+    // KMK Madde 20 Calculator
+    const kmkAidat = document.getElementById('kmk-aidat');
+    const kmkMonths = document.getElementById('kmk-months');
+    const kmkUnits = document.getElementById('kmk-units');
+    const kmkTotalDue = document.getElementById('kmk-total-due');
+    const kmkPrincipal = document.getElementById('kmk-principal');
+    const kmkPenalty = document.getElementById('kmk-penalty');
+    const kmkWaBtn = document.getElementById('kmk-wa-btn');
+
+    function updateKmkCalc() {
+      const aidat = Math.max(0, parseFloat(kmkAidat?.value || '1500') || 0);
+      const n = Math.min(60, Math.max(1, parseInt(kmkMonths?.value || '4', 10) || 1));
+      const units = Math.min(200, Math.max(1, parseInt(kmkUnits?.value || '1', 10) || 1));
+
+      const principal = Math.round(aidat * n * units);
+      // Cumulative 5% monthly penalty over n consecutive overdue months: aidat * 0.05 * (n*(n+1)/2) * units
+      const penalty = Math.round(aidat * 0.05 * ((n * (n + 1)) / 2) * units);
+      const total = principal + penalty;
+
+      const fmt = (v) => v.toLocaleString('tr-TR') + ' ₺';
+      if (kmkPrincipal) kmkPrincipal.innerText = fmt(principal);
+      if (kmkPenalty) kmkPenalty.innerText = fmt(penalty);
+      if (kmkTotalDue) kmkTotalDue.innerText = fmt(total);
+
+      if (kmkWaBtn) {
+        const msg = `Merhaba Çelebi Yönetim, KMK %5 gecikme hesaplayıcınızdan yazıyorum. ${units} daire için ${n} aylık birikmiş (${fmt(total)}) aidat alacağı / icra takibi hakkında destek almak istiyoruz.`;
+        kmkWaBtn.href = `https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`;
+      }
+    }
+
+    [kmkAidat, kmkMonths, kmkUnits].forEach((el) => el?.addEventListener('input', updateKmkCalc));
+    updateKmkCalc();
+  })();
+</script>

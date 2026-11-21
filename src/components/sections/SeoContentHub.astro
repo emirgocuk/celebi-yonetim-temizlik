@@ -1,3 +1,5 @@
+// Collect slugs pre-rendered statically at build time
+const staticArticleSlugsJson = JSON.stringify(featuredArticles.map((a) => a.slug));
 ---
 import { ARTICLES_DATA, parseDateToTime } from '@/lib/articles-data';
 
@@ -35,6 +37,8 @@ try {
 } catch (e) {
   // Silent fallback
 }
+// Collect slugs pre-rendered statically at build time
+const staticArticleSlugsJson = JSON.stringify(featuredArticles.map((a) => a.slug));
 ---
 
 <section id="yazilar" class="scroll-mt-24 py-20 sm:py-28 bg-gradient-to-b from-white via-slate-50 to-white border-t border-slate-200">
@@ -67,7 +71,7 @@ try {
     </div>
 
     <!-- Structured Topic Articles with Rich Authority & Direct Read Links -->
-    <div id="home-articles-container" class="space-y-6 text-slate-700">
+    <div id="home-articles-container" data-static-slugs={staticArticleSlugsJson} class="space-y-6 text-slate-700">
       {featuredArticles.map((article) => (
         <article class="home-article-card rounded-3xl bg-white border border-slate-200 p-6 sm:p-8 shadow-sm hover:shadow-md transition-all duration-200 group">
           <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
@@ -81,7 +85,7 @@ try {
           </div>
 
           <h3 class="text-xl sm:text-2xl font-bold text-slate-900 mb-3 group-hover:text-sky-700 transition-colors">
-            <a href={`/yazilar/oku?slug=${article.slug}`}>
+            <a href={`/yazilar/${article.slug}`}>
               {article.title}
             </a>
           </h3>
@@ -103,7 +107,7 @@ try {
           <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
             <span class="text-xs text-slate-500 font-medium">Yazar: {article.author.name}</span>
             <a
-              href={`/yazilar/oku?slug=${article.slug}`}
+              href={`/yazilar/${article.slug}`}
               class="inline-flex items-center gap-1.5 text-xs font-bold text-sky-700 hover:text-sky-900 transition-colors"
             >
               <span>Yazının Devamını Oku</span>
@@ -208,6 +212,13 @@ try {
       ? 'http://127.0.0.1:8090'
       : '';
 
+    const staticSlugs = new Set();
+    try {
+      const raw = container.getAttribute('data-static-slugs');
+      if (raw) JSON.parse(raw).forEach((s) => staticSlugs.add(s));
+    } catch (_) {}
+    const articleUrl = (slug) => (staticSlugs.has(slug) ? `/yazilar/${slug}` : `/yazilar/oku?slug=${slug}`);
+
     try {
       let res = await fetch(`${PB_BASE_URL}/api/collections/yazilar/records?perPage=30`);
       if (res.ok) {
@@ -242,7 +253,7 @@ try {
                 </div>
 
                 <h3 class="text-xl sm:text-2xl font-bold text-slate-900 mb-3 group-hover:text-sky-700 transition-colors">
-                  <a href="/yazilar/oku?slug=${item.slug}">
+                  <a href="${articleUrl(item.slug)}">
                     ${item.baslik}
                   </a>
                 </h3>
@@ -254,7 +265,7 @@ try {
                 <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
                   <span class="text-xs text-slate-500 font-medium">Yazar: ${item.kaynak || 'Çelebi Hukuk Servisi'}</span>
                   <a
-                    href="/yazilar/oku?slug=${item.slug}"
+                    href="${articleUrl(item.slug)}"
                     class="inline-flex items-center gap-1.5 text-xs font-bold text-sky-700 hover:text-sky-900 transition-colors"
                   >
                     <span>Yazının Devamını Oku</span>

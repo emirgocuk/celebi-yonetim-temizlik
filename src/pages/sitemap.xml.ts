@@ -4,6 +4,7 @@ import { ARTICLES_DATA } from '@/lib/articles-data';
 const staticPages = [
   '',
   'site-yonetimi',
+  'site-yonetimi-fiyat-hesapla',
   'temizlik',
   'cukurova-site-yonetimi',
   'seyhan-apartman-yonetimi',
@@ -21,25 +22,35 @@ export const GET: APIRoute = async ({ site }) => {
   const baseUrl = (site ? site.origin : 'https://celebiyonetim.com.tr').replace('www.', '');
   const lastmod = new Date().toISOString().split('T')[0];
 
-  // Slugs collected from fallback data
+  // Slugs collected from fallback data + live PocketBase API
   const slugsSet = new Set<string>(ARTICLES_DATA.map((a) => a.slug));
 
-  // Also attempt to fetch latest active articles from PocketBase API
-  try {
-    const pbUrl = import.meta.env.POCKETBASE_URL || 'http://127.0.0.1:8090';
-    const res = await fetch(`${pbUrl}/api/collections/yazilar/records?page=1&perPage=100&filter=aktif%3Dtrue`, {
-      signal: AbortSignal.timeout(2000),
-    });
-    if (res.ok) {
-      const data = await res.json();
-      if (Array.isArray(data.items)) {
-        for (const item of data.items) {
-          if (item.slug) slugsSet.add(item.slug);
+  const pbEndpoints = [
+    'https://celebiyonetim.com.tr/api/collections/yazilar/records?perPage=200',
+    `${import.meta.env.POCKETBASE_URL || 'http://127.0.0.1:8090'}/api/collections/yazilar/records?perPage=200`,
+  ];
+
+  for (const endpoint of pbEndpoints) {
+    try {
+      const res = await fetch(endpoint, {
+        headers: { 'User-Agent': 'Mozilla/5.0' },
+        signal: AbortSignal.timeout(3500),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data.items) && data.items.length > 0) {
+          for (const item of data.items) {
+            const slug = String(item.slug || '').trim();
+            if (slug && item.aktif !== false && /^[a-z0-9-]+$/i.test(slug)) {
+              slugsSet.add(slug);
+            }
+          }
+          break;
         }
       }
+    } catch (_) {
+      // Try next endpoint or keep fallback set
     }
-  } catch (e) {
-    // PocketBase unreachable at build time, fallback set is preserved
   }
 
   const articlePages = Array.from(slugsSet).map((slug) => `yazilar/${slug}`);
@@ -48,6 +59,7 @@ export const GET: APIRoute = async ({ site }) => {
 const highPriorityPages = new Set([
   'yazilar',
   'site-yonetimi',
+  'site-yonetimi-fiyat-hesapla',
   'temizlik',
   'cukurova-site-yonetimi',
   'seyhan-apartman-yonetimi',
@@ -59,7 +71,7 @@ const highPriorityPages = new Set([
 ${allPages
   .map((page) => {
     const url = page ? `${baseUrl}/${page}` : baseUrl;
-    const priority = page === '' ? '1.0' : highPriorityPages.has(page) ? '0.9' : '0.8';
+    const priority = page === '' ? '1.0' : page === 'site-yonetimi-fiyat-hesapla' ? '0.95' : highPriorityPages.has(page) ? '0.9' : '0.8';
     return `  <url>
     <loc>${url}</loc>
     <lastmod>${lastmod}</lastmod>

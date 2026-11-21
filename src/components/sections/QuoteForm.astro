@@ -1,5 +1,21 @@
 ---
 import { COMPANY_INFO } from '@/lib/fallback-data';
+
+interface Props {
+  defaultService?: string;
+  badge?: string;
+  heading?: string;
+  subtitle?: string;
+  sourceLabel?: string;
+}
+
+const {
+  defaultService = 'site-yonetimi',
+  badge = 'Şeffaf & Anında Maliyet Analizi',
+  heading = 'Siteniz veya iş yeriniz için net teklif alın.',
+  subtitle = 'Formu doldurun, uzman ekibimiz bağımsız bölüm sayısı veya temizlik alanınız için 15 dakika içinde en uygun işletme maliyetini hesaplayıp size ulaşsın.',
+  sourceLabel = 'Web Sitesi Teklif Formu',
+} = Astro.props;
 ---
 
 <section id="iletisim" class="scroll-mt-24 py-20 sm:py-28 bg-gradient-to-br from-slate-950 via-slate-900 to-sky-950 text-white relative">
@@ -10,15 +26,15 @@ import { COMPANY_INFO } from '@/lib/fallback-data';
       <!-- Left Column: Copy & Direct Contacts -->
       <div class="lg:col-span-5 flex flex-col gap-6">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-sky-900/60 text-sky-300 border border-sky-700/60 w-fit">
-          <span>Şeffaf & Anında Maliyet Analizi</span>
+          <span>{badge}</span>
         </div>
 
         <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
-          Siteniz veya iş yeriniz için net teklif alın.
+          {heading}
         </h2>
 
         <p class="text-sm sm:text-base text-slate-300 leading-relaxed font-normal">
-          Formu doldurun, uzman ekibimiz bağımsız bölüm sayısı veya temizlik alanınız için 15 dakika içinde en uygun işletme maliyetini hesaplayıp size ulaşsın.
+          {subtitle}
         </p>
 
         <div class="pt-4 border-t border-slate-800 flex flex-col gap-3">
@@ -102,7 +118,7 @@ import { COMPANY_INFO } from '@/lib/fallback-data';
             <p class="text-xs text-slate-500 mt-1">Bilgileriniz KVKK kapsamında korunmakta olup sadece teklif için kullanılır.</p>
           </div>
 
-          <form id="quote-request-form" class="space-y-4">
+          <form id="quote-request-form" data-source-label={sourceLabel} class="space-y-4">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label for="fullName" class="block text-xs font-bold text-slate-700 mb-1.5">Adınız Soyadınız *</label>
@@ -138,11 +154,11 @@ import { COMPANY_INFO } from '@/lib/fallback-data';
                   required
                   class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:border-sky-600 focus:ring-2 focus:ring-sky-100 outline-none transition-all bg-white font-medium"
                 >
-                  <option value="site-yonetimi">Site & Apartman Yönetimi</option>
-                  <option value="ofis-temizlik">Ofis & Ticari Alan Temizliği</option>
-                  <option value="insaat-sonrasi">İnşaat / Tadilat Sonrası Temizlik</option>
-                  <option value="dis-cephe">Dış Cephe & Cam Temizliği</option>
-                  <option value="merdiven">Apartman Merdiven Temizliği</option>
+                  <option value="site-yonetimi" selected={defaultService === 'site-yonetimi'}>Site & Apartman Yönetimi</option>
+                  <option value="ofis-temizlik" selected={defaultService === 'ofis-temizlik'}>Ofis & Ticari Alan Temizliği</option>
+                  <option value="insaat-sonrasi" selected={defaultService === 'insaat-sonrasi'}>İnşaat / Tadilat Sonrası Temizlik</option>
+                  <option value="dis-cephe" selected={defaultService === 'dis-cephe'}>Dış Cephe & Cam Temizliği</option>
+                  <option value="merdiven" selected={defaultService === 'merdiven'}>Apartman Merdiven Temizliği</option>
                 </select>
               </div>
 
@@ -236,6 +252,13 @@ import { COMPANY_INFO } from '@/lib/fallback-data';
       const dateFormatted = now.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' + 
                             now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
 
+      const attr = (typeof window.celebiGetAttribution === 'function' ? window.celebiGetAttribution() : {}) || {};
+      const sourceChannel = form.getAttribute('data-source-label') || 'Web Sitesi Teklif Formu';
+      const pbBase =
+        window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+          ? 'http://127.0.0.1:8090'
+          : '';
+
       const payload = {
         id: 'talep_' + Date.now(),
         fullName: fullName,
@@ -246,7 +269,15 @@ import { COMPANY_INFO } from '@/lib/fallback-data';
         created: dateFormatted,
         timestamp: Date.now(),
         status: 'Yeni',
-        channel: 'WhatsApp Teklif Formu',
+        channel: sourceChannel,
+        landingPage: attr.landingPage || window.location.pathname,
+        utmSource: attr.utmSource || '',
+        utmMedium: attr.utmMedium || '',
+        utmCampaign: attr.utmCampaign || '',
+        utmTerm: attr.utmTerm || '',
+        gclid: attr.gclid || '',
+        fbclid: attr.fbclid || '',
+        referrer: attr.referrer || '',
       };
 
       try {
@@ -257,14 +288,41 @@ import { COMPANY_INFO } from '@/lib/fallback-data';
         console.warn('LocalStorage kayıt uyarısı:', err);
       }
 
-      // Arka planda PocketBase servisine de asenkron ilet
+      // Canlı sunucudaki PocketBase servisine gerçek zamanlı kaydet (Nginx /api/ proxy)
+      const pbPayload = {
+        fullName: payload.fullName,
+        phone: payload.phone,
+        serviceType: payload.serviceType,
+        buildingUnits: payload.buildingUnits,
+        message: payload.message,
+        status: payload.status,
+        channel: payload.channel,
+        landingPage: payload.landingPage,
+        utmSource: payload.utmSource,
+        utmMedium: payload.utmMedium,
+        utmCampaign: payload.utmCampaign,
+        utmTerm: payload.utmTerm,
+        gclid: payload.gclid,
+        fbclid: payload.fbclid,
+        referrer: payload.referrer,
+      };
       try {
-        fetch('http://127.0.0.1:8090/api/collections/teklif_talepleri/records', {
+        fetch(`${pbBase}/api/collections/teklif_talepleri/records`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
+          body: JSON.stringify(pbPayload),
+          keepalive: true,
         }).catch(() => {});
       } catch (_) {}
+
+      // GA4 / Google Ads / Meta Pixel Dönüşüm Olayı Tetikle
+      if (typeof window.celebiTrack === 'function') {
+        window.celebiTrack('generate_lead', {
+          service_type: serviceLabel,
+          landing_page: payload.landingPage,
+          utm_source: payload.utmSource || 'direct',
+        });
+      }
 
       // 2. HEDEF WHATSAPP NUMARASINI BELİRLE
       // Admin panelinde (/merkez) güncellenmiş şirket ayarlarından numarayı al veya varsayılanı kullan
@@ -318,6 +376,7 @@ import { COMPANY_INFO } from '@/lib/fallback-data';
             href="${waUrl}"
             target="_blank"
             rel="noopener noreferrer"
+            data-skip-wa-track="true"
             class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition-colors shadow-sm"
           >
             <!-- WhatsApp Icon -->

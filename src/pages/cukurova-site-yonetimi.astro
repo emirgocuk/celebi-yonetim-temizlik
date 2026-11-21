@@ -1,0 +1,72 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import DistrictManagementLanding from '@/components/sections/DistrictManagementLanding.astro';
+
+const title = 'Çukurova Site ve Apartman Yönetimi | Çelebi Yönetim Adana';
+const description =
+  'Adana Çukurova Mahfesığmaz, Turgut Özal, Güzelyalı, Beyazevler ve Kurttepe siteleri için şeffaf aidat takibi, KMK hukuki danışmanlık ve profesyonel apartman yönetimi.';
+
+const neighborhoods = [
+  'Mahfesığmaz',
+  'Turgut Özal Bulvarı',
+  'Beyazevler',
+  'Güzelyalı',
+  'Kurttepe',
+  'Toros',
+  'Yüzüncüyıl',
+  'Karslılar',
+];
+
+const localHighlights = [
+  {
+    title: 'Mahfesığmaz Ofisimizle 10 Dakikada Yerinde Müdahale',
+    desc: 'Genel merkezimiz Mahfesığmaz Mahallesinde yer aldığı için Çukurova’daki tüm sitelere anlık toplantı, teknik kontrol ve denetim desteği sağlıyoruz.',
+  },
+  {
+    title: 'Çok Bloklu Sitelerde Dijital & Şeffaf Bütçe',
+    desc: 'Havuzlu, güvenlikli ve çok asansörlü Çukurova sitelerinde banka entegrasyonlu aidat takibi ve kuruşu kuruşuna faturalı harcama raporu sunuyoruz.',
+  },
+  {
+    title: 'Aidat Gecikmelerinde Sıfır Komşu Tartışması',
+    desc: 'Kat Mülkiyeti Kanunu uyarınca noter ihtarları ve icra takipleri bağımsız hukuk departmanımız tarafından yürütülür.',
+  },
+];
+
+const faqs = [
+  {
+    question: 'Çukurova’daki mevcut apartman yöneticimiz görevi nasıl devredebilir?',
+    answer:
+      'Genel kurulda alınacak yetki devri kararının ardından tüm geçmiş makbuzlar, sözleşmeler ve banka hesap devirleri Çukurova ekibimiz tarafından tutanakla teslim alınır.',
+  },
+  {
+    question: 'Çukurova genelinde site yönetimi dışında merdiven temizliği de veriyor musunuz?',
+    answer:
+      'Evet. Dilerseniz yalnızca mali/hukuki site yönetimi, dilerseniz SGK’lı kadromuzla ortak alan ve havuz/çevre temizliği dahil tam kapsamlı hizmet alabilirsiniz.',
+  },
+  {
+    question: 'Site görevlisi (kapıcı) SGK ve tazminat riski nasıl yönetilir?',
+    answer:
+      'Personelin tüm SGK bildirgeleri, bordro hesaplamaları, yıllık izin çizelgeleri ve kıdem fonu bütçelemesi eksiksiz yönetilerek yönetim kurulunun hukuki sorumluluğu sıfırlanır.',
+  },
+];
+
+const otherDistricts = [
+  { href: '/site-yonetimi', label: 'Adana Site Yönetimi', desc: 'Tüm Adana geneli profesyonel yönetim hizmetleri.' },
+  { href: '/seyhan-apartman-yonetimi', label: 'Seyhan Apartman Yönetimi', desc: 'Ziyapaşa, Barajyolu, Reşatbey ve Gazipaşa bölgesi.' },
+  { href: '/saricam-site-yonetimi', label: 'Sarıçam Site Yönetimi', desc: 'Yeni teslim siteler ve hızlı devir kurulumu.' },
+];
+---
+
+<BaseLayout title={title} description={description}>
+  <DistrictManagementLanding
+    slug="cukurova-site-yonetimi"
+    districtName="Çukurova"
+    neighborhoods={neighborhoods}
+    h1="Çukurova Profesyonel Site ve Apartman Yönetimi"
+    heroBadge="Mahfesığmaz Merkezli • Çukurova Yerel Yönetim Ekibi"
+    heroDesc="Mahfesığmaz, Turgut Özal Bulvarı, Beyazevler, Güzelyalı ve Kurttepe başta olmak üzere Çukurova’daki tüm apartman ve sitelere şeffaf kasa, KMK hukuki takip ve düzenli teknik bakım hizmeti sunuyoruz."
+    localHighlights={localHighlights}
+    faqs={faqs}
+    otherDistricts={otherDistricts}
+  />
+</BaseLayout>

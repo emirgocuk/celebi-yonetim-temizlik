@@ -3,6 +3,11 @@ import { ARTICLES_DATA } from '@/lib/articles-data';
 
 const staticPages = [
   '',
+  'site-yonetimi',
+  'temizlik',
+  'cukurova-site-yonetimi',
+  'seyhan-apartman-yonetimi',
+  'saricam-site-yonetimi',
   'iletisim',
   'yazilar',
   'yasal/kvkk-aydinlatma-metni',
@@ -40,12 +45,21 @@ export const GET: APIRoute = async ({ site }) => {
   const articlePages = Array.from(slugsSet).map((slug) => `yazilar/${slug}`);
   const allPages = [...staticPages, ...articlePages];
 
+const highPriorityPages = new Set([
+  'yazilar',
+  'site-yonetimi',
+  'temizlik',
+  'cukurova-site-yonetimi',
+  'seyhan-apartman-yonetimi',
+  'saricam-site-yonetimi',
+]);
+
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${allPages
   .map((page) => {
     const url = page ? `${baseUrl}/${page}` : baseUrl;
-    const priority = page === '' ? '1.0' : page === 'yazilar' ? '0.9' : '0.8';
+    const priority = page === '' ? '1.0' : highPriorityPages.has(page) ? '0.9' : '0.8';
     return `  <url>
     <loc>${url}</loc>
     <lastmod>${lastmod}</lastmod>

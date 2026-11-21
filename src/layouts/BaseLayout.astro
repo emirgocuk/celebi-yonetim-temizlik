@@ -15,6 +15,15 @@ interface Props {
 }
 
 const { title, description, canonical, ogImage, ogType } = Astro.props;
+
+const envTracking = {
+  ga4Id: import.meta.env.PUBLIC_GA4_ID || '',
+  gadsId: import.meta.env.PUBLIC_GADS_ID || '',
+  gadsConvLead: import.meta.env.PUBLIC_GADS_CONV_LEAD || '',
+  gadsConvWhatsapp: import.meta.env.PUBLIC_GADS_CONV_WHATSAPP || '',
+  gadsConvCall: import.meta.env.PUBLIC_GADS_CONV_CALL || '',
+  metaPixelId: import.meta.env.PUBLIC_META_PIXEL_ID || '',
+};
 ---
 
 <!doctype html>
@@ -75,6 +84,234 @@ const { title, description, canonical, ogImage, ogType } = Astro.props;
             });
           }
         } catch (e) {}
+      })();
+    </script>
+
+    <!-- Attribution Capture, Deferred GA4/Ads/Meta Loader & Conversion Tracking -->
+    <script is:inline define:vars={{ envTracking }}>
+      (() => {
+        const ATTR_KEY = 'celebi_attribution';
+        const CFG_CACHE_KEY = 'celebi_tracking_cfg';
+        const PB_BASE =
+          window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://127.0.0.1:8090'
+            : '';
+
+        function captureAttribution() {
+          try {
+            const params = new URLSearchParams(window.location.search);
+            const utmSource = params.get('utm_source') || '';
+            const utmMedium = params.get('utm_medium') || '';
+            const utmCampaign = params.get('utm_campaign') || '';
+            const utmTerm = params.get('utm_term') || '';
+            const gclid = params.get('gclid') || '';
+            const fbclid = params.get('fbclid') || '';
+            const hasExplicit = Boolean(utmSource || utmMedium || utmCampaign || utmTerm || gclid || fbclid);
+
+            const existingRaw = sessionStorage.getItem(ATTR_KEY);
+            if (hasExplicit) {
+              const inferredSource = utmSource || (gclid ? 'google' : fbclid ? 'meta' : '');
+              const inferredMedium = utmMedium || (gclid ? 'cpc' : fbclid ? 'paid_social' : '');
+              const payload = {
+                utmSource: inferredSource,
+                utmMedium: inferredMedium,
+                utmCampaign,
+                utmTerm,
+                gclid,
+                fbclid,
+                landingPage: window.location.pathname,
+                referrer: document.referrer || '',
+              };
+              sessionStorage.setItem(ATTR_KEY, JSON.stringify(payload));
+              return payload;
+            }
+
+            if (!existingRaw) {
+              const ref = document.referrer || '';
+              let refSource = 'direct';
+              let refMedium = 'none';
+              if (/google\./i.test(ref)) {
+                refSource = 'google';
+                refMedium = 'organic';
+              } else if (/bing\.com|yandex\./i.test(ref)) {
+                refSource = 'search';
+                refMedium = 'organic';
+              } else if (/instagram\.com|facebook\.com|l\.instagram\.com/i.test(ref)) {
+                refSource = 'meta';
+                refMedium = 'social';
+              } else if (ref) {
+                try {
+                  const host = new URL(ref).hostname;
+                  if (host && !host.includes(window.location.hostname)) {
+                    refSource = host;
+                    refMedium = 'referral';
+                  }
+                } catch (_) {}
+              }
+              const payload = {
+                utmSource: refSource,
+                utmMedium: refMedium,
+                utmCampaign: '',
+                utmTerm: '',
+                gclid: '',
+                fbclid: '',
+                landingPage: window.location.pathname,
+                referrer: ref,
+              };
+              sessionStorage.setItem(ATTR_KEY, JSON.stringify(payload));
+              return payload;
+            }
+
+            return JSON.parse(existingRaw);
+          } catch (_) {
+            return { landingPage: window.location.pathname };
+          }
+        }
+
+        const initialAttr = captureAttribution();
+        window.celebiGetAttribution = () => {
+          try {
+            return JSON.parse(sessionStorage.getItem(ATTR_KEY) || 'null') || initialAttr;
+          } catch (_) {
+            return initialAttr;
+          }
+        };
+
+        let activeCfg = { ...envTracking };
+        let gtagReady = false;
+        let fbqReady = false;
+
+        function initPixels(cfg) {
+          activeCfg = { ...envTracking, ...cfg };
+          const hasGoogle = Boolean(activeCfg.ga4Id || activeCfg.gadsId);
+
+          if (hasGoogle && !gtagReady) {
+            gtagReady = true;
+            window.dataLayer = window.dataLayer || [];
+            window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+            window.gtag('js', new Date());
+
+            const primaryId = activeCfg.ga4Id || activeCfg.gadsId;
+            const s = document.createElement('script');
+            s.async = true;
+            s.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(primaryId)}`;
+            document.head.appendChild(s);
+
+            if (activeCfg.ga4Id) window.gtag('config', activeCfg.ga4Id);
+            if (activeCfg.gadsId) window.gtag('config', activeCfg.gadsId);
+          }
+
+          if (activeCfg.metaPixelId && !fbqReady) {
+            fbqReady = true;
+            if (!window.fbq) {
+              const n = (window.fbq = function () {
+                n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+              });
+              if (!window._fbq) window._fbq = n;
+              n.push = n;
+              n.loaded = true;
+              n.version = '2.0';
+              n.queue = [];
+              const s = document.createElement('script');
+              s.async = true;
+              s.src = 'https://connect.facebook.net/en_US/fbevents.js';
+              document.head.appendChild(s);
+            }
+            window.fbq('init', activeCfg.metaPixelId);
+            window.fbq('track', 'PageView');
+          }
+        }
+
+        function formatGadsSendTo(rawLabel) {
+          if (!rawLabel) return '';
+          if (rawLabel.includes('/')) return rawLabel;
+          return activeCfg.gadsId ? `${activeCfg.gadsId}/${rawLabel}` : '';
+        }
+
+        window.celebiTrack = (eventName, params = {}) => {
+          try {
+            const attr = window.celebiGetAttribution();
+            const eventPayload = {
+              ...params,
+              page_path: window.location.pathname,
+              utm_source: attr.utmSource || 'direct',
+              utm_campaign: attr.utmCampaign || '',
+            };
+
+            if (typeof window.gtag === 'function' && (activeCfg.ga4Id || activeCfg.gadsId)) {
+              window.gtag('event', eventName, eventPayload);
+
+              let convRaw = '';
+              if (eventName === 'generate_lead') convRaw = activeCfg.gadsConvLead;
+              else if (eventName === 'whatsapp_click') convRaw = activeCfg.gadsConvWhatsapp;
+              else if (eventName === 'phone_call_click') convRaw = activeCfg.gadsConvCall;
+
+              const sendTo = formatGadsSendTo(convRaw);
+              if (sendTo) {
+                window.gtag('event', 'conversion', { send_to: sendTo });
+              }
+            }
+
+            if (typeof window.fbq === 'function' && activeCfg.metaPixelId) {
+              if (eventName === 'generate_lead') {
+                window.fbq('track', 'Lead', eventPayload);
+              } else if (eventName === 'whatsapp_click' || eventName === 'phone_call_click') {
+                window.fbq('track', 'Contact', { method: eventName, ...eventPayload });
+              }
+            }
+          } catch (_) {}
+        };
+
+        // Delegated conversion click listeners for all tel: and WhatsApp links
+        document.addEventListener('click', (ev) => {
+          const target = ev.target;
+          if (!(target instanceof Element)) return;
+          const anchor = target.closest('a');
+          if (!anchor) return;
+          const href = anchor.getAttribute('href') || '';
+          if (href.startsWith('tel:')) {
+            window.celebiTrack('phone_call_click', { phone: href.replace('tel:', '') });
+          } else if (href.includes('wa.me') && anchor.getAttribute('data-skip-wa-track') !== 'true') {
+            window.celebiTrack('whatsapp_click', { link_text: (anchor.textContent || '').trim().slice(0, 60) });
+          }
+        });
+
+        // Non-blocking pixel initialization after window load
+        window.addEventListener('load', () => {
+          setTimeout(async () => {
+            if (envTracking.ga4Id || envTracking.gadsId || envTracking.metaPixelId) {
+              initPixels(envTracking);
+              return;
+            }
+            try {
+              const cachedRaw = sessionStorage.getItem(CFG_CACHE_KEY);
+              if (cachedRaw) {
+                const cached = JSON.parse(cachedRaw);
+                if (cached && Date.now() - cached.ts < 600000 && cached.cfg) {
+                  initPixels(cached.cfg);
+                  return;
+                }
+              }
+              const res = await fetch(`${PB_BASE}/api/collections/reklam_ayarlari/records?perPage=1`);
+              if (res.ok) {
+                const data = await res.json();
+                const item = (data.items || [])[0];
+                if (item) {
+                  const fetchedCfg = {
+                    ga4Id: item.ga4Id || '',
+                    gadsId: item.gadsId || '',
+                    gadsConvLead: item.gadsConvLead || '',
+                    gadsConvWhatsapp: item.gadsConvWhatsapp || '',
+                    gadsConvCall: item.gadsConvCall || '',
+                    metaPixelId: item.metaPixelId || '',
+                  };
+                  sessionStorage.setItem(CFG_CACHE_KEY, JSON.stringify({ ts: Date.now(), cfg: fetchedCfg }));
+                  initPixels(fetchedCfg);
+                }
+              }
+            } catch (_) {}
+          }, 50);
+        });
       })();
     </script>
   </body>

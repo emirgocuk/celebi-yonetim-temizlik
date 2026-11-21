@@ -1,4 +1,195 @@
 ---
-// Canonical redirect to single landing page section
-return Astro.redirect('/#site-yonetimi', 301);
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import StatsCounter from '@/components/sections/StatsCounter.astro';
+import SiteYonetimiSection from '@/components/sections/SiteYonetimiSection.astro';
+import WhyUs from '@/components/sections/WhyUs.astro';
+import Reviews from '@/components/sections/Reviews.astro';
+import QuoteForm from '@/components/sections/QuoteForm.astro';
+import { COMPANY_INFO } from '@/lib/fallback-data';
+
+const title = 'Adana Profesyonel Site ve Apartman Yönetimi | Çelebi Yönetim';
+const description =
+  'Adana Çukurova, Seyhan ve Sarıçam başta olmak üzere 634 sayılı Kat Mülkiyeti Kanunu uyumlu şeffaf site yönetimi, banka entegrasyonlu aidat takibi ve yasal icra hizmetleri.';
+
+const managementFaqs = [
+  {
+    question: 'Profesyonel site yönetimine nasıl geçiş yapılır?',
+    answer:
+      'Kat Malikleri Genel Kurulunda sayı ve arsa payı çoğunluğuyla alınan yönetici seçimi kararının karar defterine işlenip noter tasdikinin ardından Çelebi Yönetim tüm devir, vergi dairesi/banka ve eski yönetimden evrak teslim süreçlerini sizin yerinize yürütür.',
+  },
+  {
+    question: 'Aidatını ödemeyen daire sakinlerine nasıl işlem uygulanır?',
+    answer:
+      'Komşuluk ilişkilerinizi zedelemeden, KMK kapsamında noter ihtarları ve hukuk departmanımız aracılığıyla gecikme tazminatlı yasal icra takipleri başlatılır. Böylece binanın bütçesi aksamaz.',
+  },
+  {
+    question: 'Gelir-gider hesaplarını ve kasa bakiyesini görebilir miyiz?',
+    answer:
+      'Evet. Tüm tahsilatlar apartmana özel banka hesabında toplanır. Her ay onaylı gelir-gider dökümü bina panosuna asılır ve kat malikleri faturalı dijital arşive erişebilir.',
+  },
+  {
+    question: 'Adana site yönetimi ücretleri neye göre belirlenir?',
+    answer:
+      'Bağımsız bölüm (daire) sayısı, blok adedi, havuz/güvenlik/asansör gibi teknik donanımlar ve talep edilen temizlik sıklığına göre şeffaf, gizli masrafsız sabit yönetim bedeli belirlenir.',
+  },
+];
+
+const districtLinks = [
+  {
+    href: '/cukurova-site-yonetimi',
+    label: 'Çukurova Site Yönetimi',
+    desc: 'Mahfesığmaz, Turgut Özal, Güzelyalı, Beyazevler ve Kurttepe bölgesi.',
+  },
+  {
+    href: '/seyhan-apartman-yonetimi',
+    label: 'Seyhan Apartman Yönetimi',
+    desc: 'Ziyapaşa, Barajyolu, Reşatbey, Gazipaşa ve Gürselpaşa apartmanları.',
+  },
+  {
+    href: '/saricam-site-yonetimi',
+    label: 'Sarıçam Site Yönetimi',
+    desc: 'Yeni teslim toplu konut siteleri ve müteahhit devir süreçleri.',
+  },
+];
+
+const siteUrl = 'https://celebiyonetim.com.tr';
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Service',
+      name: 'Adana Profesyonel Site ve Apartman Yönetimi',
+      serviceType: 'Site ve Apartman Yönetimi',
+      url: `${siteUrl}/site-yonetimi`,
+      description,
+      provider: { '@id': `${siteUrl}/#organization` },
+      areaServed: ['Adana', 'Çukurova', 'Seyhan', 'Sarıçam', 'Yüreğir'].map((name) => ({
+        '@type': 'AdministrativeArea',
+        name,
+      })),
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: managementFaqs.map((f) => ({
+        '@type': 'Question',
+        name: f.question,
+        acceptedAnswer: { '@type': 'Answer', text: f.answer },
+      })),
+    },
+  ],
+};
 ---
+
+<BaseLayout title={title} description={description}>
+  <!-- Dedicated High-Intent Ad & SEO Hero -->
+  <section class="relative overflow-hidden pt-8 pb-16 sm:pt-14 sm:pb-20 bg-gradient-to-b from-sky-50/70 via-white to-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <nav class="flex items-center gap-2 text-xs text-slate-500 mb-6" aria-label="Sayfa Yolu">
+        <a href="/" class="hover:text-sky-700 transition-colors">Ana Sayfa</a>
+        <span>/</span>
+        <span class="text-slate-900 font-bold">Adana Site Yönetimi</span>
+      </nav>
+
+      <div class="max-w-4xl">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-white text-[#004AAD] border border-sky-200 mb-5 shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span>634 Sayılı Kat Mülkiyeti Kanunu Uzmanı • Adana Geneli</span>
+        </div>
+
+        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.08] mb-6">
+          Adana'da Şeffaf, Hukuka Uygun <span class="text-[#004AAD]">Profesyonel Site &amp; Apartman Yönetimi</span>
+        </h1>
+
+        <p class="text-base sm:text-lg text-slate-600 leading-relaxed mb-8 max-w-3xl font-normal">
+          Komşularınızla aidat veya teknik arıza yüzünden karşı karşıya gelmeyin. Banka entegrasyonlu şeffaf kasa, avukat destekli icra takibi, asansör/tesisat denetimi ve SGK güvenceli personel idaresini Çelebi güvencesiyle tek elde toplayın.
+        </p>
+
+        <div class="flex flex-wrap items-center gap-3 sm:gap-4">
+          <a
+            href="#iletisim"
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 text-sm font-bold text-white bg-slate-900 hover:bg-[#004AAD] rounded-2xl shadow-lg transition-all duration-150 subtle-tap"
+          >
+            <span>Ücretsiz İşletme Teklifi Alın</span>
+            <span>→</span>
+          </a>
+
+          <a
+            href={`tel:${COMPANY_INFO.landlinePhone}`}
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 text-sm font-bold text-slate-900 bg-white hover:bg-slate-50 border border-slate-300 rounded-2xl shadow-sm transition-all duration-150 subtle-tap"
+          >
+            <span>Sabit Hat: {COMPANY_INFO.landlineFormatted}</span>
+          </a>
+
+          <a
+            href={`https://wa.me/${COMPANY_INFO.whatsapp}?text=${encodeURIComponent('Merhaba, sitemiz/apartmanımız için profesyonel site yönetimi teklifi almak istiyorum.')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 text-sm font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-2xl shadow-sm transition-all duration-150 subtle-tap"
+          >
+            <span>WhatsApp'tan Danışın</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- District Quick Jump Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-12">
+        {districtLinks.map((d) => (
+          <a
+            href={d.href}
+            class="p-5 rounded-2xl bg-white border border-slate-200 hover:border-[#004AAD] hover:shadow-md transition-all group"
+          >
+            <div class="text-sm font-bold text-slate-900 group-hover:text-[#004AAD] mb-1">{d.label} →</div>
+            <p class="text-xs text-slate-500 leading-relaxed">{d.desc}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <StatsCounter />
+  <SiteYonetimiSection />
+  <WhyUs />
+  <Reviews />
+
+  <!-- Site Management Focused FAQs -->
+  <section class="py-16 sm:py-24 bg-slate-50 border-t border-slate-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
+      <div class="mb-10">
+        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mb-2">
+          Site Yönetimi Süreçleri Hakkında Sık Sorulanlar
+        </h2>
+        <p class="text-sm sm:text-base text-slate-600">
+          Genel kurul devir işlemleri, aidat takibi ve mali denetim konularında merak edilenler.
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        {managementFaqs.map((faq) => (
+          <details class="group rounded-2xl border border-slate-200 p-6 [&_summary::-webkit-details-marker]:hidden bg-white">
+            <summary class="flex cursor-pointer items-center justify-between gap-4 text-left font-bold text-slate-900 text-base">
+              <span>{faq.question}</span>
+              <span class="shrink-0 transition-transform duration-200 group-open:-rotate-180 text-slate-500">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </span>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed pt-2 border-t border-slate-200">
+              {faq.answer}
+            </p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <QuoteForm
+    defaultService="site-yonetimi"
+    badge="Adana Site Yönetimi Teklif Merkezi"
+    heading="Apartmanınız veya siteniz için şeffaf yönetim teklifi alın."
+    subtitle="Daire sayınızı iletin, mevcut gider kalemlerinizi inceleyip 15 dakika içinde net yönetim teklifi sunalım."
+    sourceLabel="Adana Site Yönetimi Sayfası"
+  />
+
+  <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+</BaseLayout>

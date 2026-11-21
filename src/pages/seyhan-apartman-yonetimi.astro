@@ -1,0 +1,72 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import DistrictManagementLanding from '@/components/sections/DistrictManagementLanding.astro';
+
+const title = 'Seyhan Apartman ve Site Yönetimi | Çelebi Yönetim Adana';
+const description =
+  'Adana Seyhan Ziyapaşa, Barajyolu, Gazipaşa, Reşatbey ve Gürselpaşa apartmanları ile iş merkezleri için profesyonel site yönetimi, aidat tahsilatı ve asansör/tesisat denetimi.';
+
+const neighborhoods = [
+  'Ziyapaşa',
+  'Barajyolu',
+  'Gazipaşa',
+  'Reşatbey',
+  'Cemalpaşa',
+  'Gürselpaşa',
+  'Mavi Bulvar',
+  'Tellidere',
+];
+
+const localHighlights = [
+  {
+    title: 'Apartman ve İş Merkezlerine Özel Bütçe Planlaması',
+    desc: 'Ziyapaşa, Reşatbey ve Barajyolu aksındaki apartman ve iş hanlarında yüksek elektrik, doğalgaz ve asansör bakım giderlerini şeffaf ihale ve sözleşmelerle optimize ediyoruz.',
+  },
+  {
+    title: 'Kayıtsız Yönetici Riskine Son',
+    desc: 'Apartman içi gönüllü yöneticilikte yaşanan vergi, SGK cezası ve geciken aidat tahsilatı sorunlarını KMK mevzuatına %100 uyumlu kurumsal sistemle çözüyoruz.',
+  },
+  {
+    title: 'Aylık Onaylı Gelir-Gider Panosu & Banka Takibi',
+    desc: 'Her daire ve iş yeri için banka üzerinden şeffaf borç takibi yapılır; aylık gelir-gider cetveli düzenli olarak bina ilan panosunda paylaşılır.',
+  },
+];
+
+const faqs = [
+  {
+    question: 'Seyhan’daki iş hanları ve ticari apartmanları da yönetiyor musunuz?',
+    answer:
+      'Evet. Reşatbey, Gazipaşa ve Ziyapaşa bölgesindeki konut apartmanlarının yanı sıra karma kullanımlı apartmanlar ve ticari iş merkezleri için de profesyonel yönetim sağlıyoruz.',
+  },
+  {
+    question: 'Az daireli (10–20 daireli) Seyhan apartmanları için hizmet veriyor musunuz?',
+    answer:
+      'Evet. Daire sayısına uygun ekonomik yönetim ve haftalık merdiven temizliği paketlerimiz sayesinde 10 daireli binalarda dahi daire başı düşük maliyetle kurumsal yönetim sunuyoruz.',
+  },
+  {
+    question: 'Eski dönemden kalan ödenmemiş aidat borçlarını tahsil edebilir misiniz?',
+    answer:
+      'Devir tarihindeki geçmiş dönem borç listesi karar defteriyle birlikte teslim alındıktan sonra noter ihtarı ve KMK icra süreçleriyle hızlı tahsilat sağlanır.',
+  },
+];
+
+const otherDistricts = [
+  { href: '/site-yonetimi', label: 'Adana Site Yönetimi', desc: 'Tüm Adana geneli profesyonel yönetim hizmetleri.' },
+  { href: '/cukurova-site-yonetimi', label: 'Çukurova Site Yönetimi', desc: 'Mahfesığmaz, Turgut Özal, Güzelyalı ve Kurttepe.' },
+  { href: '/saricam-site-yonetimi', label: 'Sarıçam Site Yönetimi', desc: 'Yeni teslim toplu konut siteleri yönetimi.' },
+];
+---
+
+<BaseLayout title={title} description={description}>
+  <DistrictManagementLanding
+    slug="seyhan-apartman-yonetimi"
+    districtName="Seyhan"
+    neighborhoods={neighborhoods}
+    h1="Seyhan Profesyonel Apartman ve Site Yönetimi"
+    heroBadge="Ziyapaşa • Barajyolu • Reşatbey • Gürselpaşa Odaklı"
+    heroDesc="Seyhan ilçesindeki apartmanlar, çok bloklu konut siteleri ve iş merkezleri için komşuluk hukukunu koruyan şeffaf aidat yönetimi, teknik tesisat bakımı ve düzenli ortak alan hijyeni."
+    localHighlights={localHighlights}
+    faqs={faqs}
+    otherDistricts={otherDistricts}
+  />
+</BaseLayout>

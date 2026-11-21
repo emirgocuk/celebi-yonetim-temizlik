@@ -2,8 +2,13 @@ import PocketBase from 'pocketbase';
 import { COMPANY_INFO, FAQS_DATA, REVIEWS_DATA, SERVICES_DATA, STATS_DATA } from './fallback-data';
 import type { CompanyMeta, QuoteRequest, ReviewItem, ServiceItem } from './types';
 
-// Singleton instance
-const POCKETBASE_URL = import.meta.env.PUBLIC_POCKETBASE_URL || 'http://127.0.0.1:8090';
+// Singleton instance: relative /api proxy in production browser, 127.0.0.1:8090 in SSR or localhost
+const POCKETBASE_URL =
+  typeof window !== 'undefined'
+    ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://127.0.0.1:8090'
+        : '')
+    : (import.meta.env.POCKETBASE_URL || 'http://127.0.0.1:8090');
 export const pb = new PocketBase(POCKETBASE_URL);
 
 // Disable auto-cancellation for reliable concurrent requests

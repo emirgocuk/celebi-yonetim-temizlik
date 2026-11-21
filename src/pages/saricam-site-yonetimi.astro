@@ -1,0 +1,72 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import DistrictManagementLanding from '@/components/sections/DistrictManagementLanding.astro';
+
+const title = 'Sarıçam Site Yönetimi & Yeni Teslim Site Kurulumu | Çelebi Yönetim';
+const description =
+  'Adana Sarıçam Gültepe, Mehmet Akif Ersoy, Orhangazi ve Yıldırım Beyazıt mahallelerindeki yeni teslim toplu konut siteleri için yönetim planı kurulumu, müteahhit devri ve inşaat sonrası temizlik.';
+
+const neighborhoods = [
+  'Gültepe',
+  'Mehmet Akif Ersoy',
+  'Yıldırım Beyazıt',
+  'Orhangazi',
+  'Balcalı',
+  'Osmangazi',
+  'Yeşiltepe',
+  'İncirlik',
+];
+
+const localHighlights = [
+  {
+    title: 'Müteahhit Teslim & İlk Genel Kurul Kurulumu',
+    desc: 'Sarıçam’da yeni oturuma açılan sitelerde ilk işletme projesinin hazırlanması, ortak aboneliklerin (elektrik, su, doğalgaz) devri ve vergi numarası işlemlerini baştan kuruyoruz.',
+  },
+  {
+    title: 'İnşaat Sonrası Ortak Alan Temizliği Dahil Paket',
+    desc: 'Yeni teslim sitelerin merdiven, asansör, otopark ve çevre düzeni ilk temizliğini endüstriyel makinelerimizle yapıp düzenli bakım sürecine geçiriyoruz.',
+  },
+  {
+    title: 'Yüksek Daireli Sitelerde Sıfır İhtilaf Aidat Sistemi',
+    desc: 'Sarıçam’daki çok bloklu yeni sitelerde herkesin borcunu şeffaf görebildiği banka tahsilat altyapısı ve yasal gecikme takibi uyguluyoruz.',
+  },
+];
+
+const faqs = [
+  {
+    question: 'Yeni teslim edilen sitemizde henüz yönetim kurulu oluşmadı, ne yapmalıyız?',
+    answer:
+      'Tapudaki yönetim planına uygun şekilde ilk kat malikleri toplantısının çağrı tebligatlarını hazırlıyor, geçici işletme projesi ve banka hesabı kurulumunu eksiksiz tamamlıyoruz.',
+  },
+  {
+    question: 'Sarıçam’da inşaatı yeni bitmiş binalarda ortak alan temizliği de yapıyor musunuz?',
+    answer:
+      'Evet. Site yönetimi anlaşmasıyla birlikte veya tek seferlik olarak asansör, merdiven, cam ve otopark alanlarının inşaat sonrası anahtar teslim temizliğini yapıyoruz.',
+  },
+  {
+    question: 'Asansör, hidrofor ve yangın sistemlerinin garanti/bakım takibini üstleniyor musunuz?',
+    answer:
+      'Evet. Müteahhit garanti kapsamındaki eksikliklerin tutanakla bildirilmesi ve yetkili servis periyodik bakımlarının eksiksiz kayıt altına alınması sürecini yönetiyoruz.',
+  },
+];
+
+const otherDistricts = [
+  { href: '/site-yonetimi', label: 'Adana Site Yönetimi', desc: 'Tüm Adana geneli profesyonel yönetim hizmetleri.' },
+  { href: '/cukurova-site-yonetimi', label: 'Çukurova Site Yönetimi', desc: 'Mahfesığmaz, Turgut Özal, Güzelyalı ve Kurttepe.' },
+  { href: '/seyhan-apartman-yonetimi', label: 'Seyhan Apartman Yönetimi', desc: 'Ziyapaşa, Barajyolu, Reşatbey ve Gazipaşa.' },
+];
+---
+
+<BaseLayout title={title} description={description}>
+  <DistrictManagementLanding
+    slug="saricam-site-yonetimi"
+    districtName="Sarıçam"
+    neighborhoods={neighborhoods}
+    h1="Sarıçam Profesyonel Site Yönetimi & Yeni Site Kurulumu"
+    heroBadge="Sarıçam • Yeni Teslim Siteler ve Toplu Konut Uzmanı"
+    heroDesc="Sarıçam Gültepe, Mehmet Akif Ersoy, Yıldırım Beyazıt ve Balcalı bölgesindeki yeni teslim konut siteleri için yönetim kurulumu, şeffaf aidat tahsilatı ve ortak alan bakım/temizlik çözümleri."
+    localHighlights={localHighlights}
+    faqs={faqs}
+    otherDistricts={otherDistricts}
+  />
+</BaseLayout>

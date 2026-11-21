@@ -1,0 +1,227 @@
+---
+import SiteYonetimiSection from '@/components/sections/SiteYonetimiSection.astro';
+import Reviews from '@/components/sections/Reviews.astro';
+import QuoteForm from '@/components/sections/QuoteForm.astro';
+import { COMPANY_INFO } from '@/lib/fallback-data';
+
+interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+interface DistrictLink {
+  href: string;
+  label: string;
+  desc: string;
+}
+
+interface Props {
+  slug: string;
+  districtName: string;
+  neighborhoods: string[];
+  h1: string;
+  heroBadge: string;
+  heroDesc: string;
+  localHighlights: { title: string; desc: string }[];
+  faqs: FaqItem[];
+  otherDistricts: DistrictLink[];
+}
+
+const {
+  slug,
+  districtName,
+  neighborhoods,
+  h1,
+  heroBadge,
+  heroDesc,
+  localHighlights,
+  faqs,
+  otherDistricts,
+} = Astro.props;
+
+const siteUrl = 'https://celebiyonetim.com.tr';
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Service',
+      name: `${districtName} Profesyonel Site ve Apartman Yönetimi`,
+      serviceType: 'Site ve Apartman Yönetimi',
+      url: `${siteUrl}/${slug}`,
+      description: heroDesc,
+      provider: {
+        '@id': `${siteUrl}/#organization`,
+      },
+      areaServed: {
+        '@type': 'AdministrativeArea',
+        name: `${districtName}, Adana`,
+      },
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: faqs.map((faq) => ({
+        '@type': 'Question',
+        name: faq.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: faq.answer,
+        },
+      })),
+    },
+  ],
+};
+---
+
+<!-- Conversion-Focused District Hero -->
+<section class="relative overflow-hidden pt-8 pb-16 sm:pt-14 sm:pb-20 bg-gradient-to-b from-sky-50/70 via-white to-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <nav class="flex items-center gap-2 text-xs text-slate-500 mb-6" aria-label="Sayfa Yolu">
+      <a href="/" class="hover:text-sky-700 transition-colors">Ana Sayfa</a>
+      <span>/</span>
+      <a href="/site-yonetimi" class="hover:text-sky-700 transition-colors">Site Yönetimi</a>
+      <span>/</span>
+      <span class="text-slate-900 font-bold">{districtName}</span>
+    </nav>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+      <div class="lg:col-span-7 flex flex-col items-start">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-white text-[#004AAD] border border-sky-200 mb-5 shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span>{heroBadge}</span>
+        </div>
+
+        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 leading-[1.1] mb-5">
+          {h1}
+        </h1>
+
+        <p class="text-base sm:text-lg text-slate-600 leading-relaxed mb-7 max-w-2xl font-normal">
+          {heroDesc}
+        </p>
+
+        <!-- Conversion CTAs -->
+        <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto mb-8">
+          <a
+            href="#iletisim"
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 text-sm font-bold text-white bg-slate-900 hover:bg-[#004AAD] rounded-2xl shadow-lg transition-all duration-150 subtle-tap"
+          >
+            <span>{districtName} İçin Teklif Alın</span>
+            <span>→</span>
+          </a>
+
+          <a
+            href={`tel:${COMPANY_INFO.landlinePhone}`}
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 text-sm font-bold text-slate-900 bg-white hover:bg-slate-50 border border-slate-300 rounded-2xl shadow-sm transition-all duration-150 subtle-tap"
+          >
+            <span>Hemen Ara: {COMPANY_INFO.landlineFormatted}</span>
+          </a>
+
+          <a
+            href={`https://wa.me/${COMPANY_INFO.whatsapp}?text=${encodeURIComponent(`Merhaba, ${districtName} bölgemizdeki sitemiz/apartmanımız için profesyonel yönetim teklifi almak istiyorum.`)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 text-sm font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-2xl shadow-sm transition-all duration-150 subtle-tap"
+          >
+            <span>WhatsApp Teklif</span>
+          </a>
+        </div>
+
+        <!-- Neighborhood Coverage Pills -->
+        <div class="w-full pt-5 border-t border-slate-200/80">
+          <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2.5">
+            {districtName} Aktif Hizmet Verdiğimiz Mahalle &amp; Bölgeler
+          </div>
+          <div class="flex flex-wrap gap-2">
+            {neighborhoods.map((m) => (
+              <span class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200/80">
+                {m}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: District Highlights -->
+      <div class="lg:col-span-5 space-y-4">
+        {localHighlights.map((hl, idx) => (
+          <div class="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-center gap-2.5 mb-2">
+              <span class="w-6 h-6 rounded-lg bg-[#004AAD] text-white text-xs font-bold flex items-center justify-center shrink-0">
+                {idx + 1}
+              </span>
+              <h2 class="text-base font-bold text-slate-900">{hl.title}</h2>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">{hl.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Core KMK & Financial Pillars -->
+<SiteYonetimiSection />
+
+<!-- Verified Client Reviews -->
+<Reviews />
+
+<!-- District-Specific FAQs -->
+<section class="py-16 sm:py-24 bg-white border-t border-slate-200">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6">
+    <div class="mb-10">
+      <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mb-2">
+        {districtName} Site Yönetimi Hakkında Sık Sorulanlar
+      </h2>
+      <p class="text-sm sm:text-base text-slate-600">
+        Yönetim devri, aidat tahsilatı ve Kat Mülkiyeti Kanunu süreçleriyle ilgili en kritik sorular.
+      </p>
+    </div>
+
+    <div class="space-y-4">
+      {faqs.map((faq) => (
+        <details class="group rounded-2xl border border-slate-200 p-6 [&_summary::-webkit-details-marker]:hidden bg-slate-50">
+          <summary class="flex cursor-pointer items-center justify-between gap-4 text-left font-bold text-slate-900 text-base">
+            <span>{faq.question}</span>
+            <span class="shrink-0 transition-transform duration-200 group-open:-rotate-180 text-slate-500">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </span>
+          </summary>
+          <p class="mt-4 text-sm text-slate-600 leading-relaxed pt-2 border-t border-slate-200">
+            {faq.answer}
+          </p>
+        </details>
+      ))}
+    </div>
+
+    <!-- Internal District Cross-Links -->
+    <div class="mt-14 pt-10 border-t border-slate-200">
+      <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">
+        Adana'daki Diğer Hizmet Bölgelerimiz
+      </h3>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {otherDistricts.map((d) => (
+          <a
+            href={d.href}
+            class="p-4 rounded-2xl bg-slate-50 hover:bg-sky-50 border border-slate-200 hover:border-sky-300 transition-all group"
+          >
+            <div class="text-sm font-bold text-slate-900 group-hover:text-[#004AAD] mb-1">{d.label} →</div>
+            <div class="text-xs text-slate-500">{d.desc}</div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pre-selected District Quote Form -->
+<QuoteForm
+  defaultService="site-yonetimi"
+  badge={`${districtName} Özel Yönetim Teklifi`}
+  heading={`${districtName} bölgesindeki siteniz için 15 dakikada net teklif alın.`}
+  subtitle="Daire sayınızı ve temel ihtiyaçlarınızı paylaşın; bütçenize özel şeffaf işletme projesi taslağımızı hemen iletelim."
+  sourceLabel={`${districtName} Reklam/SEO Sayfası`}
+/>
+
+<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />

@@ -214,16 +214,25 @@ const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
           <div class="p-6 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h3 class="text-base font-bold text-slate-900">Gelen Fiyat Teklifi ve İletişim Formları</h3>
-              <p class="text-xs text-slate-500 mt-0.5">Sitedeki teklif formu üzerinden iletilen gerçek zamanlı müşteri kayıtları</p>
+              <p class="text-xs text-slate-500 mt-0.5">Web sitesi ve reklamlardan gelen gerçek zamanlı PocketBase müşteri kayıtları</p>
             </div>
             
-            <button
-              type="button"
-              id="clear-all-inquiries-btn"
-              class="text-xs text-red-600 hover:text-red-800 font-semibold cursor-pointer underline"
-            >
-              Listeyi Temizle
-            </button>
+            <div class="flex items-center gap-3">
+              <button
+                type="button"
+                id="refresh-inquiries-btn"
+                class="px-3 py-1.5 rounded-xl text-xs font-bold text-sky-700 bg-sky-50 hover:bg-sky-100 border border-sky-200 transition-colors cursor-pointer"
+              >
+                ↻ Yenile
+              </button>
+              <button
+                type="button"
+                id="clear-all-inquiries-btn"
+                class="text-xs text-red-600 hover:text-red-800 font-semibold cursor-pointer underline"
+              >
+                Listeyi Temizle
+              </button>
+            </div>
           </div>
 
           <div id="inquiries-list-container" class="divide-y divide-slate-100">
@@ -367,6 +376,96 @@ const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
               class="px-8 py-3.5 text-sm font-bold text-white bg-slate-900 hover:bg-sky-700 rounded-xl transition-all duration-150 subtle-tap shadow-lg cursor-pointer"
             >
               Değişiklikleri Kaydet
+            </button>
+          </form>
+        </div>
+
+        <!-- Reklam & Dönüşüm İzleme Kodları -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+          <div class="max-w-2xl mb-6">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-800 border border-indigo-200 mb-2">
+              🎯 Reklam &amp; SEO Dönüşüm Takibi
+            </div>
+            <h3 class="text-xl font-bold text-slate-900">Reklam &amp; Dönüşüm İzleme Kodları (GA4, Google Ads, Meta Pixel)</h3>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
+              SEO veya reklam yöneticinizin vereceği kimlik numaralarını buraya girdiğinizde tüm sayfalarda telefon araması, WhatsApp tıklaması ve teklif formu dönüşümleri otomatik olarak ölçülür.
+            </p>
+          </div>
+
+          <form id="tracking-form" class="space-y-5 max-w-3xl">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="trk-ga4-id" class="block text-xs font-bold text-slate-700 mb-1.5">Google Analytics 4 (GA4) Ölçüm Kimliği</label>
+                <input
+                  type="text"
+                  id="trk-ga4-id"
+                  placeholder="Örn: G-XXXXXXXXXX"
+                  class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:border-sky-600 focus:ring-2 focus:ring-sky-100 outline-none font-mono"
+                />
+              </div>
+
+              <div>
+                <label for="trk-gads-id" class="block text-xs font-bold text-slate-700 mb-1.5">Google Ads Hesap Kimliği</label>
+                <input
+                  type="text"
+                  id="trk-gads-id"
+                  placeholder="Örn: AW-1234567890"
+                  class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:border-sky-600 focus:ring-2 focus:ring-sky-100 outline-none font-mono"
+                />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-200">
+              <div>
+                <label for="trk-gads-conv-lead" class="block text-xs font-bold text-slate-700 mb-1.5">Ads Dönüşüm: Form Gönderimi</label>
+                <input
+                  type="text"
+                  id="trk-gads-conv-lead"
+                  placeholder="AW-123.../etiket veya etiket"
+                  class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-white focus:border-sky-600 focus:ring-2 focus:ring-sky-100 outline-none font-mono"
+                />
+              </div>
+
+              <div>
+                <label for="trk-gads-conv-whatsapp" class="block text-xs font-bold text-slate-700 mb-1.5">Ads Dönüşüm: WhatsApp Tıklama</label>
+                <input
+                  type="text"
+                  id="trk-gads-conv-whatsapp"
+                  placeholder="AW-123.../etiket veya etiket"
+                  class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-white focus:border-sky-600 focus:ring-2 focus:ring-sky-100 outline-none font-mono"
+                />
+              </div>
+
+              <div>
+                <label for="trk-gads-conv-call" class="block text-xs font-bold text-slate-700 mb-1.5">Ads Dönüşüm: Telefon Tıklama</label>
+                <input
+                  type="text"
+                  id="trk-gads-conv-call"
+                  placeholder="AW-123.../etiket veya etiket"
+                  class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-white focus:border-sky-600 focus:ring-2 focus:ring-sky-100 outline-none font-mono"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label for="trk-meta-pixel-id" class="block text-xs font-bold text-slate-700 mb-1.5">Meta (Instagram / Facebook) Pixel ID</label>
+              <input
+                type="text"
+                id="trk-meta-pixel-id"
+                placeholder="Örn: 123456789012345"
+                class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:border-sky-600 focus:ring-2 focus:ring-sky-100 outline-none font-mono"
+              />
+            </div>
+
+            <div id="tracking-alert" class="hidden p-4 rounded-xl text-xs font-bold text-center bg-emerald-100 text-emerald-900 border border-emerald-300">
+              ✓ İzleme kodları PocketBase'e kaydedildi! Yeni ziyaretçilerde aktif hale geldi.
+            </div>
+
+            <button
+              type="submit"
+              class="px-8 py-3.5 text-sm font-bold text-white bg-[#004AAD] hover:bg-sky-800 rounded-xl transition-all duration-150 subtle-tap shadow-lg cursor-pointer"
+            >
+              İzleme Kodlarını Kaydet
             </button>
           </form>
         </div>
@@ -1114,6 +1213,27 @@ const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
     const statPending = document.getElementById('stat-pending-inquiries');
     const tabBadge = document.getElementById('tab-inquiries-badge');
     const clearInquiriesBtn = document.getElementById('clear-all-inquiries-btn');
+    const refreshInquiriesBtn = document.getElementById('refresh-inquiries-btn');
+
+    // Tracking form elements
+    const trackingForm = document.getElementById('tracking-form');
+    const trkGa4Id = document.getElementById('trk-ga4-id');
+    const trkGadsId = document.getElementById('trk-gads-id');
+    const trkGadsConvLead = document.getElementById('trk-gads-conv-lead');
+    const trkGadsConvWhatsapp = document.getElementById('trk-gads-conv-whatsapp');
+    const trkGadsConvCall = document.getElementById('trk-gads-conv-call');
+    const trkMetaPixelId = document.getElementById('trk-meta-pixel-id');
+    const trackingAlert = document.getElementById('tracking-alert');
+    let trackingRecordId = null;
+
+    function escapeHtml(val) {
+      return String(val ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
 
     // User management elements
     const newUserForm = document.getElementById('new-user-form');
@@ -1489,6 +1609,7 @@ const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
         } catch (e) {}
 
         loadSettings();
+        loadTrackingSettings();
         loadInquiries();
         renderUsersList();
         loadCeKeywords();
@@ -1706,23 +1827,129 @@ const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
       });
     }
 
-    // Load Inquiries
-    function loadInquiries() {
-      let inquiries = [];
+    // Tracking Settings (PocketBase reklam_ayarlari)
+    async function loadTrackingSettings() {
       try {
-        const saved = localStorage.getItem('celebi_quote_inquiries');
-        if (saved) {
-          inquiries = JSON.parse(saved);
-        } else {
-          inquiries = defaultSeedInquiries;
-          localStorage.setItem('celebi_quote_inquiries', JSON.stringify(inquiries));
-        }
+        const res = await fetch(`${PB_BASE_URL}/api/collections/reklam_ayarlari/records?page=1&perPage=1`);
+        if (!res.ok) return;
+        const data = await res.json();
+        const item = (data.items || [])[0];
+        if (!item) return;
+        trackingRecordId = item.id;
+        if (trkGa4Id) trkGa4Id.value = item.ga4Id || '';
+        if (trkGadsId) trkGadsId.value = item.gadsId || '';
+        if (trkGadsConvLead) trkGadsConvLead.value = item.gadsConvLead || '';
+        if (trkGadsConvWhatsapp) trkGadsConvWhatsapp.value = item.gadsConvWhatsapp || '';
+        if (trkGadsConvCall) trkGadsConvCall.value = item.gadsConvCall || '';
+        if (trkMetaPixelId) trkMetaPixelId.value = item.metaPixelId || '';
       } catch (err) {
-        inquiries = defaultSeedInquiries;
+        console.warn('loadTrackingSettings error:', err);
+      }
+    }
+
+    if (trackingForm) {
+      trackingForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const payload = {
+          ga4Id: (trkGa4Id?.value || '').trim(),
+          gadsId: (trkGadsId?.value || '').trim(),
+          gadsConvLead: (trkGadsConvLead?.value || '').trim(),
+          gadsConvWhatsapp: (trkGadsConvWhatsapp?.value || '').trim(),
+          gadsConvCall: (trkGadsConvCall?.value || '').trim(),
+          metaPixelId: (trkMetaPixelId?.value || '').trim(),
+        };
+        try {
+          const url = trackingRecordId
+            ? `${PB_BASE_URL}/api/collections/reklam_ayarlari/records/${trackingRecordId}`
+            : `${PB_BASE_URL}/api/collections/reklam_ayarlari/records`;
+          const method = trackingRecordId ? 'PATCH' : 'POST';
+          const res = await fetch(url, {
+            method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          const saved = await res.json();
+          if (saved.id) trackingRecordId = saved.id;
+          try { sessionStorage.removeItem('celebi_tracking_cfg'); } catch (_) {}
+          if (trackingAlert) {
+            trackingAlert.classList.remove('hidden');
+            setTimeout(() => trackingAlert.classList.add('hidden'), 5000);
+          }
+        } catch (err) {
+          alert('İzleme kodları kaydedilirken hata oluştu: ' + (err.message || err));
+        }
+      });
+    }
+
+    // Load Inquiries (PocketBase Primary + LocalStorage Fallback)
+    let activeInquiries = [];
+    let isPbInquiriesMode = false;
+
+    async function loadInquiries() {
+      let inquiries = [];
+      isPbInquiriesMode = false;
+
+      if (inquiriesContainer) {
+        inquiriesContainer.innerHTML = `<div class="p-8 text-center text-slate-400 text-xs">Talepler yükleniyor...</div>`;
       }
 
+      try {
+        let res = await fetch(`${PB_BASE_URL}/api/collections/teklif_talepleri/records?page=1&perPage=100&sort=-created`);
+        if (!res.ok) {
+          res = await fetch(`${PB_BASE_URL}/api/collections/teklif_talepleri/records?page=1&perPage=100`);
+        }
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        isPbInquiriesMode = true;
+        inquiries = (data.items || []).map((rec) => {
+          let createdLabel = 'Yeni';
+          if (rec.created) {
+            try {
+              createdLabel = new Date(rec.created).toLocaleString('tr-TR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+              });
+            } catch (_) {
+              createdLabel = rec.created;
+            }
+          }
+          return {
+            id: rec.id,
+            fullName: rec.fullName || '',
+            phone: rec.phone || '',
+            serviceType: rec.serviceType || '',
+            buildingUnits: rec.buildingUnits || '-',
+            message: rec.message || '',
+            status: rec.status || 'Yeni',
+            channel: rec.channel || 'Web Sitesi Teklif Formu',
+            landingPage: rec.landingPage || '',
+            utmSource: rec.utmSource || '',
+            utmMedium: rec.utmMedium || '',
+            utmCampaign: rec.utmCampaign || '',
+            utmTerm: rec.utmTerm || '',
+            gclid: rec.gclid || '',
+            fbclid: rec.fbclid || '',
+            referrer: rec.referrer || '',
+            created: createdLabel,
+            _fromPb: true,
+          };
+        });
+      } catch (err) {
+        try {
+          const saved = localStorage.getItem('celebi_quote_inquiries');
+          inquiries = saved ? JSON.parse(saved) : defaultSeedInquiries;
+        } catch (_) {
+          inquiries = defaultSeedInquiries;
+        }
+      }
+
+      activeInquiries = inquiries;
       const totalCount = inquiries.length;
-      const pendingCount = inquiries.filter((i) => i.status === 'Yeni').length;
+      const pendingCount = inquiries.filter((i) => (i.status || 'Yeni') === 'Yeni').length;
 
       if (statTotal) statTotal.innerText = totalCount;
       if (statPending) statPending.innerText = pendingCount;
@@ -1730,7 +1957,7 @@ const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
 
       if (!inquiriesContainer) return;
       if (inquiries.length === 0) {
-        inquiriesContainer.innerHTML = `<div class="p-8 text-center text-slate-400 text-xs">Henüz gelen bir teklif talebi bulunmuyor.</div>`;
+        inquiriesContainer.innerHTML = `<div class="p-8 text-center text-slate-400 text-xs">Henüz gelen bir teklif talebi bulunmuyor. Siteden gelen yeni talepler burada anlık olarak listelenecektir.</div>`;
         return;
       }
 
@@ -1741,35 +1968,55 @@ const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
             'İncelendi': 'bg-sky-100 text-sky-800 border-sky-200',
             'Teklif Verildi': 'bg-slate-100 text-slate-800 border-slate-300',
           };
-          const badgeClass = statusColors[item.status] || 'bg-slate-100 text-slate-800';
-          const cleanPhone = (item.phone || '').replace(/[^0-9]/g, '');
+          const safeStatus = item.status || 'Yeni';
+          const badgeClass = statusColors[safeStatus] || 'bg-slate-100 text-slate-800';
+          const cleanPhone = String(item.phone || '').replace(/[^0-9]/g, '');
           const waPhone = cleanPhone.startsWith('90') ? cleanPhone : '90' + cleanPhone.replace(/^0/, '');
-          const waText = encodeURIComponent(`Merhaba ${item.fullName}, Çelebi Yönetim ve Temizlik olarak web sitemiz üzerinden ilettiğiniz ${item.serviceType || 'hizmet'} teklif talebiniz için yazıyoruz.`);
+          const waText = encodeURIComponent(`Merhaba ${item.fullName || ''}, Çelebi Yönetim ve Temizlik olarak web sitemiz üzerinden ilettiğiniz ${item.serviceType || 'hizmet'} teklif talebiniz için yazıyoruz.`);
+
+          const attrBadges = [];
+          if (item.gclid) {
+            attrBadges.push(`<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300">🎯 Google Ads</span>`);
+          } else if (item.fbclid) {
+            attrBadges.push(`<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-900 border border-indigo-300">📘 Meta Ads</span>`);
+          }
+          if (item.utmSource || item.utmCampaign) {
+            const utmLabel = [item.utmSource, item.utmMedium, item.utmCampaign].filter(Boolean).join(' / ');
+            attrBadges.push(`<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-violet-50 text-violet-800 border border-violet-200">📡 ${escapeHtml(utmLabel)}</span>`);
+          }
+          if (item.utmTerm) {
+            attrBadges.push(`<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">🔍 ${escapeHtml(item.utmTerm)}</span>`);
+          }
+          if (item.landingPage) {
+            attrBadges.push(`<span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-slate-100 text-slate-600 border border-slate-200">📄 ${escapeHtml(item.landingPage)}</span>`);
+          }
 
           return `
             <div class="p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-4 hover:bg-slate-50/80 transition-colors">
-              <div class="space-y-1.5 max-w-2xl">
+              <div class="space-y-2 max-w-2xl">
                 <div class="flex flex-wrap items-center gap-2">
-                  <span class="text-sm font-bold text-slate-900">${item.fullName}</span>
+                  <span class="text-sm font-bold text-slate-900">${escapeHtml(item.fullName)}</span>
                   <span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${badgeClass}">
-                    ${item.status || 'Yeni'}
+                    ${escapeHtml(safeStatus)}
                   </span>
-                  ${item.channel ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">💬 ${item.channel}</span>` : ''}
-                  <span class="text-xs text-slate-400">• ${item.created || 'Yeni'}</span>
+                  ${item.channel ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">💬 ${escapeHtml(item.channel)}</span>` : ''}
+                  <span class="text-xs text-slate-400">• ${escapeHtml(item.created || 'Yeni')}</span>
                 </div>
 
                 <div class="flex flex-wrap items-center gap-3 text-xs text-slate-600">
-                  <span class="font-bold text-sky-800 bg-sky-50 px-2 py-0.5 rounded">Hizmet: ${item.serviceType}</span>
-                  ${item.buildingUnits ? `<span>Birim/Alan: <strong>${item.buildingUnits}</strong></span>` : ''}
-                  <span>Tel: <strong>${item.phone}</strong></span>
+                  <span class="font-bold text-sky-800 bg-sky-50 px-2 py-0.5 rounded">Hizmet: ${escapeHtml(item.serviceType)}</span>
+                  ${item.buildingUnits && item.buildingUnits !== '-' ? `<span>Birim/Alan: <strong>${escapeHtml(item.buildingUnits)}</strong></span>` : ''}
+                  <span>Tel: <strong>${escapeHtml(item.phone)}</strong></span>
                 </div>
 
-                ${item.message ? `<p class="text-xs text-slate-600 italic bg-white p-2.5 rounded-xl border border-slate-200/80">"${item.message}"</p>` : ''}
+                ${attrBadges.length ? `<div class="flex flex-wrap items-center gap-1.5 pt-0.5">${attrBadges.join('')}</div>` : ''}
+
+                ${item.message ? `<p class="text-xs text-slate-600 italic bg-white p-2.5 rounded-xl border border-slate-200/80">"${escapeHtml(item.message)}"</p>` : ''}
               </div>
 
               <div class="flex flex-wrap items-center gap-2 shrink-0">
-                <a href="https://wa.me/${waPhone}?text=${waText}" target="_blank" class="px-3 py-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-xl transition-all">WhatsApp'tan Yaz</a>
-                <a href="tel:${item.phone}" class="px-3 py-1.5 text-xs font-bold text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all">Ara</a>
+                <a href="https://wa.me/${waPhone}?text=${waText}" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-xl transition-all">WhatsApp'tan Yaz</a>
+                <a href="tel:${escapeHtml(item.phone)}" class="px-3 py-1.5 text-xs font-bold text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all">Ara</a>
                 <button type="button" data-action="toggle-status" data-index="${idx}" class="px-3 py-1.5 text-xs font-bold text-sky-700 bg-sky-50 hover:bg-sky-100 border border-sky-200 rounded-xl transition-all cursor-pointer">Durum Değiştir</button>
                 <button type="button" data-action="delete" data-index="${idx}" class="p-1.5 text-slate-400 hover:text-red-600 rounded-lg transition-colors cursor-pointer" title="Sil">✕</button>
               </div>
@@ -1779,33 +2026,81 @@ const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
         .join('');
 
       inquiriesContainer.querySelectorAll('[data-action="toggle-status"]').forEach((btn) => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', async () => {
           const index = parseInt(btn.getAttribute('data-index'), 10);
-          const current = inquiries[index].status || 'Yeni';
-          inquiries[index].status = current === 'Yeni' ? 'İncelendi' : current === 'İncelendi' ? 'Teklif Verildi' : 'Yeni';
-          localStorage.setItem('celebi_quote_inquiries', JSON.stringify(inquiries));
+          const target = activeInquiries[index];
+          if (!target) return;
+          const current = target.status || 'Yeni';
+          const nextStatus = current === 'Yeni' ? 'İncelendi' : current === 'İncelendi' ? 'Teklif Verildi' : 'Yeni';
+
+          if (target._fromPb && target.id) {
+            try {
+              const res = await fetch(`${PB_BASE_URL}/api/collections/teklif_talepleri/records/${target.id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: nextStatus }),
+              });
+              if (!res.ok) throw new Error('HTTP ' + res.status);
+            } catch (err) {
+              alert('Durum güncellenemedi: ' + (err.message || err));
+              return;
+            }
+          } else {
+            target.status = nextStatus;
+            try { localStorage.setItem('celebi_quote_inquiries', JSON.stringify(activeInquiries)); } catch (_) {}
+          }
           loadInquiries();
         });
       });
 
       inquiriesContainer.querySelectorAll('[data-action="delete"]').forEach((btn) => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', async () => {
           const index = parseInt(btn.getAttribute('data-index'), 10);
-          if (confirm('Bu teklif kaydını silmek istediğinize emin misiniz?')) {
-            inquiries.splice(index, 1);
-            localStorage.setItem('celebi_quote_inquiries', JSON.stringify(inquiries));
-            loadInquiries();
+          const target = activeInquiries[index];
+          if (!target) return;
+          if (!confirm('Bu teklif kaydını silmek istediğinize emin misiniz?')) return;
+
+          if (target._fromPb && target.id) {
+            try {
+              const res = await fetch(`${PB_BASE_URL}/api/collections/teklif_talepleri/records/${target.id}`, {
+                method: 'DELETE',
+              });
+              if (!res.ok) throw new Error('HTTP ' + res.status);
+            } catch (err) {
+              alert('Kayıt silinemedi: ' + (err.message || err));
+              return;
+            }
+          } else {
+            activeInquiries.splice(index, 1);
+            try { localStorage.setItem('celebi_quote_inquiries', JSON.stringify(activeInquiries)); } catch (_) {}
           }
+          loadInquiries();
         });
       });
     }
 
+    if (refreshInquiriesBtn) {
+      refreshInquiriesBtn.addEventListener('click', () => {
+        loadInquiries();
+      });
+    }
+
     if (clearInquiriesBtn) {
-      clearInquiriesBtn.addEventListener('click', () => {
-        if (confirm('Tüm teklif kayıtlarını temizlemek istediğinize emin misiniz?')) {
-          localStorage.setItem('celebi_quote_inquiries', JSON.stringify([]));
-          loadInquiries();
+      clearInquiriesBtn.addEventListener('click', async () => {
+        if (!confirm('Tüm teklif kayıtlarını silmek istediğinize emin misiniz?')) return;
+        if (isPbInquiriesMode) {
+          for (const item of activeInquiries) {
+            if (item._fromPb && item.id) {
+              try {
+                await fetch(`${PB_BASE_URL}/api/collections/teklif_talepleri/records/${item.id}`, {
+                  method: 'DELETE',
+                });
+              } catch (_) {}
+            }
+          }
         }
+        try { localStorage.setItem('celebi_quote_inquiries', JSON.stringify([])); } catch (_) {}
+        loadInquiries();
       });
     }
 

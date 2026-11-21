@@ -1,4 +1,160 @@
 ---
-// Canonical redirect to single landing page section
-return Astro.redirect('/#temizlik', 301);
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import TemizlikSection from '@/components/sections/TemizlikSection.astro';
+import WhyUs from '@/components/sections/WhyUs.astro';
+import Reviews from '@/components/sections/Reviews.astro';
+import QuoteForm from '@/components/sections/QuoteForm.astro';
+import { COMPANY_INFO } from '@/lib/fallback-data';
+
+const title = 'Adana Kurumsal & İnşaat Sonrası Temizlik Şirketi | Çelebi Temizlik';
+const description =
+  'Adana ofis temizliği, inşaat sonrası anahtar teslim temizlik, sepetli vinçli dış cephe cam yıkama ve haftalık apartman merdiven temizliği. Tamamı SGK güvenceli kadro.';
+
+const cleaningFaqs = [
+  {
+    question: 'Temizlik personeliniz SGK sigortalı ve kadrolu mu?',
+    answer:
+      'Evet. Çelebi bünyesinde çalışan tüm temizlik personeli kendi SGK bordromuzda yer alan, İSG eğitimleri tamamlanmış ve adli sicil kontrolü yapılmış kadrolu çalışanlardır.',
+  },
+  {
+    question: 'İnşaat sonrası temizlikte cam ve parkelere zarar verilir mi?',
+    answer:
+      'Kesinlikle hayır. Yüzeye özel nötr kimyasallar, çizmez kazıyıcı bıçaklar, buharlı ve endüstriyel vakum makineleri ile derz, harç ve etiket kalıntıları sıfır hasarla temizlenir.',
+  },
+  {
+    question: 'Ofis temizliği mesai saatleri dışında yapılabiliyor mu?',
+    answer:
+      'Evet. Adana genelindeki ofis, klinik ve plazalar için sabah mesai öncesi veya akşam 18:30 sonrası periyodik sözleşmeli temizlik planı oluşturuyoruz.',
+  },
+  {
+    question: 'Apartman merdiven temizliği hangi sıklıkta yapılır?',
+    answer:
+      'Bina yoğunluğuna göre haftada 1 veya 2 sabit günde uygulanır. Her ziyaret sonrası bina panosundaki imza çizelgesi yönetici onayına sunulur.',
+  },
+];
+
+const siteUrl = 'https://celebiyonetim.com.tr';
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Service',
+      name: 'Adana Kurumsal ve Endüstriyel Temizlik Hizmetleri',
+      serviceType: 'Temizlik Hizmetleri',
+      url: `${siteUrl}/temizlik`,
+      description,
+      provider: { '@id': `${siteUrl}/#organization` },
+      areaServed: ['Adana', 'Çukurova', 'Seyhan', 'Sarıçam', 'Yüreğir'].map((name) => ({
+        '@type': 'AdministrativeArea',
+        name,
+      })),
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: cleaningFaqs.map((f) => ({
+        '@type': 'Question',
+        name: f.question,
+        acceptedAnswer: { '@type': 'Answer', text: f.answer },
+      })),
+    },
+  ],
+};
 ---
+
+<BaseLayout title={title} description={description}>
+  <section class="relative overflow-hidden pt-8 pb-16 sm:pt-14 sm:pb-20 bg-gradient-to-b from-emerald-50/60 via-white to-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <nav class="flex items-center gap-2 text-xs text-slate-500 mb-6" aria-label="Sayfa Yolu">
+        <a href="/" class="hover:text-sky-700 transition-colors">Ana Sayfa</a>
+        <span>/</span>
+        <span class="text-slate-900 font-bold">Adana Temizlik Hizmetleri</span>
+      </nav>
+
+      <div class="max-w-4xl">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-white text-emerald-800 border border-emerald-200 mb-5 shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span>SGK Güvenceli Kadro • Adana Ofis, İnşaat &amp; Merdiven Temizliği</span>
+        </div>
+
+        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.08] mb-6">
+          Adana'da Sigortalı Kadroyla <span class="text-emerald-700">Kurumsal ve Anahtar Teslim Temizlik</span>
+        </h1>
+
+        <p class="text-base sm:text-lg text-slate-600 leading-relaxed mb-8 max-w-3xl font-normal">
+          Ofislerden plazalara, yeni teslim inşaat projelerinden apartman ortak alanlarına kadar tüm mekanlarda endüstriyel ekipman ve İSG belgeli personelle garantili hijyen sunuyoruz.
+        </p>
+
+        <div class="flex flex-wrap items-center gap-3 sm:gap-4">
+          <a
+            href="#iletisim"
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 text-sm font-bold text-white bg-emerald-700 hover:bg-emerald-800 rounded-2xl shadow-lg transition-all duration-150 subtle-tap"
+          >
+            <span>Ücretsiz Keşif &amp; Fiyat Teklifi</span>
+            <span>→</span>
+          </a>
+
+          <a
+            href={`tel:${COMPANY_INFO.cleaningPhone}`}
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 text-sm font-bold text-slate-900 bg-white hover:bg-slate-50 border border-slate-300 rounded-2xl shadow-sm transition-all duration-150 subtle-tap"
+          >
+            <span>Temizlik Hattı: {COMPANY_INFO.cleaningPhoneFormatted}</span>
+          </a>
+
+          <a
+            href={`https://wa.me/${COMPANY_INFO.whatsapp}?text=${encodeURIComponent('Merhaba, Adana temizlik hizmetleriniz için fiyat teklifi almak istiyorum.')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 text-sm font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-2xl shadow-sm transition-all duration-150 subtle-tap"
+          >
+            <span>WhatsApp'tan Yazın</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <TemizlikSection />
+  <WhyUs />
+  <Reviews />
+
+  <section class="py-16 sm:py-24 bg-slate-50 border-t border-slate-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
+      <div class="mb-10">
+        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mb-2">
+          Kurumsal Temizlik Hizmetleri Hakkında Sık Sorulanlar
+        </h2>
+        <p class="text-sm sm:text-base text-slate-600">
+          Personel sigortası, ekipman temini ve periyodik sözleşme detayları.
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        {cleaningFaqs.map((faq) => (
+          <details class="group rounded-2xl border border-slate-200 p-6 [&_summary::-webkit-details-marker]:hidden bg-white">
+            <summary class="flex cursor-pointer items-center justify-between gap-4 text-left font-bold text-slate-900 text-base">
+              <span>{faq.question}</span>
+              <span class="shrink-0 transition-transform duration-200 group-open:-rotate-180 text-slate-500">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </span>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed pt-2 border-t border-slate-200">
+              {faq.answer}
+            </p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <QuoteForm
+    defaultService="ofis-temizlik"
+    badge="Adana Temizlik Operasyon Teklifi"
+    heading="Mekanınız veya binanız için net temizlik teklifi alın."
+    subtitle="Metrekare veya daire sayısını belirtin; malzemeli ya da malzemesiz en uygun teklifimizi 15 dakikada iletelim."
+    sourceLabel="Adana Temizlik Sayfası"
+  />
+
+  <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+</BaseLayout>

@@ -32,6 +32,10 @@ const schemaData = {
       '@id': `${siteUrl}/#organization`,
       name: COMPANY_INFO.name,
       url: siteUrl,
+      logo: {
+        '@type': 'ImageObject',
+        url: `${siteUrl}/assets/logo/celebi-logo.svg`,
+      },
       description: COMPANY_INFO.description,
       telephone: COMPANY_INFO.phone,
       email: COMPANY_INFO.email,

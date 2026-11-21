@@ -46,11 +46,17 @@ const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
         <!-- Ambient top sheen -->
         <div class="absolute -top-12 left-1/2 -translate-x-1/2 w-48 h-24 bg-sky-500/20 rounded-full blur-2xl pointer-events-none"></div>
 
-        <div class="flex flex-col items-center text-center mb-8">
-          <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-slate-950 via-slate-900 to-sky-900 text-white flex items-center justify-center font-bold text-2xl shadow-lg border border-white/40 mb-4">
-            Ç
-          </div>
-          <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Çelebi Yönetim Merkezi</h1>
+        <div class="flex flex-col items-center text-center mb-6">
+          <img
+            src="/assets/logo/celebi-logo.svg"
+            alt="Çelebi Yönetim Hizmet İşleri Ltd. Şti."
+            width="160"
+            height="160"
+            class="w-36 h-36 sm:w-40 sm:h-40 object-contain mb-2"
+            loading="eager"
+            decoding="async"
+          />
+          <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">Yönetim Merkezi</h1>
           <p class="text-xs text-slate-500 mt-1">İç operasyon, teklif formları ve firma ayarları paneli</p>
         </div>
 
@@ -107,8 +113,14 @@ const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
       <!-- Top Bar -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-3xl bg-white border border-slate-200 shadow-sm mb-8">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-lg shadow-sm">
-            Ç
+          <div class="w-11 h-11 rounded-xl bg-white border border-slate-200 p-1 flex items-center justify-center shadow-sm shrink-0">
+            <img
+              src="/assets/logo/celebi-logo-mark.svg"
+              alt="Çelebi Yönetim"
+              width="36"
+              height="36"
+              class="w-full h-full object-contain"
+            />
           </div>
           <div>
             <div class="flex items-center gap-2 flex-wrap">

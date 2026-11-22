@@ -191,7 +191,8 @@ const envTracking = {
         function initPixels(cfg) {
           activeCfg = { ...envTracking, ...cfg };
           const rawGa4 = (activeCfg.ga4Id || '').trim();
-          const effectiveGa4 = rawGa4.toUpperCase() === 'GTM-M7CC26B5' ? '' : rawGa4;
+          const preloadedGoogleIds = new Set(['GTM-M7CC26B5', 'G-74ZHMJ1VEJ']);
+          const effectiveGa4 = preloadedGoogleIds.has(rawGa4.toUpperCase()) ? '' : rawGa4;
           const primaryId = effectiveGa4 || (activeCfg.gadsId || '').trim();
 
           if (primaryId && !gtagReady) {

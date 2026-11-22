@@ -26,7 +26,7 @@ CREDS_CANDIDATES = [
     Path("/var/www/credentials/gsc-service-account.json"),
 ]
 GSC_SITE = "sc-domain:celebiyonetim.com.tr"
-CLOUD_PROJECT_NUM = "858622567796"
+DEFAULT_PROJECT_ID = "celebi-yonetim"
 CONVERSION_EVENTS = ["generate_lead", "whatsapp_click", "phone_call_click"]
 
 
@@ -192,16 +192,26 @@ def ga4_run_report(token: str, prop_id: str, payload: dict) -> dict:
     return resp.json()
 
 
-def print_ga4_activation_help(sa_email: str, admin_status: str, data_status: str):
-    print("\n--- GA4 Etkinleştirme Adımları (Tek Seferlik ~2 dk) ---")
-    if admin_status == "API_DISABLED" or data_status == "DATA_API_DISABLED":
-        print("1. Google Cloud Console'da şu 2 API için 'Etkinleştir (Enable)' butonuna basın:")
-        print(f"   • Analytics Data API : https://console.developers.google.com/apis/api/analyticsdata.googleapis.com/overview?project={CLOUD_PROJECT_NUM}")
-        print(f"   • Analytics Admin API: https://console.developers.google.com/apis/api/analyticsadmin.googleapis.com/overview?project={CLOUD_PROJECT_NUM}")
+def print_activation_help(sa_email: str, project_id: str, gsc_ok: bool, gsc_msg: str, admin_status: str, data_status: str):
+    print("\n--- Google API Etkinleştirme Adımları (Tek Seferlik ~2 dk) ---")
+    needs_api = (
+        admin_status == "API_DISABLED"
+        or data_status == "DATA_API_DISABLED"
+        or (not gsc_ok and "disabled" in gsc_msg.lower())
+    )
+    if needs_api:
+        print(f"1. Google Cloud Console ({project_id}) projesinde kapalı API'ler için 'Enable / Etkinleştir' butonuna basın:")
+        if not gsc_ok and "disabled" in gsc_msg.lower():
+            print(f"   • Search Console API : https://console.developers.google.com/apis/api/searchconsole.googleapis.com/overview?project={project_id}")
+        if admin_status == "API_DISABLED" or data_status == "DATA_API_DISABLED":
+            print(f"   • Analytics Data API : https://console.developers.google.com/apis/api/analyticsdata.googleapis.com/overview?project={project_id}")
+            print(f"   • Analytics Admin API: https://console.developers.google.com/apis/api/analyticsadmin.googleapis.com/overview?project={project_id}")
+    if not gsc_ok:
+        print("2. Google Search Console -> Ayarlar -> Kullanıcılar ve izinler -> Kullanıcı ekle:")
+        print(f"   • E-posta: {sa_email} (Tam yetki)")
     if admin_status in ("NO_ACCESS", "NO_PERMISSION", "API_DISABLED") or data_status == "NO_ACCESS":
-        print("2. Google Analytics -> Yönetici -> Mülk erişimi yönetimi -> '+' Kullanıcı ekle:")
-        print(f"   • E-posta: {sa_email}")
-        print("   • Rol    : Görüntüleyen (Viewer) veya Düzenleyen (Editor)")
+        print("3. Google Analytics -> Yönetici -> Mülk erişimi yönetimi -> '+' Kullanıcı ekle:")
+        print(f"   • E-posta: {sa_email} (Görüntüleyen veya Düzenleyen)")
 
 
 def print_gsc_report(token: str, sitemaps: list):
@@ -366,8 +376,9 @@ def main():
     else:
         print(f"[GA4 API] {admin_status}: {admin_detail}")
 
-    if admin_status != "OK" or data_status != "OK":
-        print_ga4_activation_help(sa["client_email"], admin_status, data_status)
+    if not gsc_ok or admin_status != "OK" or data_status != "OK":
+        project_id = sa.get("project_id") or DEFAULT_PROJECT_ID
+        print_activation_help(sa["client_email"], project_id, gsc_ok, gsc_msg, admin_status, data_status)
 
     if run_report:
         if gsc_ok:

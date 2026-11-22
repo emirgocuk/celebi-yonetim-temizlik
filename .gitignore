@@ -29,6 +29,7 @@ Thumbs.db
 # Credentials & Keys
 *service-account*.json
 credentials/
+google-json/
 *.pem
 *.key
 

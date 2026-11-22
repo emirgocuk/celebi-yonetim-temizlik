@@ -1,0 +1,148 @@
+# ÇELEBİ YÖNETİM VE TEMİZLİK — ADANA GOOGLE ADS NEGATİF ANAHTAR KELİME LİSTESİ (137 KELİME)
+# Google Ads -> Araçlar -> Paylaşılan Kitaplık -> Hariç Tutulanlar Listeleri -> Negatif Anahtar Kelime Listeleri
+# kısmına doğrudan kopyalayıp yapıştırabilirsiniz (Sıralı eşleme "..." önerilir; tek kelimeler gereksiz aramaları keser).
+
+# 1. İŞ ARAMASI / ELEMAN / KARİYER (Bütçeyi en çok yakan grup)
+iş ilanı
+iş ilanları
+eleman
+eleman arayanlar
+personel alımı
+part time
+günlük iş
+kariyer
+cv
+başvuru
+işkur
+iskur
+maaş
+ne kadar maaş
+asgari ücret
+çalışma saatleri
+temizlikçi arıyorum iş
+gündelikçi iş
+staj
+sertifika kursu
+halk eğitim
+meb sertifika
+kpss
+kpps
+evde ek iş
+bekçi alımı
+kapıcı iş ilanı
+sekreter
+
+# 2. ÜCRETSİZ ŞABLON / PDF / YAZILIM / ÖDEV / ŞİKAYET
+ücretsiz program
+bedava
+excel şablon
+word
+pdf indir
+doc
+slayt
+sunum
+ödev
+tez
+sınav soruları
+açıköğretim
+aöf
+kitap
+mevzuat indir
+kanun maddesi tam metin
+apsiyon
+yoneticiapp
+apartman yönetim programı
+site yönetim yazılımı
+crm
+demo program
+mobil uygulama
+şikayetvar
+ekşi sözlük
+forum
+
+# 3. İLGİSİZ TEMİZLİK KOLLARI & ÜRÜN SATIŞI
+halı yıkama
+koltuk yıkama
+kuru temizleme
+oto yıkama
+araç temizliği
+petek temizleme
+klima temizliği
+kombi bakımı
+baca temizleme
+foseptik
+vidanjör
+böcek ilaçlama
+haşere
+dezenfektan satışı
+temizlik malzemeleri toptan
+deterjan fiyatları
+robot süpürge
+dyson
+vileda
+mop
+paspas
+çamaşır suyu
+kimyasal satış
+gündelikçi bayan
+saatlik temizlikçi
+yatılı
+çocuk bakıcısı
+yaşlı bakıcısı
+ev arkadaşı
+cilt temizliği
+diş taşı temizliği
+kulak temizliği
+veri temizleme
+kasa temizliği
+bilgisayar temizliği
+telefon temizliği
+havuz suyu ilacı
+şofben
+
+# 4. ADANA DIŞI İLLER VE İLÇELER
+istanbul
+ankara
+izmir
+bursa
+antalya
+mersin
+tarsus
+gaziantep
+konya
+kayseri
+adıyaman
+hatay
+antakya
+iskenderun
+osmaniye
+kahramanmaraş
+niğde
+nevşehir
+eskişehir
+kocaeli
+gebze
+sakarya
+samsun
+trabzon
+diyarbakır
+şanlıurfa
+malatya
+van
+erzurum
+denizli
+muğla
+bodrum
+fethiye
+alanya
+manavgat
+aydın
+balıkesir
+tekirdağ
+edirne
+kadıköy
+beşiktaş
+çankaya
+yenimahalle
+nilüfer
+mezitli

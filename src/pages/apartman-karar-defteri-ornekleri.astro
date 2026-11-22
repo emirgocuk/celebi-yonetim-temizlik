@@ -1,0 +1,578 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import QuickCallbackBar from '@/components/sections/QuickCallbackBar.astro';
+import { COMPANY_INFO } from '@/lib/fallback-data';
+
+const title = 'Adana Apartman Karar Defteri Örnekleri (2026) — Kopyala & Kullan | Çelebi Yönetim';
+const description =
+  '634 sayılı Kat Mülkiyeti Kanunu uyumlu apartman ve site yönetim karar defteri örnekleri: profesyonel yönetime geçiş, sözleşme feshi, temizlik hizmeti kararı, genel kurul çağrısı ve aidat ihtarnamesi.';
+
+const faqs = [
+  {
+    question: 'Profesyonel site yönetimi sözleşmesi nasıl feshedilir veya değiştirilir?',
+    answer:
+      'KMK Madde 34 uyarınca kat malikleri olağan veya olağanüstü genel kurulda sayı ve arsa payı çoğunluğuyla yeni yönetim seçimi kararı alır, noter onaylı karar defterine işler ve mevcut yönetim şirketine sözleşmedeki bildirim süresine uyarak noter kanalıyla fesih ve devir ihtarı gönderir. Yeni yönetim olarak tüm devir protokolü ve hesap mutabakatını ücretsiz yürütüyoruz.',
+  },
+  {
+    question: 'Karar defterine yazılan kararlar noterde onaylatılmalı mıdır?',
+    answer:
+      'Karar defterinin kendisi her yıl Ocak ayı sonuna kadar kapanış, yıl başında ise açılış noter tasdikine tabidir. Banka hesabı açılışı, icra vekaletnamesi ve tüzel kişilik (site yönetim şirketi) yetkilendirmesi içeren sayfalarda ayrıca noter onaylı karar sureti talep edilir.',
+  },
+  {
+    question: 'Site genel kurulunda temizlik şirketiyle anlaşmak için kaç oy gerekir?',
+    answer:
+      'Düzenli temizlik ve bakım hizmeti alımı olağan yönetim işlerinden olduğu için toplantıya katılanların salt çoğunluğu (ve KMK genel kurul nisabı dahilinde yönetim kurulunun işletme projesi yetkisi) ile karara bağlanabilir. SGK sorumluluğunun şirkete devredilmesi defterde açıkça belirtilmelidir.',
+  },
+  {
+    question: 'İlk genel kurulda çoğunluk sağlanamazsa ikinci toplantı ne zaman yapılır?',
+    answer:
+      'İlk toplantıda kat maliklerinin hem sayı hem arsa payı bakımından yarısından fazlası toplanamazsa, çağrı yazısında önceden bildirilmiş olmak kaydıyla en geç 15 gün (uygulamada genellikle 7 gün) sonra yapılan ikinci toplantıda nisap aranmaksızın katılanların salt çoğunluğuyla karar alınabilir (yönetici seçimi hariç — KMK md. 34 yönetici seçiminde sayı ve arsa payı çoğunluğu şartını korur).',
+  },
+];
+
+const templates = [
+  {
+    id: 'profesyonel-yonetim-gecis',
+    badge: 'KMK Madde 34 • Devir & Yetkilendirme',
+    badgeClass: 'bg-sky-50 text-sky-800 border-sky-200',
+    title: '1. Profesyonel Site / Apartman Yönetimine Geçiş Karar Defteri Örneği',
+    desc: 'Apartman veya sitenin yöneticiliğini tüzel kişiliğe (Çelebi Yönetim) devretmek ve banka/SGK yetkisi vermek için.',
+  },
+  {
+    id: 'yonetim-fesih-ve-devir',
+    badge: 'Fesih & Devir Süreci',
+    badgeClass: 'bg-rose-50 text-rose-800 border-rose-200',
+    title: '2. Mevcut Site Yönetimi Sözleşmesinin Feshi ve Devir Kararı Örneği',
+    desc: 'Memnun kalınmayan mevcut yönetim sözleşmesini yasal usule uygun feshedip yeni yönetime devir kararı almak için.',
+  },
+  {
+    id: 'temizlik-hizmeti-karari',
+    badge: 'Ortak Alan Hijyeni & SGK Güvencesi',
+    badgeClass: 'bg-emerald-50 text-emerald-800 border-emerald-200',
+    title: '3. Site Genel Kurulu Temizlik Hizmeti Alım ve Merdiven Hijyeni Kararı Örneği',
+    desc: 'Sigortasız gündelikçi riskini ortadan kaldırıp faturalı ve SGK belgeli temizlik şirketiyle anlaşma kararı için.',
+  },
+  {
+    id: 'genel-kurul-cagri',
+    badge: 'KMK Madde 29 • Çağrı & Gündem',
+    badgeClass: 'bg-indigo-50 text-indigo-800 border-indigo-200',
+    title: '4. Kat Malikleri Olağan / Olağanüstü Genel Kurul Çağrı İlanı ve Gündemi',
+    desc: 'Bina panosuna asılacak ve bağımsız bölüm sahiplerine WhatsApp / taahhütlü tebliğ edilecek resmi çağrı metni.',
+  },
+  {
+    id: 'aidat-ihtarname-kmk20',
+    badge: 'KMK Madde 20 • %5 Gecikme Tazminatı',
+    badgeClass: 'bg-amber-50 text-amber-900 border-amber-200',
+    title: '5. Ödenmeyen Aidat İhtarname ve İcra Öncesi Son Uyarı Bildirimi',
+    desc: 'Geciken aidat borçlularına komşuluk ilişkilerini zedelemeden resmi süre tanıyan ve icra öncesi tebliğ edilen bildirim.',
+  },
+];
+
+const districtLinks = [
+  { href: '/cukurova-site-yonetimi/', label: 'Çukurova Site Yönetimi', sub: 'Mahfesığmaz, Turgut Özal, Güzelyalı' },
+  { href: '/seyhan-apartman-yonetimi/', label: 'Seyhan Apartman Yönetimi', sub: 'Ziyapaşa, Reşatbey, Gazipaşa' },
+  { href: '/saricam-site-yonetimi/', label: 'Sarıçam Site Yönetimi', sub: 'Yeni konut projeleri ve toplu siteler' },
+];
+
+const siteUrl = 'https://celebiyonetim.com.tr';
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebPage',
+      name: title,
+      url: `${siteUrl}/apartman-karar-defteri-ornekleri/`,
+      description,
+      inLanguage: 'tr-TR',
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: faqs.map((f) => ({
+        '@type': 'Question',
+        name: f.question,
+        acceptedAnswer: { '@type': 'Answer', text: f.answer },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout title={title} description={description}>
+  <section class="pt-8 pb-12 sm:pt-12 sm:pb-16 bg-gradient-to-b from-sky-50/70 via-white to-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <nav class="flex items-center gap-2 text-xs text-slate-500 mb-5" aria-label="Sayfa Yolu">
+        <a href="/" class="hover:text-sky-700 transition-colors">Ana Sayfa</a>
+        <span>/</span>
+        <a href="/site-yonetimi/" class="hover:text-sky-700 transition-colors">Site Yönetimi</a>
+        <span>/</span>
+        <span class="text-slate-900 font-bold">Karar Defteri Örnekleri</span>
+      </nav>
+
+      <div class="max-w-4xl">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-white text-[#004AAD] border border-sky-200 mb-4 shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span>634 Sayılı KMK Uyumlu • Ücretsiz Özelleştir &amp; Kopyala</span>
+        </div>
+
+        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 leading-[1.1] mb-4">
+          Apartman &amp; Site <span class="text-[#004AAD]">Karar Defteri Örnekleri</span> (2026)
+        </h1>
+
+        <p class="text-sm sm:text-base text-slate-600 leading-relaxed max-w-3xl mb-6">
+          Yönetici seçimi, mevcut yönetim firmasının feshi, SGK'lı temizlik şirketi kararı, genel kurul çağrısı ve aidat ihtarnamelerini aşağıdan
+          <strong>kendi apartman bilgilerinize göre canlı doldurun</strong>; tek tıkla kopyalayın, WhatsApp grubuna atın veya yazdırın.
+        </p>
+
+        <div class="flex flex-wrap items-center gap-3 text-xs">
+          <a href="/site-yonetimi-fiyat-hesapla/" class="px-4 py-2 rounded-xl font-bold bg-[#004AAD] text-white hover:bg-sky-800 transition-colors shadow-sm">
+            🧮 30 Sn. Aidat &amp; %5 Gecikme Zammı Hesapla →
+          </a>
+          <a href="/site-yonetimi/" class="px-4 py-2 rounded-xl font-bold bg-white text-slate-800 border border-slate-300 hover:bg-slate-50 transition-colors">
+            🏢 Profesyonel Site Yönetimi Hizmeti
+          </a>
+          <a href="/temizlik/" class="px-4 py-2 rounded-xl font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 transition-colors">
+            ✨ Apartman &amp; Merdiven Temizliği
+          </a>
+        </div>
+      </div>
+
+      <!-- Interactive Live Customizer Bar -->
+      <div class="mt-8 p-5 sm:p-6 rounded-3xl bg-white border-2 border-[#004AAD]/20 shadow-lg">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+          <div>
+            <h2 class="text-sm sm:text-base font-extrabold text-slate-900">✏️ Tüm Şablonları Binanıza Göre Canlı Özelleştirin</h2>
+            <p class="text-xs text-slate-500">Buraya yazdığınız bilgiler aşağıdaki 5 karar örneğinin tamamına anında işlenir.</p>
+          </div>
+          <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 self-start">
+            Canlı Önizleme Aktif
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+          <div>
+            <label for="kd-site-name" class="block text-[11px] font-bold text-slate-700 mb-1">Site / Apartman Adı</label>
+            <input
+              type="text"
+              id="kd-site-name"
+              value="Örnek Palmiye Apartmanı"
+              placeholder="Örn: Turgut Özal Palmiye Apt."
+              class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 focus:border-[#004AAD] focus:ring-2 focus:ring-sky-100 outline-none font-semibold"
+            />
+          </div>
+
+          <div>
+            <label for="kd-district" class="block text-[11px] font-bold text-slate-700 mb-1">İlçe / Adana</label>
+            <input
+              type="text"
+              id="kd-district"
+              value="Çukurova / Adana"
+              placeholder="Çukurova / Adana"
+              class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 focus:border-[#004AAD] focus:ring-2 focus:ring-sky-100 outline-none font-semibold"
+            />
+          </div>
+
+          <div>
+            <label for="kd-date" class="block text-[11px] font-bold text-slate-700 mb-1">Toplantı / Karar Tarihi</label>
+            <input
+              type="text"
+              id="kd-date"
+              value="22.11.2026"
+              placeholder="GG.AA.YYYY"
+              class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 focus:border-[#004AAD] focus:ring-2 focus:ring-sky-100 outline-none font-semibold"
+            />
+          </div>
+
+          <div>
+            <label for="kd-units" class="block text-[11px] font-bold text-slate-700 mb-1">Bağımsız Bölüm (Daire)</label>
+            <input
+              type="text"
+              id="kd-units"
+              value="32"
+              placeholder="Örn: 32"
+              class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 focus:border-[#004AAD] focus:ring-2 focus:ring-sky-100 outline-none font-semibold"
+            />
+          </div>
+
+          <div>
+            <label for="kd-aidat" class="block text-[11px] font-bold text-slate-700 mb-1">Aylık Aidat (₺)</label>
+            <input
+              type="text"
+              id="kd-aidat"
+              value="1.250"
+              placeholder="Örn: 1.250"
+              class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 focus:border-[#004AAD] focus:ring-2 focus:ring-sky-100 outline-none font-semibold"
+            />
+          </div>
+        </div>
+
+        <!-- Quick Anchor Pills -->
+        <div class="mt-4 pt-4 border-t border-slate-100 flex flex-wrap gap-2 text-xs">
+          {templates.map((tpl, i) => (
+            <a
+              href={`#${tpl.id}`}
+              class="px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-sky-50 text-slate-700 hover:text-[#004AAD] border border-slate-200 font-semibold transition-colors"
+            >
+              {i + 1}. {tpl.title.replace(/^\d+\.\s*/, '').split(' ').slice(0, 4).join(' ')}…
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 KMK Templates Section -->
+  <section class="py-8 sm:py-12 bg-white">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 space-y-8">
+
+      <!-- Template 1 -->
+      <article id="profesyonel-yonetim-gecis" class="scroll-mt-24 rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+        <div class="p-6 sm:p-7 bg-slate-50/70 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="space-y-1.5">
+            <span class={`inline-flex px-3 py-1 rounded-full text-[11px] font-bold border ${templates[0].badgeClass}`}>{templates[0].badge}</span>
+            <h2 class="text-lg sm:text-xl font-extrabold text-slate-900">{templates[0].title}</h2>
+            <p class="text-xs text-slate-600">{templates[0].desc}</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 shrink-0">
+            <button type="button" data-copy-target="tpl-body-1" data-tpl-id="profesyonel-yonetim-gecis" class="kd-copy-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-[#004AAD] hover:bg-sky-800 text-white cursor-pointer transition-colors">
+              📋 Metni Kopyala
+            </button>
+            <a href="#" data-wa-target="tpl-body-1" data-skip-wa-track="true" target="_blank" rel="noopener noreferrer" class="kd-wa-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition-colors">
+              💬 WhatsApp Grubunda Paylaş
+            </a>
+            <button type="button" data-print-target="tpl-body-1" data-print-title={templates[0].title} class="kd-print-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 cursor-pointer transition-colors">
+              🖨️ Yazdır / PDF
+            </button>
+          </div>
+        </div>
+        <div class="p-6 sm:p-8">
+          <pre id="tpl-body-1" class="whitespace-pre-wrap font-sans text-xs sm:text-sm text-slate-800 leading-relaxed bg-slate-50 p-5 sm:p-6 rounded-2xl border border-slate-200">KARAR NO: 2026 / ...
+KARAR TARİHİ: <span data-kd="date">22.11.2026</span>
+TOPLANTI KONUSU: Profesyonel Site / Apartman Yönetim Şirketi Seçimi ve Yetkilendirme
+
+<span data-kd="district">Çukurova / Adana</span> sınırları içinde bulunan <span data-kd="units">32</span> bağımsız bölümlü <span data-kd="siteName">Örnek Palmiye Apartmanı</span> Kat Malikleri Genel Kurulu <span data-kd="date">22.11.2026</span> tarihinde toplanmış; 634 sayılı Kat Mülkiyeti Kanunu'nun (KMK) 34. maddesi uyarınca aranan sayı ve arsa payı çoğunluğu sağlanarak aşağıdaki kararlar oy birliği / oy çokluğu ile alınmıştır:
+
+1. Binamızın idari, mali ve hukuki yönetim işlerinin profesyonel olarak yürütülmesi amacıyla Mahfesığmaz Mah. Çukurova / Adana adresinde faaliyet gösteren ÇELEBİ YÖNETİM VE TEMİZLİK HİZMET İŞLERİ LTD. ŞTİ. firmasının 1 yıl süreyle profesyonel yönetici / yönetim şirketi olarak seçilmesine,
+2. Mevcut dönem aylık işletme aidatının her bağımsız bölüm için <span data-kd="aidat">1.250</span> TL olarak belirlenmesine, gününde ödenmeyen aidatlar için KMK Madde 20 gereği aylık %5 gecikme tazminatı uygulanmasına ve gerektiğinde ilamsız icra takibi başlatılması için yönetim firmasına avukat yetkilendirme yetkisi verilmesine,
+3. Apartman / site adına yetkili bankalarda hesap açılması, internet bankacılığı tanımlanması, SGK ve vergi dairesi bildirimlerinin yapılması ile fatura/makbuz düzenlenmesi hususlarında Çelebi Yönetim yetkilisinin tam yetkili kılınmasına karar verilmiştir.
+
+DİVAN BAŞKANI                    KATİP ÜYE                    KAT MALİKLERİ İMZALARI
+Adı Soyadı / İmza                Adı Soyadı / İmza            (Ekli Hazirun Cetveli)</pre>
+        </div>
+      </article>
+
+      <!-- Template 2 -->
+      <article id="yonetim-fesih-ve-devir" class="scroll-mt-24 rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+        <div class="p-6 sm:p-7 bg-slate-50/70 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="space-y-1.5">
+            <span class={`inline-flex px-3 py-1 rounded-full text-[11px] font-bold border ${templates[1].badgeClass}`}>{templates[1].badge}</span>
+            <h2 class="text-lg sm:text-xl font-extrabold text-slate-900">{templates[1].title}</h2>
+            <p class="text-xs text-slate-600">{templates[1].desc}</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 shrink-0">
+            <button type="button" data-copy-target="tpl-body-2" data-tpl-id="yonetim-fesih-ve-devir" class="kd-copy-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-[#004AAD] hover:bg-sky-800 text-white cursor-pointer transition-colors">
+              📋 Metni Kopyala
+            </button>
+            <a href="#" data-wa-target="tpl-body-2" data-skip-wa-track="true" target="_blank" rel="noopener noreferrer" class="kd-wa-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition-colors">
+              💬 WhatsApp Grubunda Paylaş
+            </a>
+            <button type="button" data-print-target="tpl-body-2" data-print-title={templates[1].title} class="kd-print-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 cursor-pointer transition-colors">
+              🖨️ Yazdır / PDF
+            </button>
+          </div>
+        </div>
+        <div class="p-6 sm:p-8">
+          <pre id="tpl-body-2" class="whitespace-pre-wrap font-sans text-xs sm:text-sm text-slate-800 leading-relaxed bg-slate-50 p-5 sm:p-6 rounded-2xl border border-slate-200">KARAR NO: 2026 / ...
+KARAR TARİHİ: <span data-kd="date">22.11.2026</span>
+TOPLANTI KONUSU: Mevcut Yönetim Sözleşmesinin Feshi, Hesap Tasfiyesi ve Yeni Yönetime Devir
+
+<span data-kd="district">Çukurova / Adana</span> adresindeki <span data-kd="units">32</span> dairelik <span data-kd="siteName">Örnek Palmiye Apartmanı</span> Kat Malikleri Kurulu, 634 sayılı KMK hükümleri çerçevesinde toplanarak aşağıdaki kararları almıştır:
+
+1. Halihazırda bina yöneticiliği görevini sürdüren mevcut kişi / firmaya ait yönetim yetkisinin ve hizmet sözleşmesinin .../..../2026 tarihi itibarıyla FESHEDİLMESİNE ve durumun noter kanalıyla bildirilmesine,
+2. Yeni dönem yöneticisi olarak ÇELEBİ YÖNETİM VE TEMİZLİK HİZMET İŞLERİ LTD. ŞTİ. ile sözleşme imzalanmasına,
+3. Eski yöneticinin/firmanın bugüne kadarki gelir-gider defterlerini, banka kasa bakiyesini, karar ve işletme defterlerini, SGK/personel dosyalarını, sigorta poliçelerini ve tüm teknik bakım sözleşmelerini devir tarihinden itibaren en geç 7 (yedi) gün içinde Devir Teslim Tutanağı ile yeni yönetime eksiksiz teslim etmesine,
+4. Devir sırasında seçilen Denetçi tarafından son dönem hesap mutabakatının incelenerek genel kurula rapor edilmesine karar verilmiştir.
+
+DİVAN BAŞKANI                    DENETÇİ ÜYE                    KAT MALİKLERİ İMZALARI</pre>
+        </div>
+      </article>
+
+      <!-- Template 3 -->
+      <article id="temizlik-hizmeti-karari" class="scroll-mt-24 rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+        <div class="p-6 sm:p-7 bg-slate-50/70 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="space-y-1.5">
+            <span class={`inline-flex px-3 py-1 rounded-full text-[11px] font-bold border ${templates[2].badgeClass}`}>{templates[2].badge}</span>
+            <h2 class="text-lg sm:text-xl font-extrabold text-slate-900">{templates[2].title}</h2>
+            <p class="text-xs text-slate-600">{templates[2].desc}</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 shrink-0">
+            <button type="button" data-copy-target="tpl-body-3" data-tpl-id="temizlik-hizmeti-karari" class="kd-copy-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-[#004AAD] hover:bg-sky-800 text-white cursor-pointer transition-colors">
+              📋 Metni Kopyala
+            </button>
+            <a href="#" data-wa-target="tpl-body-3" data-skip-wa-track="true" target="_blank" rel="noopener noreferrer" class="kd-wa-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition-colors">
+              💬 WhatsApp Grubunda Paylaş
+            </a>
+            <button type="button" data-print-target="tpl-body-3" data-print-title={templates[2].title} class="kd-print-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 cursor-pointer transition-colors">
+              🖨️ Yazdır / PDF
+            </button>
+          </div>
+        </div>
+        <div class="p-6 sm:p-8">
+          <pre id="tpl-body-3" class="whitespace-pre-wrap font-sans text-xs sm:text-sm text-slate-800 leading-relaxed bg-slate-50 p-5 sm:p-6 rounded-2xl border border-slate-200">KARAR NO: 2026 / ...
+KARAR TARİHİ: <span data-kd="date">22.11.2026</span>
+TOPLANTI KONUSU: Kurumsal, SGK Güvenceli Apartman Temizlik Hizmeti Alımı ve Hijyen Kuralları
+
+<span data-kd="district">Çukurova / Adana</span> bölgesindeki <span data-kd="units">32</span> daireli <span data-kd="siteName">Örnek Palmiye Apartmanı</span> ortak alanlarının temizliği konusunda aşağıdaki kararlar alınmıştır:
+
+1. Kayıtsız/sigortasız gündelikçi çalıştırılmasının apartman yönetimine ve kat maliklerine doğuracağı SGK idari para cezası ve iş kazası sorumluluklarını ortadan kaldırmak amacıyla profesyonel temizlik firması ile hizmet sözleşmesi yapılmasına,
+2. Haftada ...... gün sabit saatlerde tüm merdiven sahanlıkları, korkuluklar, asansör kabin/ayna yüzeyleri, posta kutuları, bina giriş holü ve cam kapıların faturalı ve SGK belgeli ekip tarafından temizlenmesine,
+3. Çöp saatleri ile merdiven temizliği kurallarına tüm daire sakinlerinin uymasına; ortak koridorlara çöp/eşya bırakılmamasına ve yapılan her ziyaretin yönetici kontrol çizelgesine işlenmesine karar verilmiştir.
+
+YÖNETİM KURULU / KAT MALİKLERİ İMZALARI</pre>
+        </div>
+      </article>
+
+      <!-- Template 4 -->
+      <article id="genel-kurul-cagri" class="scroll-mt-24 rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+        <div class="p-6 sm:p-7 bg-slate-50/70 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="space-y-1.5">
+            <span class={`inline-flex px-3 py-1 rounded-full text-[11px] font-bold border ${templates[3].badgeClass}`}>{templates[3].badge}</span>
+            <h2 class="text-lg sm:text-xl font-extrabold text-slate-900">{templates[3].title}</h2>
+            <p class="text-xs text-slate-600">{templates[3].desc}</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 shrink-0">
+            <button type="button" data-copy-target="tpl-body-4" data-tpl-id="genel-kurul-cagri" class="kd-copy-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-[#004AAD] hover:bg-sky-800 text-white cursor-pointer transition-colors">
+              📋 Metni Kopyala
+            </button>
+            <a href="#" data-wa-target="tpl-body-4" data-skip-wa-track="true" target="_blank" rel="noopener noreferrer" class="kd-wa-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition-colors">
+              💬 WhatsApp Grubunda Paylaş
+            </a>
+            <button type="button" data-print-target="tpl-body-4" data-print-title={templates[3].title} class="kd-print-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 cursor-pointer transition-colors">
+              🖨️ Yazdır / PDF
+            </button>
+          </div>
+        </div>
+        <div class="p-6 sm:p-8">
+          <pre id="tpl-body-4" class="whitespace-pre-wrap font-sans text-xs sm:text-sm text-slate-800 leading-relaxed bg-slate-50 p-5 sm:p-6 rounded-2xl border border-slate-200">KAT MALİKLERİ GENEL KURUL TOPLANTISINA ÇAĞRI
+TEBLİĞ TARİHİ: <span data-kd="date">22.11.2026</span>
+
+Sayın <span data-kd="siteName">Örnek Palmiye Apartmanı</span> (<span data-kd="district">Çukurova / Adana</span>) Kat Maliki,
+
+Apartmanımızın (<span data-kd="units">32</span> Bağımsız Bölüm) 2026–2027 dönemi yönetim, bütçe ve bakım süreçlerini görüşmek üzere Olağan / Olağanüstü Kat Malikleri Genel Kurul Toplantısı aşağıda belirtilen yer, gün ve saatte yapılacaktır:
+
+• 1. Toplantı Tarihi ve Saati : .../..../2026 - Saat 19:30
+• Toplantı Yeri              : Bina Giriş Salonu / Yönetim Ofisi
+• Yeter Sayı Sağlanamazsa    : 2. Toplantı 7 gün sonra (.../..../2026) aynı yer ve saatte yapılacaktır.
+
+GÜNDEM MADDELERİ:
+1. Açılış, yoklama ve Divan Heyetinin seçilmesi.
+2. Geçmiş dönem gelir-gider kesin hesabının okunması ve yöneticinin ibrası.
+3. Profesyonel site yönetim şirketi ile anlaşılması / yönetici ve denetçi seçimi.
+4. Yeni dönem işletme projesi ve aylık aidat tutarının (tahmini <span data-kd="aidat">1.250</span> TL) belirlenmesi.
+5. Asansör, hidrofor, ortak alan temizliği ve acil bakım taleplerinin görüşülmesi.
+6. Dilek, temenniler ve kapanış.
+
+* Toplantıya şahsen katılamayacak kat maliklerimizin bir temsilciye yazılı vekaletname vermesi rica olunur (KMK md. 31).
+
+YÖNETİM KURULU</pre>
+        </div>
+      </article>
+
+      <!-- Template 5 -->
+      <article id="aidat-ihtarname-kmk20" class="scroll-mt-24 rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+        <div class="p-6 sm:p-7 bg-slate-50/70 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="space-y-1.5">
+            <span class={`inline-flex px-3 py-1 rounded-full text-[11px] font-bold border ${templates[4].badgeClass}`}>{templates[4].badge}</span>
+            <h2 class="text-lg sm:text-xl font-extrabold text-slate-900">{templates[4].title}</h2>
+            <p class="text-xs text-slate-600">{templates[4].desc}</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 shrink-0">
+            <button type="button" data-copy-target="tpl-body-5" data-tpl-id="aidat-ihtarname-kmk20" class="kd-copy-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-[#004AAD] hover:bg-sky-800 text-white cursor-pointer transition-colors">
+              📋 Metni Kopyala
+            </button>
+            <a href="#" data-wa-target="tpl-body-5" data-skip-wa-track="true" target="_blank" rel="noopener noreferrer" class="kd-wa-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition-colors">
+              💬 WhatsApp Grubunda Paylaş
+            </a>
+            <button type="button" data-print-target="tpl-body-5" data-print-title={templates[4].title} class="kd-print-btn px-3.5 py-2 rounded-xl text-xs font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 cursor-pointer transition-colors">
+              🖨️ Yazdır / PDF
+            </button>
+          </div>
+        </div>
+        <div class="p-6 sm:p-8">
+          <pre id="tpl-body-5" class="whitespace-pre-wrap font-sans text-xs sm:text-sm text-slate-800 leading-relaxed bg-slate-50 p-5 sm:p-6 rounded-2xl border border-slate-200">ÖDENMEYEN AİDAT VE ORTAK GİDER BORCU BİLDİRİMİ (SON UYARI)
+TARİH: <span data-kd="date">22.11.2026</span>
+
+Sayın .................... (Daire No: ...),
+<span data-kd="siteName">Örnek Palmiye Apartmanı</span> (<span data-kd="district">Çukurova / Adana</span>)
+
+Bina işletme projemiz kapsamında aylık <span data-kd="aidat">1.250</span> TL üzerinden tahakkuk eden toplam ............. TL tutarındaki aidat / avans borcunuzun vadesi geçmesine rağmen henüz ödenmediği tespit edilmiştir.
+
+634 sayılı Kat Mülkiyeti Kanunu'nun 20. maddesi uyarınca, ortak gider payını zamanında ödemeyen kat maliki veya müteselsilen sorumlu oturan için gecikilen her gün hesabıyla AYLIK %5 GECİKME TAZMİNATI işletilmektedir.
+
+Bina elektrik, su, asansör ve temizlik giderlerinin aksamaması adına toplam bakiyenizin bu bildirimin tebliğinden itibaren 7 (yedi) gün içinde apartman resmi banka hesabına yatırılmasını rica ederiz. Aksi halde ilave ihtar yapılmaksızın İcra Müdürlüğü nezdinde ilamsız icra takibi başlatılacağını ve tüm avukatlık/icra masraflarının borca ekleneceğini bilgilerinize sunarız.
+
+<span data-kd="siteName">Örnek Palmiye Apartmanı</span> Yönetimi</pre>
+          <div class="mt-4 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600 bg-amber-50/70 border border-amber-200 rounded-xl px-4 py-3">
+            <span>Geciken aidat borcunun aylık <strong>%5 yasal gecikme tazminatı</strong> tutarını hemen hesaplamak ister misiniz?</span>
+            <a href="/site-yonetimi-fiyat-hesapla/" class="font-extrabold text-[#004AAD] hover:underline">
+              %5 KMK Gecikme Zammı Hesapla →
+            </a>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- Direct Conversion Callback Bar -->
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 pb-8">
+    <QuickCallbackBar
+      compact={true}
+      contextLabel="Apartman Karar Defteri Örnekleri Sayfası"
+      serviceType="Site & Apartman Yönetimi"
+      heading="Karar Defteri, Noter Onayı ve Devir Sürecini Ücretsiz Hazırlayalım — Sizi 5 Dakikada Arayalım"
+      subtext="Genel kurul çağrısından eski yönetimin devir teslim tutanağına kadar tüm evrakları Adana hukuk & yönetim ekibimiz sizin için eksiksiz düzenlesin."
+    />
+  </div>
+
+  <!-- District Internal Links -->
+  <section class="py-10 bg-slate-50 border-t border-slate-200">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6">
+      <h2 class="text-lg font-extrabold text-slate-900 mb-4">Adana İlçe Bazlı Yönetim &amp; Keşif Hizmetlerimiz</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {districtLinks.map((d) => (
+          <a href={d.href} class="p-4 rounded-2xl bg-white border border-slate-200 hover:border-[#004AAD] hover:shadow-md transition-all group">
+            <div class="text-sm font-bold text-slate-900 group-hover:text-[#004AAD]">{d.label} →</div>
+            <div class="text-xs text-slate-500 mt-1">{d.sub}</div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQs -->
+  <section class="py-14 bg-white border-t border-slate-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-6">
+        Karar Defteri ve Genel Kurul Hakkında Sık Sorulanlar
+      </h2>
+      <div class="space-y-3">
+        {faqs.map((faq) => (
+          <details class="group rounded-2xl border border-slate-200 p-5 bg-slate-50/50">
+            <summary class="flex cursor-pointer items-center justify-between gap-4 font-bold text-slate-900 text-sm sm:text-base">
+              <span>{faq.question}</span>
+              <span class="shrink-0 transition-transform duration-200 group-open:-rotate-180 text-slate-500">▼</span>
+            </summary>
+            <p class="mt-3 pt-3 border-t border-slate-200 text-xs sm:text-sm text-slate-600 leading-relaxed">{faq.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <script is:inline>
+    (() => {
+      const inputs = {
+        siteName: document.getElementById('kd-site-name'),
+        district: document.getElementById('kd-district'),
+        date: document.getElementById('kd-date'),
+        units: document.getElementById('kd-units'),
+        aidat: document.getElementById('kd-aidat'),
+      };
+
+      const defaults = {
+        siteName: 'Örnek Palmiye Apartmanı',
+        district: 'Çukurova / Adana',
+        date: '22.11.2026',
+        units: '32',
+        aidat: '1.250',
+      };
+
+      function syncAllFields() {
+        Object.keys(inputs).forEach((key) => {
+          const val = (inputs[key]?.value || '').trim() || defaults[key];
+          document.querySelectorAll(`[data-kd="${key}"]`).forEach((el) => {
+            el.textContent = val;
+          });
+        });
+        syncWaLinks();
+      }
+
+      function getCleanTemplateText(targetId) {
+        const el = document.getElementById(targetId);
+        return el ? (el.innerText || el.textContent || '').trim() : '';
+      }
+
+      function syncWaLinks() {
+        document.querySelectorAll('.kd-wa-btn').forEach((a) => {
+          const targetId = a.getAttribute('data-wa-target');
+          if (!targetId) return;
+          const body = getCleanTemplateText(targetId);
+          const footer = '\n\nKaynak ve canlı düzenleme: https://celebiyonetim.com.tr/apartman-karar-defteri-ornekleri/';
+          a.setAttribute('href', `https://wa.me/?text=${encodeURIComponent(body + footer)}`);
+        });
+      }
+
+      Object.values(inputs).forEach((inp) => {
+        inp?.addEventListener('input', syncAllFields);
+      });
+
+      document.querySelectorAll('.kd-copy-btn').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const targetId = btn.getAttribute('data-copy-target');
+          const tplId = btn.getAttribute('data-tpl-id') || targetId;
+          const text = getCleanTemplateText(targetId);
+          if (!text) return;
+
+          try {
+            await navigator.clipboard.writeText(text);
+          } catch (_) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            ta.remove();
+          }
+
+          if (typeof window.celebiTrack === 'function') {
+            window.celebiTrack('template_copy', { template_id: tplId, service_type: 'Site & Apartman Yönetimi' });
+          }
+
+          const orig = btn.innerHTML;
+          btn.innerHTML = '✓ Kopyalandı!';
+          btn.classList.add('bg-emerald-600');
+          setTimeout(() => {
+            btn.innerHTML = orig;
+            btn.classList.remove('bg-emerald-600');
+          }, 2000);
+        });
+      });
+
+      document.querySelectorAll('.kd-print-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const targetId = btn.getAttribute('data-print-target');
+          const printTitle = btn.getAttribute('data-print-title') || 'Karar Defteri Örneği';
+          const text = getCleanTemplateText(targetId);
+          if (!text) return;
+
+          const win = window.open('', '_blank', 'width=820,height=680');
+          if (!win) return;
+          const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+          win.document.write(
+            '<!doctype html><html lang="tr"><head><meta charset="UTF-8"><title>' + esc(printTitle) + '</title>' +
+            '<style>body{font-family:Arial,Helvetica,sans-serif;padding:40px;color:#0f172a;line-height:1.6;}h1{font-size:18px;border-bottom:2px solid #004AAD;padding-bottom:8px;margin-bottom:20px;}pre{white-space:pre-wrap;font-family:inherit;font-size:14px;}footer{margin-top:32px;font-size:11px;color:#64748b;border-top:1px solid #e2e8f0;padding-top:10px;}</style>' +
+            '</head><body><h1>' + esc(printTitle) + '</h1><pre>' + esc(text) + '</pre>' +
+            '<footer>Hazırlayan: Çelebi Yönetim ve Temizlik — 0 (322) 235 15 88 | celebiyonetim.com.tr</footer></body></html>'
+          );
+          win.document.close();
+          win.focus();
+          win.print();
+        });
+      });
+
+      syncAllFields();
+    })();
+  </script>
+
+  <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+</BaseLayout>

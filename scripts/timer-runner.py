@@ -69,13 +69,14 @@ BOILERPLATE_MARKERS = (
 INTERNAL_LINKS_HTML = """<div id="celebi-internal-links" class="mt-8 pt-6 border-t border-slate-200/80 bg-slate-50/60 p-4 rounded-2xl">
   <p class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">İlgili Hizmet ve Rehber Sayfalarımız:</p>
   <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-sky-700 font-semibold">
-    <li><a href="/site-yonetimi-fiyat-hesapla">🧮 30 Sn. Site Yönetimi &amp; Aidat Maliyeti Hesapla</a></li>
-    <li><a href="/site-yonetimi">🏢 Adana Profesyonel Site ve Apartman Yönetimi</a></li>
-    <li><a href="/temizlik">✨ Kurumsal Ofis, İnşaat ve Merdiven Temizliği</a></li>
-    <li><a href="/cukurova-site-yonetimi">📍 Çukurova Site &amp; Apartman Yönetimi</a></li>
-    <li><a href="/seyhan-apartman-yonetimi">🏛️ Seyhan Apartman &amp; İş Merkezi Yönetimi</a></li>
-    <li><a href="/saricam-site-yonetimi">🏗️ Sarıçam Toplu Konut &amp; Site Yönetimi</a></li>
-    <li><a href="/iletisim">📞 Mahfesığmaz / Çukurova İletişim &amp; Keşif</a></li>
+    <li><a href="/site-yonetimi-fiyat-hesapla/">🧮 30 Sn. Site Yönetimi &amp; Aidat Maliyeti Hesapla</a></li>
+    <li><a href="/apartman-karar-defteri-ornekleri/">📋 KMK Karar Defteri, Fesih &amp; Devir Örnekleri</a></li>
+    <li><a href="/site-yonetimi/">🏢 Adana Profesyonel Site ve Apartman Yönetimi</a></li>
+    <li><a href="/temizlik/">✨ Kurumsal Ofis, İnşaat ve Merdiven Temizliği</a></li>
+    <li><a href="/cukurova-site-yonetimi/">📍 Çukurova Site &amp; Apartman Yönetimi</a></li>
+    <li><a href="/seyhan-apartman-yonetimi/">🏛️ Seyhan Apartman &amp; İş Merkezi Yönetimi</a></li>
+    <li><a href="/saricam-site-yonetimi/">🏗️ Sarıçam Toplu Konut &amp; Site Yönetimi</a></li>
+    <li><a href="/iletisim/">📞 Mahfesığmaz / Çukurova İletişim &amp; Keşif</a></li>
   </ul>
 </div>"""
 

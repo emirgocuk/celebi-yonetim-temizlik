@@ -146,7 +146,7 @@ interface Props {
 const { article, relatedArticles } = Astro.props;
 
 const siteUrl = 'https://celebiyonetim.com.tr';
-const canonicalArticleUrl = `${siteUrl}/yazilar/${article.slug}`;
+const canonicalArticleUrl = `${siteUrl}/yazilar/${article.slug}/`;
 const pageTitle = article.seoTitle || `${article.title} | Çelebi Yönetim & Temizlik`;
 const pageDescription = article.summary;
 const shareUrl = `${canonicalArticleUrl}?utm_source=whatsapp_share&utm_medium=referral&utm_campaign=rehber_paylasim`;

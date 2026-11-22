@@ -5,6 +5,7 @@ const staticPages = [
   '',
   'site-yonetimi',
   'site-yonetimi-fiyat-hesapla',
+  'apartman-karar-defteri-ornekleri',
   'temizlik',
   'cukurova-site-yonetimi',
   'seyhan-apartman-yonetimi',
@@ -60,6 +61,7 @@ const highPriorityPages = new Set([
   'yazilar',
   'site-yonetimi',
   'site-yonetimi-fiyat-hesapla',
+  'apartman-karar-defteri-ornekleri',
   'temizlik',
   'cukurova-site-yonetimi',
   'seyhan-apartman-yonetimi',
@@ -70,8 +72,15 @@ const highPriorityPages = new Set([
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${allPages
   .map((page) => {
-    const url = page ? `${baseUrl}/${page}` : baseUrl;
-    const priority = page === '' ? '1.0' : page === 'site-yonetimi-fiyat-hesapla' ? '0.95' : highPriorityPages.has(page) ? '0.9' : '0.8';
+    const url = page ? `${baseUrl}/${page}/` : `${baseUrl}/`;
+    const priority =
+      page === ''
+        ? '1.0'
+        : page === 'site-yonetimi-fiyat-hesapla' || page === 'apartman-karar-defteri-ornekleri'
+          ? '0.95'
+          : highPriorityPages.has(page)
+            ? '0.9'
+            : '0.8';
     return `  <url>
     <loc>${url}</loc>
     <lastmod>${lastmod}</lastmod>

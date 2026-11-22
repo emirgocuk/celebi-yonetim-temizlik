@@ -20,7 +20,11 @@ const {
 } = Astro.props;
 
 const siteUrl = (Astro.site ? Astro.site.origin : 'https://celebiyonetim.com.tr').replace('www.', '');
-const fullCanonical = new URL(canonical, siteUrl).href;
+const parsedCanonical = new URL(canonical, siteUrl);
+if (!parsedCanonical.pathname.endsWith('/') && !/\.[a-z0-9]+$/i.test(parsedCanonical.pathname)) {
+  parsedCanonical.pathname += '/';
+}
+const fullCanonical = parsedCanonical.href;
 const fullOgImage = new URL(ogImage, siteUrl).href;
 
 // Google LocalBusiness, CleaningService & ProfessionalService JSON-LD Schema (Adana Local SEO)

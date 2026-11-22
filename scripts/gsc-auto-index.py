@@ -37,6 +37,7 @@ CORE_STATIC_PAGES = [
     ("", "1.0"),
     ("site-yonetimi", "0.9"),
     ("site-yonetimi-fiyat-hesapla", "0.95"),
+    ("apartman-karar-defteri-ornekleri", "0.95"),
     ("temizlik", "0.9"),
     ("cukurova-site-yonetimi", "0.9"),
     ("seyhan-apartman-yonetimi", "0.9"),
@@ -54,6 +55,7 @@ PRIORITY_INSPECT_URLS = [
     f"{BASE_URL}/",
     f"{BASE_URL}/site-yonetimi/",
     f"{BASE_URL}/site-yonetimi-fiyat-hesapla/",
+    f"{BASE_URL}/apartman-karar-defteri-ornekleri/",
     f"{BASE_URL}/cukurova-site-yonetimi/",
     f"{BASE_URL}/seyhan-apartman-yonetimi/",
     f"{BASE_URL}/saricam-site-yonetimi/",
@@ -114,7 +116,7 @@ def render_static_article_html(item: dict, stylesheets: str, header_html: str, f
     pub_date = str(item.get("tarih") or "Güncel")
     author = str(item.get("kaynak") or "Çelebi Hukuk & Yönetim Kurulu")
     image = str(item.get("kapakGorsel") or "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80")
-    canonical = f"{BASE_URL}/yazilar/{slug}"
+    canonical = f"{BASE_URL}/yazilar/{slug}/"
     today_iso = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
     schema = {
@@ -258,7 +260,7 @@ def write_vds_sitemap() -> list:
     xml_entries = []
 
     for page, prio in CORE_STATIC_PAGES:
-        url = f"{BASE_URL}/{page}" if page else BASE_URL
+        url = f"{BASE_URL}/{page}/" if page else f"{BASE_URL}/"
         urls.append(url)
         xml_entries.append(
             f"  <url>\n    <loc>{url}</loc>\n    <lastmod>{lastmod}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>{prio}</priority>\n  </url>"
@@ -273,7 +275,7 @@ def write_vds_sitemap() -> list:
             idx = os.path.join(yazilar_dir, name, "index.html")
             if os.path.isfile(idx):
                 seen.add(name)
-                url = f"{BASE_URL}/yazilar/{name}"
+                url = f"{BASE_URL}/yazilar/{name}/"
                 urls.append(url)
                 xml_entries.append(
                     f"  <url>\n    <loc>{url}</loc>\n    <lastmod>{lastmod}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>"

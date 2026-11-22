@@ -1,3 +1,4 @@
+import hashlib
 import os
 import tarfile
 import tempfile
@@ -32,17 +33,42 @@ for script_name in ["timer-runner.py", "auto-generate-cron.py", "fetch-gsc-keywo
         sftp.put(local_script, f"/var/www/scripts/{script_name}")
         print(f"Uploaded {script_name} to /var/www/scripts/")
 
+# Sync PocketBase pb_hooks/*.js if present and restart only on change
+hooks_changed = False
+local_hooks_dir = os.path.join(scripts_dir, "pb_hooks")
+if os.path.isdir(local_hooks_dir):
+    hook_files = sorted(f for f in os.listdir(local_hooks_dir) if f.endswith(".js"))
+    if hook_files:
+        _, out_md5, _ = ssh.exec_command("mkdir -p /var/www/pocketbase/pb_hooks && md5sum /var/www/pocketbase/pb_hooks/*.js 2>/dev/null || true")
+        remote_hashes = {}
+        for line in out_md5.read().decode("utf-8", errors="ignore").splitlines():
+            parts = line.split(None, 1)
+            if len(parts) == 2:
+                remote_hashes[os.path.basename(parts[1].strip())] = parts[0].strip()
+
+        for fname in hook_files:
+            local_p = os.path.join(local_hooks_dir, fname)
+            local_md5 = hashlib.md5(open(local_p, "rb").read()).hexdigest()
+            if remote_hashes.get(fname) != local_md5:
+                hooks_changed = True
+            sftp.put(local_p, f"/var/www/pocketbase/pb_hooks/{fname}")
+            print(f"Synced pb_hooks/{fname}")
+
 sftp.close()
 
+restart_pb_cmd = "systemctl restart pocketbase && " if hooks_changed else ""
 stdin, stdout, stderr = ssh.exec_command(
     "rm -rf /var/www/celebiyonetim/html/* && "
     "tar -xzf /tmp/celebiyonetim_dist_update.tar.gz -C /var/www/celebiyonetim/html/ && "
     "rm -f /tmp/celebiyonetim_dist_update.tar.gz && "
     "chmod +x /var/www/scripts/*.py && "
     "chown -R www-data:www-data /var/www/celebiyonetim/html && "
+    f"{restart_pb_cmd}"
     "systemctl reload nginx"
 )
 stdout.channel.recv_exit_status()
+if hooks_changed:
+    print("PocketBase restarted due to pb_hooks update.")
 print("VDS Update Complete!")
 
 # Submit updated sitemap to Google Search Console & IndexNow immediately
@@ -57,4 +83,3 @@ if os.path.exists(temp_archive):
     os.remove(temp_archive)
 
 ssh.close()
-

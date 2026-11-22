@@ -217,7 +217,14 @@ const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
               <p class="text-xs text-slate-500 mt-0.5">Web sitesi ve reklamlardan gelen gerçek zamanlı PocketBase müşteri kayıtları</p>
             </div>
             
-            <div class="flex items-center gap-3">
+            <div class="flex items-center flex-wrap gap-2.5">
+              <button
+                type="button"
+                id="go-notify-settings-btn"
+                class="px-3.5 py-1.5 rounded-xl text-xs font-bold text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-200 transition-colors cursor-pointer"
+              >
+                🔔 Bildirim Mailini Ayarla
+              </button>
               <button
                 type="button"
                 id="refresh-inquiries-btn"
@@ -377,6 +384,188 @@ const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
             >
               Değişiklikleri Kaydet
             </button>
+          </form>
+        </div>
+
+        <!-- Bildirimin Düşeceği E-Posta & Anlık Bildirim Ayarları -->
+        <div id="notification-settings-card" class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm scroll-mt-24">
+          <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6 pb-5 border-b border-slate-100">
+            <div class="max-w-2xl">
+              <div class="flex items-center flex-wrap gap-2 mb-2">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                  🔔 Anlık Müşteri Bildirimi
+                </span>
+                <span id="ntf-smtp-badge" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                  SMTP Kontrol Ediliyor...
+                </span>
+              </div>
+              <h3 class="text-xl font-bold text-slate-900">Bildirimin Düşeceği E-Posta &amp; Push Ayarları</h3>
+              <p class="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
+                Web sitesinden telefon numarası veya teklif formu bırakıldığı anda aşağıdaki mail adresine
+                <strong>Hemen Ara</strong> ve <strong>WhatsApp&#39;tan Yaz</strong> butonlu anlık bildirim gönderilir.
+              </p>
+            </div>
+
+            <label class="inline-flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-slate-50 border border-slate-200 cursor-pointer shrink-0">
+              <input type="checkbox" id="ntf-active" class="w-4 h-4 accent-emerald-600 cursor-pointer" checked />
+              <span class="text-xs font-bold text-slate-800">Yeni Talep Bildirimleri Aktif</span>
+            </label>
+          </div>
+
+          <form id="notification-form" class="space-y-6 max-w-3xl">
+            <div class="p-5 rounded-2xl bg-amber-50/50 border border-amber-200">
+              <label for="ntf-emails" class="block text-xs font-bold text-amber-950 mb-1.5">
+                Bildirimin Düşeceği E-Posta Adresi (veya Adresleri) *
+              </label>
+              <div class="text-[11px] text-amber-800 mb-2 font-medium">
+                Birden fazla mail için virgülle ayırın. Siteden numara bırakıldığı saniye &#39;Hemen Ara&#39; ve &#39;WhatsApp&#39; butonlu mail düşer.
+              </div>
+              <input
+                type="text"
+                id="ntf-emails"
+                placeholder="ornek@gmail.com, iletisim@celebiyonetim.com.tr"
+                class="w-full px-4 py-3 text-sm rounded-xl border border-amber-300 bg-white focus:border-amber-600 focus:ring-2 focus:ring-amber-100 outline-none font-semibold text-slate-900"
+              />
+            </div>
+
+            <!-- SMTP Gönderici Ayarları -->
+            <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider">📤 Mail Gönderici Ayarları (SMTP)</h4>
+                  <p class="text-[11px] text-slate-500 mt-0.5">Sunucunun mail atabilmesi için gönderici Gmail veya kurumsal mail bilgisi gerekir.</p>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    id="ntf-preset-gmail"
+                    class="px-3 py-1.5 rounded-xl text-[11px] font-bold bg-white hover:bg-sky-50 text-sky-800 border border-sky-200 cursor-pointer transition-colors"
+                  >
+                    📧 Gmail Hazır Ayar
+                  </button>
+                  <button
+                    type="button"
+                    id="ntf-preset-corp"
+                    class="px-3 py-1.5 rounded-xl text-[11px] font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 cursor-pointer transition-colors"
+                  >
+                    🏢 Kurumsal SMTP
+                  </button>
+                </div>
+              </div>
+
+              <div id="ntf-gmail-tip" class="hidden p-3 rounded-xl bg-sky-50 border border-sky-200 text-[11px] text-sky-900 leading-relaxed">
+                <strong>Gmail İpucu:</strong> Normal Gmail şifreniz çalışmaz; Google Hesabınız &rarr; Güvenlik &rarr; 2 Adımlı Doğrulama &rarr;
+                <strong>Uygulama Şifreleri</strong> kısmından 16 haneli bir şifre üretip aşağıya yapıştırın.
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="ntf-smtp-user" class="block text-xs font-bold text-slate-700 mb-1.5">Gönderici E-Posta (SMTP Kullanıcı)</label>
+                  <input
+                    type="email"
+                    id="ntf-smtp-user"
+                    placeholder="ornek@gmail.com"
+                    class="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white focus:border-sky-600 focus:ring-2 focus:ring-sky-100 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label for="ntf-smtp-pass" class="block text-xs font-bold text-slate-700 mb-1.5">SMTP Şifre / 16 Haneli Gmail Uygulama Şifresi</label>
+                  <input
+                    type="password"
+                    id="ntf-smtp-pass"
+                    autocomplete="new-password"
+                    placeholder="Kayıtlı şifreyi korumak için boş bırakın"
+                    class="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white focus:border-sky-600 focus:ring-2 focus:ring-sky-100 outline-none font-mono"
+                  />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="sm:col-span-2">
+                  <label for="ntf-smtp-host" class="block text-xs font-bold text-slate-700 mb-1.5">SMTP Sunucu</label>
+                  <input
+                    type="text"
+                    id="ntf-smtp-host"
+                    placeholder="smtp.gmail.com"
+                    class="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white focus:border-sky-600 focus:ring-2 focus:ring-sky-100 outline-none font-mono"
+                  />
+                </div>
+
+                <div>
+                  <label for="ntf-smtp-port" class="block text-xs font-bold text-slate-700 mb-1.5">Port</label>
+                  <input
+                    type="number"
+                    id="ntf-smtp-port"
+                    placeholder="587"
+                    class="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white focus:border-sky-600 focus:ring-2 focus:ring-sky-100 outline-none font-mono"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Opsiyonel Anlık Telefon Bildirimi -->
+            <details class="p-5 rounded-2xl bg-emerald-50/40 border border-emerald-200">
+              <summary class="text-xs font-bold text-emerald-950 cursor-pointer select-none">
+                📲 Opsiyonel Anlık Telefon Bildirimi (Baileys yerine ban risksiz 0 ₺ alternatifler: ntfy.sh / Telegram)
+              </summary>
+              <div class="mt-4 space-y-4">
+                <div>
+                  <label for="ntf-ntfy-topic" class="block text-xs font-bold text-slate-700 mb-1">
+                    ntfy.sh Kanal Adı (Telefona Anında Sesli Push — 0 ₺, Hesap/QR Yok)
+                  </label>
+                  <div class="text-[11px] text-slate-500 mb-1.5">
+                    Telefonunuza ücretsiz <strong>ntfy</strong> uygulamasını kurup tahmin edilmesi zor gizli bir kanal adı yazın (örn: <code>celebi-talep-9482</code>). Bildirime dokununca doğrudan müşterinin WhatsApp sohbetini açar.
+                  </div>
+                  <input
+                    type="text"
+                    id="ntf-ntfy-topic"
+                    placeholder="Örn: celebi-talep-9482 (isteğe bağlı)"
+                    class="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-emerald-200 bg-white focus:border-emerald-600 outline-none font-mono"
+                  />
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label for="ntf-tg-token" class="block text-xs font-bold text-slate-700 mb-1">Telegram Bot Token (İsteğe bağlı)</label>
+                    <input
+                      type="text"
+                      id="ntf-tg-token"
+                      placeholder="123456:ABC-DEF..."
+                      class="w-full px-4 py-2.5 text-xs rounded-xl border border-emerald-200 bg-white focus:border-emerald-600 outline-none font-mono"
+                    />
+                  </div>
+                  <div>
+                    <label for="ntf-tg-chat-id" class="block text-xs font-bold text-slate-700 mb-1">Telegram Chat / Grup ID</label>
+                    <input
+                      type="text"
+                      id="ntf-tg-chat-id"
+                      placeholder="-1001234567890 veya 123456789"
+                      class="w-full px-4 py-2.5 text-xs rounded-xl border border-emerald-200 bg-white focus:border-emerald-600 outline-none font-mono"
+                    />
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <div id="ntf-alert" class="hidden p-4 rounded-xl text-xs font-bold border"></div>
+
+            <div class="flex flex-wrap items-center gap-3">
+              <button
+                type="submit"
+                id="ntf-save-btn"
+                class="px-7 py-3.5 text-sm font-bold text-white bg-slate-900 hover:bg-sky-700 rounded-xl transition-all duration-150 subtle-tap shadow-lg cursor-pointer"
+              >
+                💾 Bildirim Ayarlarını Kaydet
+              </button>
+              <button
+                type="button"
+                id="ntf-test-btn"
+                class="px-6 py-3.5 text-sm font-bold text-emerald-900 bg-emerald-100 hover:bg-emerald-200 border border-emerald-300 rounded-xl transition-all duration-150 cursor-pointer"
+              >
+                🧪 Test Bildirimi Gönder
+              </button>
+            </div>
           </form>
         </div>
 
@@ -1216,6 +1405,27 @@ const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
     const tabBadge = document.getElementById('tab-inquiries-badge');
     const clearInquiriesBtn = document.getElementById('clear-all-inquiries-btn');
     const refreshInquiriesBtn = document.getElementById('refresh-inquiries-btn');
+    const goNotifySettingsBtn = document.getElementById('go-notify-settings-btn');
+
+    // Notification settings elements
+    const notificationForm = document.getElementById('notification-form');
+    const ntfActive = document.getElementById('ntf-active');
+    const ntfEmails = document.getElementById('ntf-emails');
+    const ntfSmtpUser = document.getElementById('ntf-smtp-user');
+    const ntfSmtpPass = document.getElementById('ntf-smtp-pass');
+    const ntfSmtpHost = document.getElementById('ntf-smtp-host');
+    const ntfSmtpPort = document.getElementById('ntf-smtp-port');
+    const ntfNtfyTopic = document.getElementById('ntf-ntfy-topic');
+    const ntfTgToken = document.getElementById('ntf-tg-token');
+    const ntfTgChatId = document.getElementById('ntf-tg-chat-id');
+    const ntfSmtpBadge = document.getElementById('ntf-smtp-badge');
+    const ntfGmailTip = document.getElementById('ntf-gmail-tip');
+    const ntfPresetGmail = document.getElementById('ntf-preset-gmail');
+    const ntfPresetCorp = document.getElementById('ntf-preset-corp');
+    const ntfAlert = document.getElementById('ntf-alert');
+    const ntfSaveBtn = document.getElementById('ntf-save-btn');
+    const ntfTestBtn = document.getElementById('ntf-test-btn');
+    let notificationRecordId = null;
 
     // Tracking form elements
     const trackingForm = document.getElementById('tracking-form');
@@ -1611,6 +1821,7 @@ const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
         } catch (e) {}
 
         loadSettings();
+        loadNotificationSettings();
         loadTrackingSettings();
         loadInquiries();
         renderUsersList();
@@ -1681,6 +1892,16 @@ const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
         });
       });
     });
+
+    if (goNotifySettingsBtn) {
+      goNotifySettingsBtn.addEventListener('click', () => {
+        const settingsTabBtn = Array.from(tabBtns).find((b) => b.getAttribute('data-tab') === 'settings');
+        if (settingsTabBtn) settingsTabBtn.click();
+        setTimeout(() => {
+          document.getElementById('notification-settings-card')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 60);
+      });
+    }
 
     // Render Users List
     function renderUsersList() {
@@ -1826,6 +2047,220 @@ const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
         localStorage.setItem('celebi_company_settings', JSON.stringify(newConfig));
         settingsAlert.classList.remove('hidden');
         setTimeout(() => settingsAlert.classList.add('hidden'), 5000);
+      });
+    }
+
+    // Notification Settings (PocketBase superuser-protected bildirim_ayarlari + /api/settings SMTP)
+    async function ensurePbSuperuserToken(forceRefresh = false) {
+      if (!forceRefresh) {
+        try {
+          const cached = sessionStorage.getItem('celebi_pb_su_token');
+          if (cached) return cached;
+        } catch (_) {}
+      }
+      const res = await fetch(`${PB_BASE_URL}/api/collections/_superusers/auth-with-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identity: PRIMARY_ADMIN.email, password: PRIMARY_ADMIN.password }),
+      });
+      if (!res.ok) throw new Error('PocketBase yönetici oturumu açılamadı (HTTP ' + res.status + ')');
+      const data = await res.json();
+      if (!data.token) throw new Error('Yönetici token alınamadı');
+      try { sessionStorage.setItem('celebi_pb_su_token', data.token); } catch (_) {}
+      return data.token;
+    }
+
+    async function pbSuperuserFetch(url, options = {}) {
+      let token = await ensurePbSuperuserToken(false);
+      let res = await fetch(url, {
+        ...options,
+        headers: { ...(options.headers || {}), Authorization: token },
+      });
+      if (res.status === 401) {
+        token = await ensurePbSuperuserToken(true);
+        res = await fetch(url, {
+          ...options,
+          headers: { ...(options.headers || {}), Authorization: token },
+        });
+      }
+      return res;
+    }
+
+    function showNtfAlert(isOk, htmlMsg) {
+      if (!ntfAlert) return;
+      ntfAlert.className = isOk
+        ? 'p-4 rounded-xl text-xs font-bold border bg-emerald-100 text-emerald-900 border-emerald-300 block'
+        : 'p-4 rounded-xl text-xs font-bold border bg-amber-50 text-amber-900 border-amber-300 block';
+      ntfAlert.innerHTML = htmlMsg;
+    }
+
+    function updateSmtpStatusBadge(smtp) {
+      if (!ntfSmtpBadge) return;
+      const ready = Boolean(smtp && smtp.enabled && smtp.host && smtp.host !== 'smtp.example.com' && smtp.username);
+      if (ready) {
+        ntfSmtpBadge.className = 'inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200';
+        ntfSmtpBadge.textContent = `✓ SMTP Aktif (${smtp.host})`;
+      } else {
+        ntfSmtpBadge.className = 'inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800 border border-amber-200';
+        ntfSmtpBadge.textContent = '⚠ SMTP Kurulumu Bekleniyor';
+      }
+    }
+
+    async function loadNotificationSettings() {
+      if (!notificationForm) return;
+      try {
+        const [recRes, setRes] = await Promise.all([
+          pbSuperuserFetch(`${PB_BASE_URL}/api/collections/bildirim_ayarlari/records?page=1&perPage=1`),
+          pbSuperuserFetch(`${PB_BASE_URL}/api/settings`),
+        ]);
+        if (recRes.ok) {
+          const recData = await recRes.json();
+          const item = (recData.items || [])[0];
+          if (item) {
+            notificationRecordId = item.id;
+            if (ntfActive) ntfActive.checked = item.aktif !== false;
+            if (ntfEmails) ntfEmails.value = item.aliciMailler || '';
+            if (ntfNtfyTopic) ntfNtfyTopic.value = item.ntfyTopic || '';
+            if (ntfTgToken) ntfTgToken.value = item.telegramBotToken || '';
+            if (ntfTgChatId) ntfTgChatId.value = item.telegramChatId || '';
+          }
+        }
+        if (setRes.ok) {
+          const s = await setRes.json();
+          const smtp = s?.smtp || {};
+          if (ntfSmtpUser) ntfSmtpUser.value = smtp.username || '';
+          if (ntfSmtpHost) ntfSmtpHost.value = smtp.host && smtp.host !== 'smtp.example.com' ? smtp.host : '';
+          if (ntfSmtpPort) ntfSmtpPort.value = smtp.port ? String(smtp.port) : '587';
+          updateSmtpStatusBadge(smtp);
+        }
+      } catch (err) {
+        console.warn('loadNotificationSettings error:', err);
+        updateSmtpStatusBadge(null);
+      }
+    }
+
+    if (ntfPresetGmail) {
+      ntfPresetGmail.addEventListener('click', () => {
+        if (ntfSmtpHost) ntfSmtpHost.value = 'smtp.gmail.com';
+        if (ntfSmtpPort) ntfSmtpPort.value = '587';
+        if (ntfGmailTip) ntfGmailTip.classList.remove('hidden');
+        if (ntfSmtpUser && !ntfSmtpUser.value && ntfEmails?.value) {
+          const firstMail = ntfEmails.value.split(/[,;\s]+/).find((x) => x.includes('@'));
+          if (firstMail) ntfSmtpUser.value = firstMail.trim();
+        }
+      });
+    }
+
+    if (ntfPresetCorp) {
+      ntfPresetCorp.addEventListener('click', () => {
+        if (ntfSmtpHost) ntfSmtpHost.value = 'mail.celebiyonetim.com.tr';
+        if (ntfSmtpPort) ntfSmtpPort.value = '587';
+        if (ntfGmailTip) ntfGmailTip.classList.add('hidden');
+      });
+    }
+
+    async function saveNotificationSettings() {
+      const cfgPayload = {
+        aktif: ntfActive ? ntfActive.checked : true,
+        aliciMailler: (ntfEmails?.value || '').trim(),
+        ntfyTopic: (ntfNtfyTopic?.value || '').trim(),
+        telegramBotToken: (ntfTgToken?.value || '').trim(),
+        telegramChatId: (ntfTgChatId?.value || '').trim(),
+      };
+
+      const cfgUrl = notificationRecordId
+        ? `${PB_BASE_URL}/api/collections/bildirim_ayarlari/records/${notificationRecordId}`
+        : `${PB_BASE_URL}/api/collections/bildirim_ayarlari/records`;
+      const cfgMethod = notificationRecordId ? 'PATCH' : 'POST';
+
+      const cfgRes = await pbSuperuserFetch(cfgUrl, {
+        method: cfgMethod,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(cfgPayload),
+      });
+      if (!cfgRes.ok) throw new Error('Bildirim alıcıları kaydedilemedi (HTTP ' + cfgRes.status + ')');
+      const savedRec = await cfgRes.json();
+      if (savedRec.id) notificationRecordId = savedRec.id;
+
+      const smtpHost = (ntfSmtpHost?.value || '').trim();
+      const smtpUser = (ntfSmtpUser?.value || '').trim();
+      const smtpPort = parseInt(ntfSmtpPort?.value || '587', 10) || 587;
+      const smtpPass = (ntfSmtpPass?.value || '').trim();
+
+      if (smtpHost && smtpUser) {
+        const smtpPatch = {
+          enabled: true,
+          host: smtpHost,
+          port: smtpPort,
+          username: smtpUser,
+          tls: smtpPort === 465,
+          authMethod: 'PLAIN',
+        };
+        if (smtpPass) smtpPatch.password = smtpPass;
+
+        const setRes = await pbSuperuserFetch(`${PB_BASE_URL}/api/settings`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            smtp: smtpPatch,
+            meta: {
+              senderAddress: smtpUser,
+              senderName: 'Çelebi Yönetim Web Bildirim',
+            },
+          }),
+        });
+        if (!setRes.ok) throw new Error('SMTP ayarları kaydedilemedi (HTTP ' + setRes.status + ')');
+        if (ntfSmtpPass) ntfSmtpPass.value = '';
+        updateSmtpStatusBadge(smtpPatch);
+      }
+    }
+
+    if (notificationForm) {
+      notificationForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (ntfSaveBtn) {
+          ntfSaveBtn.disabled = true;
+          ntfSaveBtn.textContent = 'Kaydediliyor...';
+        }
+        try {
+          await saveNotificationSettings();
+          showNtfAlert(true, '✓ Bildirim alıcıları ve mail ayarları kaydedildi! Test için "Test Bildirimi Gönder" butonunu kullanabilirsiniz.');
+        } catch (err) {
+          showNtfAlert(false, '⚠️ Kaydetme hatası: ' + escapeHtml(err.message || err));
+        } finally {
+          if (ntfSaveBtn) {
+            ntfSaveBtn.disabled = false;
+            ntfSaveBtn.textContent = '💾 Bildirim Ayarlarını Kaydet';
+          }
+        }
+      });
+    }
+
+    if (ntfTestBtn) {
+      ntfTestBtn.addEventListener('click', async () => {
+        ntfTestBtn.disabled = true;
+        ntfTestBtn.textContent = 'Test gönderiliyor...';
+        try {
+          await saveNotificationSettings();
+          const res = await pbSuperuserFetch(`${PB_BASE_URL}/api/celebi/test-notify`, { method: 'POST' });
+          if (!res.ok) throw new Error('Test uç noktası HTTP ' + res.status);
+          const data = await res.json();
+          const lines = [];
+          if (data.emailSent) lines.push('✓ Test e-postası gönderildi (gelen kutunuzu ve spam klasörünü kontrol edin).');
+          else if (data.emailError) lines.push('• E-posta: ' + escapeHtml(data.emailError));
+          if (data.ntfySent) lines.push('✓ ntfy.sh telefon bildirimi gönderildi.');
+          else if (data.ntfyError) lines.push('• ntfy.sh: ' + escapeHtml(data.ntfyError));
+          if (data.telegramSent) lines.push('✓ Telegram bildirimi gönderildi.');
+          else if (data.telegramError) lines.push('• Telegram: ' + escapeHtml(data.telegramError));
+          if (!lines.length) lines.push('Herhangi bir bildirim kanalı yapılandırılmamış.');
+          const anyOk = Boolean(data.emailSent || data.ntfySent || data.telegramSent);
+          showNtfAlert(anyOk, lines.join('<br/>'));
+        } catch (err) {
+          showNtfAlert(false, '⚠️ Test gönderilemedi: ' + escapeHtml(err.message || err));
+        } finally {
+          ntfTestBtn.disabled = false;
+          ntfTestBtn.textContent = '🧪 Test Bildirimi Gönder';
+        }
       });
     }
 

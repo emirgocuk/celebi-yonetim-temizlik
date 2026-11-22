@@ -149,6 +149,13 @@ def render_static_article_html(item: dict, stylesheets: str, header_html: str, f
     return f"""<!doctype html>
 <html lang="tr">
 <head>
+  <!-- Google tag (GTM-M7CC26B5) -->
+  <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-M7CC26B5"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){{dataLayer.push(arguments);}}
+    gtag('js', new Date());
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{e_seo_title}</title>

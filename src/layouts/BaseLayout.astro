@@ -29,6 +29,13 @@ const envTracking = {
 <!doctype html>
 <html lang="tr">
   <head>
+    <!-- Google tag (GTM-M7CC26B5) -->
+    <script is:inline async src="https://www.googletagmanager.com/gtm.js?id=GTM-M7CC26B5"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    </script>
     <SEO
       title={title}
       description={description}
@@ -183,21 +190,25 @@ const envTracking = {
 
         function initPixels(cfg) {
           activeCfg = { ...envTracking, ...cfg };
-          const hasGoogle = Boolean(activeCfg.ga4Id || activeCfg.gadsId);
+          const rawGa4 = (activeCfg.ga4Id || '').trim();
+          const effectiveGa4 = rawGa4.toUpperCase() === 'GTM-M7CC26B5' ? '' : rawGa4;
+          const primaryId = effectiveGa4 || (activeCfg.gadsId || '').trim();
 
-          if (hasGoogle && !gtagReady) {
+          if (primaryId && !gtagReady) {
             gtagReady = true;
             window.dataLayer = window.dataLayer || [];
             window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
             window.gtag('js', new Date());
 
-            const primaryId = activeCfg.ga4Id || activeCfg.gadsId;
+            const isGtm = primaryId.toUpperCase().startsWith('GTM-');
             const s = document.createElement('script');
             s.async = true;
-            s.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(primaryId)}`;
+            s.src = isGtm
+              ? `https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(primaryId)}`
+              : `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(primaryId)}`;
             document.head.appendChild(s);
 
-            if (activeCfg.ga4Id) window.gtag('config', activeCfg.ga4Id);
+            if (effectiveGa4 && !effectiveGa4.toUpperCase().startsWith('GTM-')) window.gtag('config', effectiveGa4);
             if (activeCfg.gadsId) window.gtag('config', activeCfg.gadsId);
           }
 
@@ -238,7 +249,7 @@ const envTracking = {
               utm_campaign: attr.utmCampaign || '',
             };
 
-            if (typeof window.gtag === 'function' && (activeCfg.ga4Id || activeCfg.gadsId)) {
+            if (typeof window.gtag === 'function') {
               window.gtag('event', eventName, eventPayload);
 
               let convRaw = '';

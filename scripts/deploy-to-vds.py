@@ -26,7 +26,7 @@ sftp.put(temp_archive, "/tmp/celebiyonetim_dist_update.tar.gz")
 
 # Upload backend scripts
 scripts_dir = os.path.abspath(os.path.dirname(__file__))
-for script_name in ["timer-runner.py", "auto-generate-cron.py", "fetch-gsc-keywords.py"]:
+for script_name in ["timer-runner.py", "auto-generate-cron.py", "fetch-gsc-keywords.py", "gsc-auto-index.py"]:
     local_script = os.path.join(scripts_dir, script_name)
     if os.path.exists(local_script):
         sftp.put(local_script, f"/var/www/scripts/{script_name}")
@@ -44,6 +44,14 @@ stdin, stdout, stderr = ssh.exec_command(
 )
 stdout.channel.recv_exit_status()
 print("VDS Update Complete!")
+
+# Submit updated sitemap to Google Search Console & IndexNow immediately
+stdin2, stdout2, stderr2 = ssh.exec_command("python3 /var/www/scripts/gsc-auto-index.py --submit-all")
+stdout2.channel.recv_exit_status()
+print(stdout2.read().decode("utf-8", errors="ignore"))
+err2 = stderr2.read().decode("utf-8", errors="ignore").strip()
+if err2:
+    print("[GSC/IndexNow STDERR]:", err2)
 
 if os.path.exists(temp_archive):
     os.remove(temp_archive)

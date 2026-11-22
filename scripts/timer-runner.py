@@ -323,6 +323,16 @@ def run_single_publish(token, settings, district=None):
         "toplamUretilen": new_total,
         "tetikle": False
     })
+
+    # Immediately generate static HTML + update sitemap + submit to GSC & IndexNow
+    try:
+        idx_script = os.path.join(os.path.dirname(__file__), "gsc-auto-index.py")
+        if os.path.exists(idx_script) and saved.get("slug"):
+            import subprocess
+            subprocess.run([sys.executable, idx_script, "--new-slug", saved.get("slug")], timeout=60)
+    except Exception as e:
+        print(f"[WARN] Auto index hook skipped: {e}")
+
     return saved
 
 def should_run(settings):

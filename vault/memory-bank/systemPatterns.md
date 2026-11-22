@@ -1,95 +1,74 @@
 # System Patterns & Architecture: Çelebi Yönetim ve Temizlik
 
+> Son Güncelleme: **22 Kasım 2026**
+
 ## 1. High-Level Architecture Overview
 
-The system is built on an **ultra-lightweight, high-performance decoupled architecture**:
+Sistem, statik ön yüz hızını PocketBase arka uç otomasyonları ve Google ölçümleme API'leriyle birleştiren **hafif, ölçeklenebilir bir ayrık (decoupled) mimari** üzerine kuruludur:
 
 ```mermaid
 flowchart TD
-    Client[Ziyaretçi Tarayıcısı / Google Bot] --> CDN[Global CDN / Edge Cache]
-    CDN --> AstroFrontend[Astro v5 Static/Hybrid Frontend]
-    
-    subgraph Frontend [Astro 0kB JS by Default Core]
-        Layout[BaseLayout + Unified SEO Component]
-        Header[Apple-Style Frosted Sticky Header]
-        Pages[Statik Sayfalar: Anasayfa, Hizmetler, İletişim]
-        Island[Interactive Islands: Quick Quote Modal, Mobile Nav]
+    Client[Ziyaretçi / Googlebot] --> CF[Cloudflare CDN & SSL Edge]
+    CF --> Nginx[Ubuntu VDS 2.27.101.128 — Nginx HTTPS]
+
+    subgraph VDS [Üretim Sunucusu & Otomasyon Katmanı]
+        Nginx -->|Statik SSG HTML / CSS / Varlıklar| AstroDist[Astro v7 Statik Çıktı: /var/www/celebiyonetim/html]
+        Nginx -->|/api/ & /_/ Reverse Proxy| PBServer[PocketBase v0.41.1 — 127.0.0.1:8090]
+        PBServer --> SQLite[(PocketBase SQLite DB)]
+        PBServer --> PBHooks[pb_hooks Goja: lead_notify.pb.js]
+        CronTimer[Arka Plan Timer Runner — 48h] --> OpenRouter[OpenRouter 4-Model AI Zinciri]
+        CronTimer --> PBServer
+        CronTimer --> BuildDeploy[Astro SSG Yeniden Derleme & İndeksleme]
     end
 
-    AstroFrontend --> Frontend
-    Frontend --> PBClient[PocketBase Client SDK]
-    
-    subgraph Backend [PocketBase Engine]
-        PBServer[PocketBase REST & Realtime API]
-        SQLite[(PocketBase SQLite DB)]
-        PBAuth[Admin & Role Based Access]
-        PBFiles[Media & Document Storage]
-    end
-
-    PBClient <--> PBServer
-    PBServer <--> SQLite
-    PBServer <--> PBFiles
+    PBHooks -->|Anlık Push / Uyarı| Notify[ntfy.sh / SMTP / Telegram]
+    AstroDist -->|GTM-M7CC26B5| Analytics[GA4 G-74ZHMJ1VEJ & GSC / IndexNow]
 ```
 
 ---
 
 ## 2. Core Architectural Principles
 
-### A. Zero Client-Side JS by Default (Astro Islands)
-- All landing pages, service descriptions, testimonials, and SEO content are rendered to pure static HTML/CSS.
-- JavaScript is loaded **only** for strictly interactive components (e.g., dynamic mobile menu toggle, interactive quote calculator) using Astro client directives (`client:idle`, `client:visible`).
-- Result: **0ms JS blocking time**, instantaneous First Input Delay / INP, 100/100 PageSpeed score.
+### A. Statik SSG + Islands Mimarisi ve Sıfır `301` URL Standardı
+- Tüm iniş sayfaları, ilçe sayfaları (`/cukurova-site-yonetimi/`, `/seyhan-apartman-yonetimi/`, `/saricam-site-yonetimi/`), rehber araçları (`/site-yonetimi-fiyat-hesapla/`, `/apartman-karar-defteri-ornekleri/`) ve blog yazıları (`/yazilar/[slug]/`) build aşamasında saf statik HTML olarak üretilir.
+- **Trailing-Slash Sıfır-301 Kuralı:** `astro.config.mjs` dosyasında `trailingSlash: 'always'` zorunludur. `SEO.astro`, `src/pages/yazilar/[slug].astro`, `src/pages/sitemap.xml.ts` ve `scripts/gsc-auto-index.py` tüm canonical ve sitemap `<loc>` adreslerini sonu `/` bitecek şekilde üretir; böylece Nginx ek `301` yönlendirmesi yapmaz.
 
-### B. Apple-Grade Floating Frosted Header Pattern
-- **Visuals**: Translucent glassmorphism (`backdrop-blur-md bg-white/75 border border-white/30 shadow-sm`).
-- **Dynamic Scroll Reactivity**:
-  - Top state: Relaxed padding, transparent borders, expansive breathing space.
-  - Scrolled state: Compact padding, subtle floating shadow, elevated blur intensity.
-- **Performance Execution**:
-  - Fixed positioning with a preserved document spacer to guarantee **CLS = 0.00**.
-  - Hardware-accelerated CSS properties (`transform: translate3d(0,0,0)`, `backdrop-filter`, `opacity`).
-  - Scroll state toggled via a passive, throttled micro-listener (< 500 bytes) or CSS `scroll-driven` animations with graceful fallback.
+### B. Apple-Grade Floating Frosted Header & İletişim Akışı
+- Translucent glassmorphism header, sabit konum + korunan boşluk ile `CLS = 0.00` sağlar.
+- Tüm sayfalarda ortak dönüşüm akışı: `QuickCallbackBar` ("5 Dakikada Arayalım"), `QuoteForm` (WhatsApp + PocketBase sıfır kayıplı kayıt + UTM/`gclid`/`fbclid` atıf takibi), masaüstü sağ alt dairesel su damlası iletişim butonları ve mobil sabit alt aksiyon çubuğu.
 
-### C. PocketBase Integration & Data Resilience
-- PocketBase runs as a self-hosted single-binary service (or local instance during development).
-- **Collections Schema**:
-  1. `teklif_talepleri` (Quote requests: name, phone, email, service_type, building_units, details, status)
-  2. `iletisim_mesajlari` (Direct contact inquiries)
-  3. `hizmetler` (Services: title, slug, summary, icon, details, faq_items, is_featured)
-  4. `yorumlar` (Client reviews: client_name, site_name, rating, comment, date)
-  5. `site_ayarlari` (Global metadata, phone, email, address, working hours)
-- **Data Resilience Pattern**:
-  - The Astro frontend implements a robust fallback adapter. If the PocketBase server is ever unreachable during build time, static default data is gracefully injected so builds never break.
+### C. PocketBase Koleksiyon Şeması & `pb_hooks` (Goja) Deseni
+- **Aktif Canlı Koleksiyonlar:**
+  1. `teklif_talepleri`: Talep bilgileri (`ad`, `telefon`, `hizmet_turu`, `ilce`, `daire_sayisi`, `mesaj`, `durum`, UTM / `gclid` / `fbclid` / `landing_page`).
+  2. `makaleler`: Otonom ve manuel SEO rehber yazıları (`baslik`, `slug`, `ozet`, `icerik`, `kategori`, `ilce`, `gorsel`, `yayinda`).
+  3. `site_ayarlari`: Adres, telefonlar, WhatsApp, harita ve çalışma bilgileri.
+  4. `reklam_ayarlari`: `ga4Id`, `gadsId`, `gadsConvLead`, `gadsConvWhatsapp`, `gadsConvCall`, `metaPixelId` (`mg1xw4dnqlq3ix6`).
+  5. `otomatik_yayin_ayarlari`: AI yayın döngüsü (`siklik: "48h"`, `aktif: true`, `hedefIlce: "auto"` — kayıt ID `31zfhnoi2ecarkf`).
+  6. `bildirim_ayarlari`: Yalnızca süper kullanıcı erişimli (`null` API kuralları — kayıt ID `1afdyxr5l4cpk5q`) `ntfy.sh`, SMTP e-posta ve Telegram yapılandırması.
+- **PocketBase v0.41.1 Goja Hook Kuralı:** Hook dosyalarında her callback izole kapsamda çalışır. Bu nedenle ortak yardımcı fonksiyonlar `scripts/pb_hooks/lead_notify_lib.js` içine yerleştirilir ve `lead_notify.pb.js` içinde `require(__hooks + "/lead_notify_lib.js")` ile yüklenir. Süper kullanıcı kontrolünde `$apis.requireSuperuserAuth()` fonksiyon olarak çağrılır.
+- **Veri Dayanıklılığı:** Astro build sırasında PocketBase erişilemez olursa statik yedek veri devreye girer ve build kırılmaz.
 
-### D. Centralized Design Token System (Logo & Color Independence)
-- Because the final logo and color palette are pending, all design colors are encapsulated in CSS custom properties and Tailwind semantic tokens:
-  ```css
-  :root {
-    --color-surface-base: #FFFFFF;
-    --color-surface-muted: #F8FAFC;
-    --color-surface-subtle: #F1F5F9;
-    --color-text-primary: #0F172A;
-    --color-text-secondary: #475569;
-    --color-text-muted: #94A3B8;
-    --color-border: #E2E8F0;
-    --color-border-subtle: #F1F5F9;
-    
-    /* Dynamic Brand Variables - Swappable in 1 line once logo arrives */
-    --color-brand-primary: #0F172A; /* Slate black default */
-    --color-brand-accent: #2563EB;  /* Pristine corporate blue accent */
-    --color-brand-highlight: #38BDF8; /* Fresh hygienic cyan */
-    --color-brand-success: #10B981;
-  }
-  ```
+### D. Marka Kimliği & Tasarım Token Sistemi
+- İlk kurulumdaki yer tutucu logo süreci tamamlanmıştır; artık yatay çerçevesiz vektörel SVG marka kilidi (`public/assets/logo/celebi-logo.svg`) ve önbellek kırmalı (`cache-bust`) favicon seti aktiftir.
+- Renk ve tipografi sistemi CSS custom properties (`--color-surface-*`, `--color-text-*`, `--color-brand-*`) üzerinden merkezi yönetilir.
+
+### E. Ölçümleme (GTM / GA4) & Çift Sayım Koruması
+- `GTM-M7CC26B5` doğrudan `src/layouts/BaseLayout.astro` `<head>` içine gömülüdür ve Google Analytics 4 (`G-74ZHMJ1VEJ` / `properties/565409453`) etiketini yönetir.
+- PocketBase `reklam_ayarlari` kaydından gelen kimlikler yüklenirken `preloadedGoogleIds` listesi (`GTM-M7CC26B5`, `G-74ZHMJ1VEJ`) kontrol edilir; böylece aynı sayfa görüntülenmesi hem GTM hem de doğrudan `gtag.js` ile iki kez sayılmaz.
+- Dönüşüm olayları (`generate_lead`, `whatsapp_click`, `phone_call_click`) GA4 tarafında `ONCE_PER_SESSION` ve sıfırlanmış varsayılan değerle izlenir; `service_type`, `method`, `landing_page` özel boyutlarıyla zenginleştirilir.
+
+### F. Otonom AI İçerik Motoru & Kalite Kapısı (`timer-runner.py`)
+- 4 modelli OpenRouter ücretsiz yedekleme sırası kullanılır (`nvidia/nemotron-3-ultra-550b-a55b:free` `reasoning: {"enabled": False}`, `baidu/ernie-5.5-flash-preview:free`, `openrouter/free`, `nvidia/nemotron-3.5-lightning:free`).
+- Çıktı doğrulama kapısı: en az **3 adet `<h2>`**, `<p>` paragrafları ve **>= 260 kelime** şartı sağlanmazsa makale yayınlanmaz; hata durumunda `/tmp/celebi-ai-backoff.ts` üzerinden 30 dk soğuma uygulanır ve **asla şablon/boilerplate içerik basılmaz**.
+- Türkçe uyumlu kategori normalizasyonu (`Temizlik`, `Hukuk & Mevzuat`, `Site Yönetimi`), ilçe etiketleme ve başlıktaki mükerrer ilçe öneki koruması uygulanır.
 
 ---
 
 ## 3. SEO & Structured Data Patterns
 
-### Universal `<SEO />` Head Component
-Every page receives an automated schema graph:
-1. `Organization` & `LocalBusiness` schema with geographic coordinates, phone number, and service areas.
-2. `Service` schema specifically detailing "Site Yönetimi" and "Profesyonel Temizlik".
-3. `FAQPage` schema on service pages to capture Google search rich snippets.
-4. Auto-generated canonical tags and OpenGraph image tags.
-
+### Universal `<SEO />` Head & Agentic Discovery
+Her sayfa otomatik olarak şu şema ve keşif sinyallerini alır:
+1. `Organization` & `LocalBusiness` (Mahfesığmaz / Çukurova / Adana koordinatları, sabit ve mobil hatlar, ilçe `areaServed`).
+2. `Service` & `CleaningService` / `ProfessionalService` şemaları.
+3. Rehber ve karar defteri sayfalarında zengin sonuçlar için `FAQPage` ve `BreadcrumbList`.
+4. `trailingSlash: 'always'` uyumlu `rel="canonical"`, OpenGraph, Twitter Card, `sitemap.xml`, `robots.txt`, `llms.txt` ve `ard.json`.

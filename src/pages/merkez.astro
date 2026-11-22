@@ -656,11 +656,11 @@ const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
                 Yayın Sıklığı (Aralık)
               </label>
               <select id="timer-select-frequency" class="w-full text-xs font-semibold px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white outline-none focus:border-sky-500">
-                <option value="1h">⚡ Her 1 Saatte Bir (Günde 24 Makale)</option>
-                <option value="3h">🚀 Her 3 Saatte Bir (Günde 8 Makale)</option>
-                <option value="6h" selected>⭐ Her 6 Saatte Bir (Günde 4 Makale - Önerilen)</option>
-                <option value="12h">📅 Her 12 Saatte Bir (Günde 2 Makale)</option>
-                <option value="24h">🌅 Günde 1 Kez (24 Saatte Bir)</option>
+                <option value="48h" selected>🛡️ 2 Günde 1 (Haftada 3–4 Özgün Makale - Önerilen)</option>
+                <option value="72h">🌿 3 Günde 1 (Haftada 2–3 Özgün Makale)</option>
+                <option value="24h">📅 Günde 1 Kez (24 Saatte Bir)</option>
+                <option value="12h">⚡ Her 12 Saatte Bir (Günde 2 Makale)</option>
+                <option value="6h">🚀 Her 6 Saatte Bir (Günde 4 Makale)</option>
               </select>
             </div>
 
@@ -947,11 +947,13 @@ const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
                   class="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white font-medium outline-none focus:border-sky-600"
                 >
                   <option value="Site Yönetimi">Site Yönetimi</option>
-                  <option value="Hukuk & KMK">Hukuk & KMK</option>
-                  <option value="Aidat & Finans">Aidat & Finans</option>
+                  <option value="Hukuk & Mevzuat">Hukuk &amp; Mevzuat</option>
+                  <option value="Temizlik">Temizlik</option>
+                  <option value="Hukuk & KMK">Hukuk &amp; KMK</option>
+                  <option value="Aidat & Finans">Aidat &amp; Finans</option>
                   <option value="Kurumsal Temizlik">Kurumsal Temizlik</option>
                   <option value="İnşaat Temizliği">İnşaat Temizliği</option>
-                  <option value="Dış Cephe & Vinç">Dış Cephe & Vinç</option>
+                  <option value="Dış Cephe & Vinç">Dış Cephe &amp; Vinç</option>
                   <option value="Apartman Hijyeni">Apartman Hijyeni</option>
                 </select>
               </div>
@@ -2209,9 +2211,11 @@ const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
         '3h': 10800,
         '6h': 21600,
         '12h': 43200,
-        '24h': 86400
+        '24h': 86400,
+        '48h': 172800,
+        '72h': 259200
       };
-      const reqSec = intervals[timerData.siklik] || 21600;
+      const reqSec = intervals[timerData.siklik] || 172800;
 
       const lastDt = new Date(lastStr.replace(' ', 'T'));
       const nextDt = new Date(lastDt.getTime() + reqSec * 1000);
@@ -2453,8 +2457,10 @@ const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
           cleanTopic = cleanTopic.replace(/^Genelinde\s*/i, '');
           cleanTopic = cleanTopic ? (cleanTopic.charAt(0).toUpperCase() + cleanTopic.slice(1)) : topic;
 
-          const isCleaning = /temizlik|merdiven|tadilat|inşaat|hijyen|ofis/i.test(cleanTopic);
-          const suffix = isCleaning ? 'Uygulama ve Hizmet Rehberi' : 'Yasal Mevzuat ve Uygulama Rehberi';
+          const isCleaning = /(temizlik|merdiven|tadilat|inşaat|hijyen|ofis|cam|vinç|depo|dezenfeksiyon|klinik|plaza|dış cephe|boş ev|daire temizli)/i.test(cleanTopic);
+          const isLegal = /(aidat|icra|kmk|kat mülkiyeti|karar defteri|genel kurul|yönetici seçimi|noter|borç|dava|işletme projesi|hukuk|kanun|sözleşme)/i.test(cleanTopic);
+          const autoCat = isCleaning ? 'Temizlik' : isLegal ? 'Hukuk & Mevzuat' : 'Site Yönetimi';
+          const suffix = isCleaning ? 'Hizmeti ve Fiyat Rehberi' : isLegal ? 'KMK Uygulama Rehberi' : 'Adana Yönetim Rehberi';
 
           let generatedTitle = (cleanTopic.includes(':') || cleanTopic.includes('?'))
             ? `${prefix} ${cleanTopic}`
@@ -2465,6 +2471,20 @@ const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
 
           const generatedSlug = `${slugify(generatedTitle)}-${Date.now().toString().slice(-4)}`;
           
+          const canonicalLinksBlock = `
+<div id="celebi-internal-links" class="mt-8 pt-6 border-t border-slate-200/80 bg-slate-50/60 p-4 rounded-2xl">
+  <p class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">İlgili Hizmet ve Rehber Sayfalarımız:</p>
+  <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-sky-700 font-semibold">
+    <li><a href="/site-yonetimi-fiyat-hesapla">🧮 30 Sn. Site Yönetimi &amp; Aidat Maliyeti Hesapla</a></li>
+    <li><a href="/site-yonetimi">🏢 Adana Profesyonel Site ve Apartman Yönetimi</a></li>
+    <li><a href="/temizlik">✨ Kurumsal Ofis, İnşaat ve Merdiven Temizliği</a></li>
+    <li><a href="/cukurova-site-yonetimi">📍 Çukurova Site &amp; Apartman Yönetimi</a></li>
+    <li><a href="/seyhan-apartman-yonetimi">🏛️ Seyhan Apartman &amp; İş Merkezi Yönetimi</a></li>
+    <li><a href="/saricam-site-yonetimi">🏗️ Sarıçam Toplu Konut &amp; Site Yönetimi</a></li>
+    <li><a href="/iletisim">📍 Mahfesığmaz / Çukurova Ofisimiz ve İletişim</a></li>
+  </ul>
+</div>`;
+
           let bodyHtml = `
 <p>Adana'nın hızla büyüyen konut ve ticaret merkezi ${district} bölgesinde, apartman ve site yönetimlerinin huzur içinde yürütülmesi 634 Sayılı Kat Mülkiyeti Kanunu (KMK) esaslarına tam uyum gerektirir. Bireysel yöneticilikte yaşanan tahsilat tıkanıklıkları ve komşuluk ihtilafları kurumsal bir yönetim yaklaşımıyla tamamen çözülebilmektedir.</p>
 
@@ -2484,72 +2504,64 @@ const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
 
 <h2>Çelebi Yönetim ile Binalarınız Güvence Altında</h2>
 <p>Apartman veya sitenizde aidat uyuşmazlıklarına son vermek, tertemiz ortak alanlara kavuşmak ve yasal riskleri sıfırlamak için Çelebi Yönetim ve Temizlik olarak Adana Mahfesığmaz merkez ofisimizden tüm ilçelere hizmet sunuyoruz. Ücretsiz işletme projesi analizi ve keşif için bize <strong>0 (322) 235 15 88</strong> santral hattımızdan veya <strong>0 (535) 873 03 24</strong> WhatsApp numaramızdan 7/24 ulaşabilirsiniz.</p>
-
-<div id="celebi-internal-links" class="mt-8 pt-6 border-t border-slate-200/80 bg-slate-50/60 p-4 rounded-2xl">
-  <p class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">İlgili Hizmet ve Rehber Sayfalarımız:</p>
-  <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-sky-700 font-semibold">
-    <li><a href="/site-yonetimi">🏢 Adana Profesyonel Site ve Apartman Yönetimi</a></li>
-    <li><a href="/temizlik">✨ Kurumsal Ofis, İnşaat ve Merdiven Temizliği</a></li>
-    <li><a href="/yazilar">📚 Kat Mülkiyeti Kanunu ve Sektörel Makaleler</a></li>
-    <li><a href="/iletisim">📍 Çukurova / Mahfesığmaz Ofisimiz ve İletişim</a></li>
-  </ul>
-</div>
+${canonicalLinksBlock}
 `;
 
-          // If Hybrid/LLM mode and API Key provided, attempt OpenRouter polish
+          // If Hybrid/LLM mode and API Key provided, try multi-model OpenRouter chain
           if ((mode === 'hybrid' || mode === 'llm') && apiKey) {
-            try {
-              const openRouterRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                  'Authorization': `Bearer ${apiKey}`,
-                  'Content-Type': 'application/json',
-                  'HTTP-Referer': 'https://celebiyonetim.com.tr',
-                  'X-Title': 'Celebi Yonetim Content Engine'
-                },
-                body: JSON.stringify({
-                  model: 'nvidia/nemotron-3.5-lightning:free',
-                  messages: [
-                    {
-                      role: 'system',
-                      content: 'Sen Adana Çelebi Yönetim ve Temizlik firmasının içerik uzmanısın. Kat Mülkiyeti Kanunu ve kurumsal temizlik üzerine akıcı, 250+ kelimelik, 3+ H2 başlıklı, son paragrafında Çelebi Yönetim (0 322 235 15 88 / WhatsApp 0 535 873 03 24) çağrılı HTML çıktısı üret. Asla <h1> kullanma.'
-                    },
-                    {
-                      role: 'user',
-                      content: `Konu: ${topic} (${district}). Lütfen profesyonel bir blog makalesi gövdesi üret.`
-                    }
-                  ],
-                  temperature: 0.7,
-                  max_tokens: 1200
-                })
-              });
+            const catInstruction = isCleaning
+              ? 'KONU KISITI: Bu yazı yalnızca TEMİZLİK ve HİJYEN üzerinedir; kimyasal, ekipman, SGK/İSG belgeli personel ve fiyat etkenlerini anlat. KMK Madde 20 veya aidat icra takibi yazma.'
+              : isLegal
+                ? 'KONU KISITI: Bu yazı 634 Sayılı KMK, yönetim kurulu kararları, işletme projesi veya icra süreçlerine odaklı pratik hukuki rehberdir.'
+                : 'KONU KISITI: Bu yazı profesyonel site yönetimi, şeffaf bütçe ve bina teknik/idari koordinasyonu üzerinedir.';
+            const systemPrompt = `Sen Adana Çelebi Yönetim ve Temizlik firmasının içerik uzmanısın. Yalnızca saf HTML üret (markdown \`\`\` veya # kullanma, <h1> kullanma). 1 kısa giriş <p> paragrafı, 4 özgün <h2> alt başlık, en az bir <ul> kontrol listesi, 2-3 soruluk kısa SSS ve son paragrafta Çelebi Yönetim (0 322 235 15 88 / WhatsApp 0 535 873 03 24) çağrısı içeren 500-700 kelimelik HTML gövdesi yaz. ${catInstruction}`;
+            const userPrompt = `Başlık: ${generatedTitle}\nKonu: ${topic} (${district}). Doğrudan başlığa yanıt veren özgün Adana yerel SEO makalesi üret.`;
 
-              if (openRouterRes.ok) {
-                const data = await openRouterRes.json();
-                const aiText = data.choices?.[0]?.message?.content;
-                if (aiText && aiText.includes('<p>') && aiText.includes('<h2>')) {
-                  bodyHtml = aiText;
-                  if (!bodyHtml.includes('celebi-internal-links')) {
-                    bodyHtml += `
-<div id="celebi-internal-links" class="mt-8 pt-6 border-t border-slate-200/80 bg-slate-50/60 p-4 rounded-2xl">
-  <p class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">İlgili Hizmet ve Rehber Sayfalarımız:</p>
-  <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-sky-700 font-semibold">
-    <li><a href="/site-yonetimi">🏢 Adana Profesyonel Site ve Apartman Yönetimi</a></li>
-    <li><a href="/temizlik">✨ Kurumsal Ofis, İnşaat ve Merdiven Temizliği</a></li>
-    <li><a href="/yazilar">📚 Kat Mülkiyeti Kanunu ve Sektörel Makaleler</a></li>
-    <li><a href="/iletisim">📍 Çukurova / Mahfesığmaz Ofisimiz ve İletişim</a></li>
-  </ul>
-</div>`;
+            const modelCandidates = [
+              { model: 'nvidia/nemotron-3-ultra-550b-a55b:free', extra: { reasoning: { enabled: false }, max_tokens: 2400 } },
+              { model: 'baidu/ernie-5.5-flash-preview:free', extra: { max_tokens: 2400 } },
+              { model: 'openrouter/free', extra: { max_tokens: 2400 } },
+            ];
+
+            for (const candidate of modelCandidates) {
+              try {
+                const openRouterRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                  method: 'POST',
+                  headers: {
+                    'Authorization': `Bearer ${apiKey}`,
+                    'Content-Type': 'application/json',
+                    'HTTP-Referer': 'https://celebiyonetim.com.tr',
+                    'X-Title': 'Celebi Yonetim Content Engine'
+                  },
+                  body: JSON.stringify({
+                    model: candidate.model,
+                    messages: [
+                      { role: 'system', content: systemPrompt },
+                      { role: 'user', content: userPrompt }
+                    ],
+                    temperature: 0.65,
+                    ...candidate.extra
+                  })
+                });
+
+                if (openRouterRes.ok) {
+                  const data = await openRouterRes.json();
+                  let aiText = data.choices?.[0]?.message?.content || '';
+                  aiText = aiText.replace(/^```(?:html|xml)?\s*\n?/i, '').replace(/\n?```\s*$/i, '').trim();
+                  aiText = aiText.replace(/<h1(\b[^>]*)>/gi, '<h2$1>').replace(/<\/h1>/gi, '</h2>');
+                  const h2Matches = aiText.match(/<h2\b[^>]*>.*?<\/h2>/gi) || [];
+                  if (aiText && aiText.includes('<p>') && h2Matches.length >= 3) {
+                    bodyHtml = aiText.includes('celebi-internal-links') ? aiText : `${aiText}\n${canonicalLinksBlock}`;
+                    break;
                   }
                 }
+              } catch (llmErr) {
+                console.warn(`LLM model ${candidate.model} failed, trying next:`, llmErr);
               }
-            } catch (llmErr) {
-              console.warn('LLM polish failed, fell back to template:', llmErr);
             }
           }
 
           // Smart royalty-free cover image matching based on topic & category
-          const autoCat = isCleaning ? 'Temizlik' : 'Site Yönetimi';
           const matchedImg = getMatchedStockImage(topic, autoCat);
           const autoCoverUrl = matchedImg ? matchedImg.url : 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80';
 
@@ -2562,8 +2574,12 @@ const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
             ceCoverImage.value = autoCoverUrl;
             updateCoverPreview(autoCoverUrl);
           }
-          if (ceSeoTitle) ceSeoTitle.value = `${generatedTitle} | Çelebi Yönetim`;
-          if (ceSeoDesc) ceSeoDesc.value = `${generatedTitle} konusunda kat mülkiyeti, aidat tahsilatı ve profesyonel temizlik rehberi.`;
+          if (ceSeoTitle) ceSeoTitle.value = `${generatedTitle.slice(0, 55)} | Çelebi`;
+          if (ceSeoDesc) {
+            ceSeoDesc.value = isCleaning
+              ? `${generatedTitle}: SGK güvenceli ekip, hijyen standartları ve şeffaf fiyatlandırma rehberi.`
+              : `${generatedTitle} konusunda Kat Mülkiyeti Kanunu, şeffaf bütçe ve uygulama rehberi.`;
+          }
           if (ceBodyHtml) ceBodyHtml.value = bodyHtml.trim();
 
           if (ceEditorWrapper) {
@@ -2899,7 +2915,7 @@ const stockImagesJson = JSON.stringify(STOCK_IMAGES_COLLECTION);
 
             <div class="flex items-center gap-2 shrink-0 flex-wrap self-end sm:self-auto">
               <a
-                href="/yazilar/oku?slug=${art.slug}"
+                href="/yazilar/${art.slug}"
                 target="_blank"
                 class="px-3 py-1.5 text-xs font-bold text-sky-700 bg-sky-50 hover:bg-sky-100 border border-sky-200 rounded-xl transition-all"
               >

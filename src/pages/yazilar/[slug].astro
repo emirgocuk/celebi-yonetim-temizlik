@@ -64,13 +64,45 @@ export async function getStaticPaths() {
           String(item.seoDescription || '').trim() ||
           rawHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 180);
 
+        const rawCategory = String(item.kategori || 'Site Yönetimi');
+        const catLower = rawCategory.toLocaleLowerCase('tr-TR');
+        const isCleaningCat = catLower.includes('temizlik') || catLower.includes('hijyen');
+        const isLegalCat = catLower.includes('hukuk') || catLower.includes('mevzuat');
+
+        const tagColor = isCleaningCat
+          ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+          : isLegalCat
+            ? 'bg-amber-50 text-amber-800 border-amber-200'
+            : 'bg-sky-50 text-sky-800 border-sky-200';
+
+        const authorRole = isCleaningCat
+          ? 'Kurumsal Temizlik & İş Güvenliği Uzmanı'
+          : isLegalCat
+            ? 'Kat Mülkiyeti Kanunu (KMK) Mevzuat Uzmanı'
+            : 'Kat Mülkiyeti Kanunu ve Tesis Yönetimi Uzmanı';
+
+        const keyTakeaways = isCleaningCat
+          ? [
+              'SGK Güvenceli, İSG Eğitimli ve Sabit Kadrolu Temizlik Personeli',
+              'Adana Çukurova, Seyhan ve Sarıçam İçin Aynı Gün Ücretsiz Keşif & Teklif',
+            ]
+          : isLegalCat
+            ? [
+                '634 Sayılı Kat Mülkiyeti Kanunu (KMK) Hükümleri ile Tam Uyumlu Uygulama',
+                'Noter, İşletme Projesi ve İcra Takip Süreçlerinde Hukuki Güvence',
+              ]
+            : [
+                '634 Sayılı Kat Mülkiyeti Kanunu (KMK) Mevzuatı ile Tam Uyumlu',
+                'Adana Çukurova, Seyhan ve Sarıçam Yerel Yönetim Standartları',
+              ];
+
         unifiedList.push({
           slug,
           title: String(item.baslik || slug),
           seoTitle: String(item.seoTitle || '').trim() || undefined,
-          category: String(item.kategori || 'Site Yönetimi'),
-          tag: String(item.kategori || 'Rehber'),
-          tagColor: 'bg-sky-50 text-sky-800 border-sky-200',
+          category: rawCategory,
+          tag: rawCategory || 'Rehber',
+          tagColor,
           readTime: String(item.okumaSuresi || '4 dk okuma'),
           publishDate: String(item.tarih || 'Güncel'),
           isoDate: '2026-11-22',
@@ -80,11 +112,8 @@ export async function getStaticPaths() {
               'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80'
           ),
           authorName: String(item.kaynak || 'Çelebi Hukuk & Yönetim Kurulu'),
-          authorRole: 'Kat Mülkiyeti Kanunu ve Tesis Yönetimi Uzmanı',
-          keyTakeaways: [
-            '634 Sayılı Kat Mülkiyeti Kanunu (KMK) Mevzuatı ile Tam Uyumlu',
-            'Adana Çukurova, Seyhan ve Sarıçam Yerel Yönetim Standartları',
-          ],
+          authorRole,
+          keyTakeaways,
           rawHtml,
         });
       }
